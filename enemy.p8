@@ -118,7 +118,7 @@ enemy {
   byte delta_y
 
   ; Temporary debug variable 
-  byte move_tick = 0
+  uword move_tick = 0
 
   ; Temp vars in all the subs
   ubyte en_offset
@@ -322,25 +322,35 @@ enemy {
     txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 1)
   }
 
+  ; Check for enemy detection. Currently we only allow a single
+  ; hit (so we can return on a full hit).
   sub check_collision(uword BulletRef) -> ubyte {
-    ; loop over all enemies to check collision
     i = 0
     while( i < ENEMY_COUNT ) {
       uword EnemyRef = &enemyData + i * EN_FIELDS
 
       if EnemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
+
         if BulletRef[bullets.FP_Y] == EnemyRef[EN_Y] or
 	    BulletRef[bullets.FP_Y] == EnemyRef[EN_Y] + 1 {
+          ; Save which Y line hit (upper or lower)
+	  ubyte dy = BulletRef[bullets.FP_Y] - EnemyRef[EN_Y]
           if BulletRef[bullets.FP_X] == EnemyRef[EN_X] or
               BulletRef[bullets.FP_X] == EnemyRef[EN_X] + 1 {
-	    ; We have a hit
-	    EnemyRef[EN_ACTIVE] = 0 ; Turn off
-	    clear(i)
-	    enemies_left--
-	    main.score++
+	    ; Save which X line hit (left or right)
+            ubyte dx = BulletRef[bullets.FP_X] - EnemyRef[EN_X]
 
-	    return 1
+	    ; We may still have a miss, we need to do some "nibble
+            ; matching" 
+	    if check_detailed_collision(EnemyRef, dx, dy) {
+	      EnemyRef[EN_ACTIVE] = 0 ; Turn off
+	      clear(i)
+	      enemies_left--
+	      main.score++
+
+	      return 1
+            }
           }
         }
       }
@@ -349,4 +359,26 @@ enemy {
 
     return 0
   }
+
+  sub check_detailed_collision( uword EnemyRef, ubyte dx, ubyte dy) -> ubyte {
+
+    ubyte bullet_nib
+    if EnemyRef[bullets.FP_LEFTMOST] ; Find char for bullet
+      bullet_nib = 5
+    else
+      bullet_nib = 25
+
+    ; Get petscii value at screen pos
+    tmp_x = EnemyRef[EN_X] + dx
+    tmp_y = EnemyRef[EN_Y] + dy
+           
+    ; Get and map to Map from char to nibble ?
+    ubyte nibble = convert.to_nibble( txt.getchr(tmp_x,tmp_y))
+
+    if ( nibble & bullet_nib)
+      return 1
+
+    return 0
+  }
+
 }

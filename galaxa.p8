@@ -113,6 +113,7 @@ gameloop:
     uword move = enemy.move_tick as uword
     txt.plot (RBORDER + 2, UBORDER + 3 )
     txt.print_uw(move)
+    txt.print("  ")
   }
 
   sub wait_space() {

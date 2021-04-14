@@ -14,4 +14,14 @@ convert {
   sub get_low(ubyte data) -> ubyte {
       return tbl[ data & 15 ]
   }
+
+  sub to_nibble(ubyte cnv) -> ubyte {
+    ubyte i = 0
+    while i < 7 {
+      if tbl[i] == cnv
+        return i
+      i++
+    }
+    return 7
+  }
 }
