@@ -23,6 +23,7 @@
 ;
 
 %import special
+%import move_patterns
 
 enemy {
 
@@ -36,59 +37,6 @@ enemy {
     $91, $00, $26, $00, $44, $20, $88, $01,  ; --- Moving down
     $81, $01, $06, $02, $04, $24, $08, $09,  ; --- Moving right
     $80, $11, $04, $22, $00, $64, $00, $89 ] ; --- Moving up
-
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ; Attempting to define movement pattern for the enemy, currently this
-  ; is a
-  ;    initial facing, position x, position,y, count of moves
-  ; and then a list of moves as directions.
-  ; Note that movement is defined using 4 bit (one for each direction)
-  ; as a "clever" way to use bit checking to find deltas (also for enemy
-  ; "facing" handling. This may turn out to not be so clever and removed
-  ; later, the values map like this :
-  ;        12  8  9  
-  ;         4  0  1
-  ;         6  1  2
-  ; (e.g 8 is up, 1 is right and 9 is then both). 0 is no movement
-  ; ----- Some old description that may be re-introduced later -----
-  ; Note that the last two movement positions are repeated (When we we are
-  ; done with the last stage we loop the last two over and over
-
-  const ubyte FP_DIR = 1
-  const ubyte FP_START_X = 2
-  const ubyte FP_START_Y = 3
-  const ubyte FP_MOVE_COUNT = 4
-
-  ; Stable pattern - start relative
-  ubyte[] mv_stable = [
-    0, DIR_DOWN, 0, 0, 29,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ]
-
-  ; Entry pattern 1 -
-  ;   NB! Will eventually convert into nibbles to save space 
-  ubyte[] mv_pattern_deploy_1_left = [
-    0, DIR_RIGHT, main.LBORDER+1, main.DBORDER-3, 106,
-    0, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, ; Init (1) + pre loop (13 diag)
-    9, 1, 9, 1, 9, 9, 8, 9, 8,             ; Circle start
-    8, 8, 12, 8, 12, 12, 4, 12, 4,
-    4, 4, 6, 4, 6, 6, 2, 6, 2,
-    2, 2, 3, 2, 3, 3, 1, 3, 1,             ; Circle complete (36)
-    1, 9, 9, 9, 9, 9, 9, 9, 9,             ; Finish cross upward
-    9, 9, 9, 9, 9, 9, 9,
-    9, 9, 9, 9, 9, 9, 8, 8,                ; (24 inkl 2 up)
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, ; Move to left  (31)
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ]
-
-  ubyte[] mv_test = [
-    0, DIR_RIGHT, main.LBORDER+1, main.DBORDER-4, 56,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-    4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ]
-
-  ; Put patterns in array of address refs?
-  uword[] mv_patterns= [ &mv_stable, &mv_pattern_deploy_1_left, &mv_test ]
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
@@ -143,14 +91,14 @@ enemy {
 
     enemyData[en_offset + EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyData[en_offset + EN_PAT] = pattern ;
-    uword PatternRef = mv_patterns[pattern]
+    uword PatternRef = move_patterns.list[pattern]
     enemyData[en_offset + EN_DELAY] = move_delay ; Delayed deployment counter
     enemyData[en_offset + EN_MOVE_CNT] = 0  
-    enemyData[en_offset + EN_X] = PatternRef[FP_START_X]
-    enemyData[en_offset + EN_Y] = PatternRef[FP_START_Y]
+    enemyData[en_offset + EN_X] = PatternRef[move_patterns.MP_START_X]
+    enemyData[en_offset + EN_Y] = PatternRef[move_patterns.MP_START_Y]
     enemyData[en_offset + EN_LEFTM] = true
     enemyData[en_offset + EN_TOPM] = false
-    enemyData[en_offset + EN_DIR] = PatternRef[FP_DIR];
+    enemyData[en_offset + EN_DIR] = PatternRef[move_patterns.MP_DIR];
     enemyData[en_offset + EN_DURAB] = 1; Not in use yet
   }
 
@@ -208,17 +156,17 @@ enemy {
     if @(EnemyMoveCnt) <= enemyData[en_offset + EN_DELAY] ; pre-display position
       return
 
-    uword PatternRef = mv_patterns[ enemyData[en_offset + EN_PAT] ]
+    uword PatternRef = move_patterns.list[ enemyData[en_offset + EN_PAT] ]
 
     ; At end of all patterns we go to "baseline" move (pattern 0)
     ; reset all counters, movement is relative after deployment
-    if @(EnemyMoveCnt) == PatternRef[ FP_MOVE_COUNT ] {
+    if @(EnemyMoveCnt) == PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       enemyData[en_offset + EN_PAT] = 0
       enemyData[en_offset + EN_DELAY] = 0
       @(EnemyMoveCnt) = 1
     }
 
-    set_deltas( enemy_num, PatternRef[ FP_MOVE_COUNT + @(EnemyMoveCnt)
+    set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT + @(EnemyMoveCnt)
       - enemyData[en_offset + EN_DELAY] ] )
 
     if delta_x == -1
@@ -332,14 +280,14 @@ enemy {
       if EnemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
-        if BulletRef[bullets.FP_Y] == EnemyRef[EN_Y] or
-	    BulletRef[bullets.FP_Y] == EnemyRef[EN_Y] + 1 {
+        if BulletRef[bullets.BD_Y] == EnemyRef[EN_Y] or
+	    BulletRef[bullets.BD_Y] == EnemyRef[EN_Y] + 1 {
           ; Save which Y line hit (upper or lower)
-	  ubyte dy = BulletRef[bullets.FP_Y] - EnemyRef[EN_Y]
-          if BulletRef[bullets.FP_X] == EnemyRef[EN_X] or
-              BulletRef[bullets.FP_X] == EnemyRef[EN_X] + 1 {
+	  ubyte dy = BulletRef[bullets.BD_Y] - EnemyRef[EN_Y]
+          if BulletRef[bullets.BD_X] == EnemyRef[EN_X] or
+              BulletRef[bullets.BD_X] == EnemyRef[EN_X] + 1 {
 	    ; Save which X line hit (left or right)
-            ubyte dx = BulletRef[bullets.FP_X] - EnemyRef[EN_X]
+            ubyte dx = BulletRef[bullets.BD_X] - EnemyRef[EN_X]
 
 	    ; We may still have a miss, we need to do some "nibble
             ; matching" 
@@ -363,7 +311,7 @@ enemy {
   sub check_detailed_collision( uword EnemyRef, ubyte dx, ubyte dy) -> ubyte {
 
     ubyte bullet_nib
-    if EnemyRef[bullets.FP_LEFTMOST] ; Find char for bullet
+    if EnemyRef[bullets.BD_LEFTMOST] ; Find char for bullet
       bullet_nib = 5
     else
       bullet_nib = 25

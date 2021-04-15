@@ -108,10 +108,10 @@ bullets {
   ubyte indy   ; temp y pos
  
   ubyte[FIELD_COUNT * MAX_BULLETS] bulletData
-  const ubyte FP_ON = 0
-  const ubyte FP_LEFTMOST = 1
-  const ubyte FP_X = 2
-  const ubyte FP_Y = 3
+  const ubyte BD_ON = 0
+  const ubyte BD_LEFTMOST = 1
+  const ubyte BD_X = 2
+  const ubyte BD_Y = 3
 
   sub trigger(ubyte x, ubyte y, ubyte lm) {
     if active_bullets == MAX_BULLETS ; All bullets in use
@@ -120,11 +120,11 @@ bullets {
     i = 0
     while ( i < MAX_BULLETS ) {
       offset = i * 4
-      if bulletData[offset + FP_ON] == false { ; Find first "free" bullet
-        bulletData[offset + FP_ON] = true
-        bulletData[offset + FP_LEFTMOST] = lm
-        bulletData[offset + FP_X] = x
-        bulletData[offset + FP_Y] = y
+      if bulletData[offset + BD_ON] == false { ; Find first "free" bullet
+        bulletData[offset + BD_ON] = true
+        bulletData[offset + BD_LEFTMOST] = lm
+        bulletData[offset + BD_X] = x
+        bulletData[offset + BD_Y] = y
 	draw(i)
         active_bullets++
         return ; No need to check any more
@@ -136,8 +136,8 @@ bullets {
   sub clear(ubyte bullet_num) {
     offset = bullet_num * 4
 
-    indx = offset + FP_X
-    indy = offset + FP_Y
+    indx = offset + BD_X
+    indy = offset + BD_Y
     txt.setcc(bulletData[indx], bulletData[indy], main.CLR, 2)
   }
 
@@ -147,9 +147,9 @@ bullets {
   sub draw(ubyte bullet_num) {
     offset = bullet_num * 4
 
-    indx = offset + FP_X
-    indy = offset + FP_Y
-    if bulletData[offset + FP_LEFTMOST]
+    indx = offset + BD_X
+    indy = offset + BD_Y
+    if bulletData[offset + BD_LEFTMOST]
       txt.setcc(bulletData[indx], bulletData[indy], 97, 1)
     else
       txt.setcc(bulletData[indx], bulletData[indy], 225, 1)
@@ -160,15 +160,15 @@ bullets {
     while ( i < MAX_BULLETS ) {
       uword BulletRef = &bulletData + i*4
 
-      if BulletRef[FP_ON] == true { 
+      if BulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
-        BulletRef[FP_Y]--;
-        if BulletRef[FP_Y] == main.UBORDER {
-          BulletRef[FP_ON] = false
+        BulletRef[BD_Y]--;
+        if BulletRef[BD_Y] == main.UBORDER {
+          BulletRef[BD_ON] = false
           active_bullets--
         } else {
 	  if enemy.check_collision( BulletRef ) {
-            BulletRef[FP_ON] = false
+            BulletRef[BD_ON] = false
 	    active_bullets--
 	  } else {
             draw(i)
