@@ -15,6 +15,8 @@
 ; done with the last stage we loop the last two over and over
 
 move_patterns {
+  const ubyte TOP_FROM_LEFT_1 = 1
+  const ubyte TOP_FROM_RIGHT_1 = 2
 
   const ubyte MP_DIR = 1
   const ubyte MP_START_X = 2
@@ -24,39 +26,33 @@ move_patterns {
   ; Stable pattern - start relative
   ubyte[] mv_stable = [
     0, enemy.DIR_DOWN, 0, 0, 28,
-    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
-    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
-
-  ; Entry pattern 1 -
-  ;   NB! Will eventually convert into nibbles to save space 
-  ubyte[] mv_pattern_deploy_1_left = [
-    0, enemy.DIR_RIGHT, main.LBORDER+1, main.DBORDER-3, 105,
-    $0, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $1,
-    $9, $1, $9, $9, $8, $9, $8, $8, $8, $c, $8, $c, $c, $4, $c, $4,
-    $4, $4, $6, $4, $6, $6, $2, $6, $2, $2, $2, $3, $2, $3, $3, $1,
-    $3, $1, $1, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9,
-    $9, $9, $9, $9, $9, $9, $9, $9, $8, $8, $4, $4, $4, $4, $4, $4,
-    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
-    $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
-
-  ubyte[] mv_pattern_deploy_1_right = [
-    0, enemy.DIR_LEFT, main.RBORDER-2, main.DBORDER-3, 102,
-    $0, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $4,
-    $c, $4, $c, $c, $8, $c, $8, $8, $8, $9, $8, $9, $9, $1, $9, $1,
-    $1, $1, $3, $1, $3, $3, $2, $3, $2, $2, $2, $6, $2, $6, $6, $4,
-    $6, $4, $4, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c,
-    $c, $c, $c, $c, $c, $c, $c, $c, $8, $8, $1, $1, $1, $1, $1, $1,
-    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
-    $1, $1, $1, $1, $1, $1 ]
-
-  ubyte[] mv_test = [
-    0, enemy.DIR_RIGHT, main.LBORDER+1, main.DBORDER-4, 56,
-    $1, $1, $1, $1, $1, $1, $1, $4, $4, $4, $4, $4, $4, $4,
-    $4, $4, $4, $4, $4, $4, $4, $1, $1, $1, $1, $1, $1, $1,
     $1, $1, $1, $1, $1, $1, $1, $4, $4, $4, $4, $4, $4, $4,
     $4, $4, $4, $4, $4, $4, $4, $1, $1, $1, $1, $1, $1, $1 ]
 
+  ; Entry pattern 1
+  ;   May consider eventually convering into nibbles to save space 
+  ubyte[] mv_deploy_1_left = [
+    0, enemy.DIR_RIGHT, main.LBORDER+1, main.DBORDER-3, 109,
+    $0, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $1,
+    $9, $1, $9, $9, $8, $9, $8, $8, $8, $c, $8, $c, $c, $4, $c, $4,
+    $4, $4, $6, $4, $6, $6, $2, $6, $2, $2, $2, $3, $2, $3, $3, $1,
+    $3, $1, $1, $9, $9, $1, $9, $9, $1, $9, $9, $1, $9, $9, $1, $9,
+    $9, $1, $9, $9, $1, $9, $9, $9, $9, $9, $9, $9, $9, $9, $8, $8,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
+
+  ; Same pattern (almost) from the right
+  ubyte[] mv_deploy_1_right = [
+    0, enemy.DIR_LEFT, main.RBORDER-2, main.DBORDER-3, 107,
+    $0, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $4,
+    $c, $4, $c, $c, $8, $c, $8, $8, $8, $9, $8, $9, $9, $1, $9, $1,
+    $1, $1, $3, $1, $3, $3, $2, $3, $2, $2, $2, $6, $2, $6, $6, $4,
+    $6, $4, $4, $c, $c, $4, $c, $c, $4, $c, $c, $4, $c, $c, $4, $c,
+    $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $8, $8, $1, $1,
+    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
+    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1 ]
+
   ; Put patterns in array of address refs?
-  uword[] list = [ &mv_stable, &mv_pattern_deploy_1_left, &mv_test ]
+  uword[] list = [ &mv_stable, &mv_deploy_1_left, &mv_deploy_1_right ]
 
 }
