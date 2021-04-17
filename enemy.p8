@@ -174,23 +174,24 @@ enemy {
     ; Need this variable a few times so this should be more efficent
     uword EnemyMoveCnt = & enemyData + en_offset + EN_MOVE_CNT
 
-    @(EnemyMoveCnt)++
-
-    if @(EnemyMoveCnt) <= enemyData[en_offset + EN_DELAY] ; pre-display position
+    ; pre-display position
+    if @(EnemyMoveCnt) <= enemyData[en_offset + EN_DELAY] {
+      @(EnemyMoveCnt)++
       return
+    }
 
     uword PatternRef = move_patterns.list[ enemyData[en_offset + EN_PAT] ]
 
     ; At end of all patterns we go to "baseline" move (pattern 0)
     ; reset all counters, movement is relative after deployment
-    if @(EnemyMoveCnt) == PatternRef[ move_patterns.MP_MOVE_COUNT ] {
+    if @(EnemyMoveCnt) > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       enemyData[en_offset + EN_PAT] = 0
       enemyData[en_offset + EN_DELAY] = 0
-      @(EnemyMoveCnt) = 1
+      @(EnemyMoveCnt) = 1 ; 
     }
 
-    set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT + @(EnemyMoveCnt)
-      - enemyData[en_offset + EN_DELAY] ] )
+    set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT
+        + @(EnemyMoveCnt) - enemyData[en_offset + EN_DELAY] ] )
 
     if delta_x == -1
       move_left(enemy_num)
@@ -201,7 +202,9 @@ enemy {
       move_up(enemy_num)
     if delta_y == 1
       move_down(enemy_num)
-  }
+
+    @(EnemyMoveCnt)++
+}
 
   sub move_left(ubyte enemy_num) {
     en_offset = enemy_num * EN_FIELDS
