@@ -17,7 +17,9 @@
 move_patterns {
   const ubyte TOP_FROM_LEFT_1 = 1
   const ubyte TOP_FROM_RIGHT_1 = 2
-
+  const ubyte MED_FROM_LEFT_1 = 3
+  const ubyte MED_FROM_RIGHT_1 = 4
+  
   const ubyte MP_DIR = 1
   const ubyte MP_START_X = 2
   const ubyte MP_START_Y = 3
@@ -31,7 +33,7 @@ move_patterns {
 
   ; Entry pattern 1
   ;   May consider eventually convering into nibbles to save space 
-  ubyte[] mv_deploy_1_left = [
+  ubyte[] deploy_left_1 = [
     0, enemy.DIR_RIGHT, main.LBORDER+1, main.DBORDER-3, 109,
     $0, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $1,
     $9, $1, $9, $9, $8, $9, $8, $8, $8, $c, $8, $c, $c, $4, $c, $4,
@@ -42,7 +44,7 @@ move_patterns {
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
 
   ; Same pattern (almost) from the right
-  ubyte[] mv_deploy_1_right = [
+  ubyte[] deploy_right_1 = [
     0, enemy.DIR_LEFT, main.RBORDER-2, main.DBORDER-3, 107,
     $0, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $c, $4,
     $c, $4, $c, $c, $8, $c, $8, $8, $8, $9, $8, $9, $9, $1, $9, $1,
@@ -52,7 +54,30 @@ move_patterns {
     $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
     $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1 ]
 
+  ubyte[] deploy_left_2 = [
+    0, enemy.DIR_RIGHT, main.LBORDER+1, main.DBORDER-7, 124,
+    $0, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
+    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
+    $1, $1, $1, $1, $1, $1, $1, $1, $9, $1, $9, $8, $9, $8, $8, $c,
+    $8, $c, $4, $c, $4, $4, $6, $4, $6, $2, $6, $2, $2, $3, $2, $3,
+    $1, $3, $1, $1, $9, $1, $9, $8, $9, $8, $8, $8, $8, $8, $8, $8,
+    $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $4, $4,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
+
+;  ubyte[] deploy_right_2 = [
+;    0, enemy.DIR_LEFT, main.LBORDER-2, main.DBORDER-7, 124,
+;    $0, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+;    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+;    $4, $4, $4, $4, $4, $4, $4, $4, $c, $4, $c, $8, $c, $8, $8, $9,
+;    $8, $9, $1, $9, $1, $1, $3, $1, $3, $2, $3, $2, $2, $6, $2, $6,
+;    $4, $6, $4, $4, $c, $4, $c, $8, $c, $8, $8, $8, $8, $8, $8, $8,
+;    $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $1, $1,
+;    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
+;    $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1 ]
+
   ; Put patterns in array of address refs?
-  uword[] list = [ &mv_stable, &mv_deploy_1_left, &mv_deploy_1_right ]
+  uword[] list = [ &mv_stable, &deploy_left_1, &deploy_right_1,
+  	           &deploy_left_2 ]
 
 }
