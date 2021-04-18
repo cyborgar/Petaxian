@@ -107,7 +107,7 @@ enemy {
       i++
     }
     while( i < 16 ) { 
-      setup_enemy( i, 28 + i*4, move_patterns.MED_FROM_LEFT_1, 60, true )
+      setup_enemy( i, 38 + i*4, move_patterns.MED_FROM_LEFT_1, 70, true )
       i++   
     }
     enemies_left = ENEMY_COUNT
@@ -159,7 +159,7 @@ enemy {
 
     ; Awful, need to find some better way than this
     cur = enemyData[en_offset + EN_PAT];
-    if cur == 0
+    if cur <= 1
       enemyData[en_offset + EN_DIR] = DIR_DOWN
   }
 
@@ -189,11 +189,13 @@ enemy {
 
     uword PatternRef = move_patterns.list[ enemyData[en_offset + EN_PAT] ]
 
-    ; At end of all patterns we go to "baseline" move (pattern 0)
-    ; reset all counters, movement is relative after deployment
+    ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
+    ; based on deployment direction. Also reset all counters, movement
+    ; is relative after deployment
     if @(EnemyMoveCnt) > PatternRef[ move_patterns.MP_MOVE_COUNT ]
       + enemyData[en_offset + EN_WAVE_DELAY] {
-      enemyData[en_offset + EN_PAT] = 0
+      ubyte stable = enemyData[en_offset + EN_PAT] & 1
+      enemyData[en_offset + EN_PAT] = stable
       enemyData[en_offset + EN_DELAY] = 0
       enemyData[en_offset + EN_WAVE_DELAY] = 0
       @(EnemyMoveCnt) = 1 ; 
