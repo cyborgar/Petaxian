@@ -36,7 +36,7 @@ enemy {
   ;  X 
   ; X 
 
-  ; TL,  ..,  TR,  ..,  BL,  ..,  BR,  ..
+  ; TopLeft   TopRight  BottomL   BottomR
   ubyte[] raider = [
     $90, $10, $24, $20, $40, $60, $80, $81,  ; Enemy moving right
     $91, $00, $26, $00, $44, $20, $88, $01,  ; Enemy moving down
@@ -68,16 +68,17 @@ enemy {
   const ubyte EN_ACTIVE = 0 ; Placed first for quick checking
   const ubyte EN_PAT    = 1 ; Only one movement pattern so far
   const ubyte EN_DELAY  = 2 ; Deployment delay counter
-  const ubyte EN_MOVE_CNT = 3 ; Pattern count. Movement in pattern.
-  const ubyte EN_X      = 4 ; x char pos
-  const ubyte EN_Y      = 5 ; y char pos
-  const ubyte EN_LEFTM  = 6 ; char pos leftomost?
-  const ubyte EN_TOPM   = 7 ; char pos teopmost?
-  const ubyte EN_DIR    = 8 ; 
-  const ubyte EN_DURAB  = 9  ; durability value (thoughness)
-  const ubyte EN_FIELDS = 10
+  const ubyte EN_WAVE_DELAY = 3; Deploy pattern delay
+  const ubyte EN_MOVE_CNT = 4 ; Pattern count. Movement in pattern.
+  const ubyte EN_X      = 5 ; x char pos
+  const ubyte EN_Y      = 6 ; y char pos
+  const ubyte EN_LEFTM  = 7 ; char pos leftomost?
+  const ubyte EN_TOPM   = 8 ; char pos teopmost?
+  const ubyte EN_DIR    = 9 ; 
+  const ubyte EN_DURAB  = 10; durability value (thoughness)
+  const ubyte EN_FIELDS = 11
   ; Max number of enemies in structure
-  const ubyte ENEMY_COUNT = 8
+  const ubyte ENEMY_COUNT = 16
   ; Actual array holding enemies
   ubyte[EN_FIELDS * ENEMY_COUNT] enemyData 
 
@@ -101,25 +102,31 @@ enemy {
   ; Initiate enemies - later include "wave" config here maybe
   sub setup() {
     i = 0
-    while( i < ENEMY_COUNT ) { 
-      setup_enemy( i, i * 4, 1 )
+    while( i < 8 ) { 
+      setup_enemy( i, i*4, move_patterns.TOP_FROM_LEFT_1, 0, true )
       i++
+    }
+    while( i < 16 ) { 
+      setup_enemy( i, 28 + i*4, move_patterns.MED_FROM_LEFT_1, 60, true )
+      i++   
     }
     enemies_left = ENEMY_COUNT
   }
 
   ; Initiate one enemy
-  sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern ) {
+  sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
+                   ubyte wave_delay, ubyte leftmost ) {
     en_offset = enemy_num * EN_FIELDS
 
     enemyData[en_offset + EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyData[en_offset + EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
     enemyData[en_offset + EN_DELAY] = move_delay ; Delayed deployment counter
-    enemyData[en_offset + EN_MOVE_CNT] = 0  
+    enemyData[en_offset + EN_WAVE_DELAY] = wave_delay
+    enemyData[en_offset + EN_MOVE_CNT] = 0
     enemyData[en_offset + EN_X] = PatternRef[move_patterns.MP_START_X]
     enemyData[en_offset + EN_Y] = PatternRef[move_patterns.MP_START_Y]
-    enemyData[en_offset + EN_LEFTM] = true
+    enemyData[en_offset + EN_LEFTM] = leftmost
     enemyData[en_offset + EN_TOPM] = false
     enemyData[en_offset + EN_DIR] = PatternRef[move_patterns.MP_DIR];
     enemyData[en_offset + EN_DURAB] = 1; Not in use yet
@@ -184,9 +191,11 @@ enemy {
 
     ; At end of all patterns we go to "baseline" move (pattern 0)
     ; reset all counters, movement is relative after deployment
-    if @(EnemyMoveCnt) > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
+    if @(EnemyMoveCnt) > PatternRef[ move_patterns.MP_MOVE_COUNT ]
+      + enemyData[en_offset + EN_WAVE_DELAY] {
       enemyData[en_offset + EN_PAT] = 0
       enemyData[en_offset + EN_DELAY] = 0
+      enemyData[en_offset + EN_WAVE_DELAY] = 0
       @(EnemyMoveCnt) = 1 ; 
     }
 
@@ -204,7 +213,7 @@ enemy {
       move_down(enemy_num)
 
     @(EnemyMoveCnt)++
-}
+  }
 
   sub move_left(ubyte enemy_num) {
     en_offset = enemy_num * EN_FIELDS
@@ -268,10 +277,10 @@ enemy {
     tmp_x = enemyData[en_offset + EN_X]
     tmp_y = enemyData[en_offset + EN_Y]
 
-    txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
-    txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
-    txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
-    txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
+    txt.setcc2(tmp_x,   tmp_y,   main.CLR, 1)
+    txt.setcc2(tmp_x+1, tmp_y,   main.CLR, 1)
+    txt.setcc2(tmp_x,   tmp_y+1, main.CLR, 1)
+    txt.setcc2(tmp_x+1, tmp_y+1, main.CLR, 1)
   }
 
   sub draw(ubyte enemy_num) {
@@ -287,13 +296,13 @@ enemy {
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
-    txt.setcc(tmp_x,   tmp_y, convert.get_high(ship_byte) , 1)
-    txt.setcc(tmp_x+1, tmp_y, convert.get_low(ship_byte), 1)
+    txt.setcc2(tmp_x,   tmp_y, convert.get_high(ship_byte), 1)
+    txt.setcc2(tmp_x+1, tmp_y, convert.get_low(ship_byte), 1)
     
     ; Convert second byte and draw
     ship_byte = raider[cur+1]
-    txt.setcc(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 1)
-    txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 1)
+    txt.setcc2(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 1)
+    txt.setcc2(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 1)
   }
 
   ; Check for enemy detection. Currently we only allow a single
