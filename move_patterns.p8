@@ -97,21 +97,24 @@ move_patterns {
 
 }
 
+;
+; Set up
+;
 wave {
-
-  ; Sub patter refs
-  ubyte WV_LINE = 0
-  ubyte WV_PAT =  1
-  ubyte WV_MOVE_DELAY = 2
-  ubyte WV_WAVE_DELAY = 3
+  ; Each wave consists of 3 "lines" of deployment (only 2 used so far)
+  ; each sub sub patter conists of 
+  const ubyte WV_LINE_ACTIVE = 0 ; Is this line in use 
+  const ubyte WV_PAT =  1        ; Deployment patter
+  const ubyte WV_DEPL_DELAY = 2  ; Delay from wave start before depolyment starts
+  const ubyte WV_WAVE_DELAY = 3  ; Delay from 
 
   ubyte[] wave1 = [
-    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, 
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70, 
+    true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
+    true, move_patterns.MID_FROM_RIGHT_1, 38, 70,
     false, 0, 0, 0 ]
   ubyte[] wave2 = [
     true, move_patterns.TOP_FROM_RIGHT_1, 0, 0,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70,
+    true, move_patterns.MID_FROM_LEFT_1, 38, 70,
     false, 0, 0, 0 ]
 
   uword[] list = [ &wave1, &wave2 ]

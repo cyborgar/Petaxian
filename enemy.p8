@@ -109,7 +109,7 @@ enemy {
       if WaveRef[ 0 ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 
-          setup_enemy(i, WaveRef[wave.WV_MOVE_DEALY] + i*4, 
+          setup_enemy(i, WaveRef[wave.WV_DEPL_DELAY] + i*4, 
 	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY], true)
           i++
         }
