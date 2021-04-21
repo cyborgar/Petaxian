@@ -20,9 +20,10 @@ main {
   const ubyte GUN_MAX_RIGHT = RBORDER -  3
 
   uword score = 0
+  ubyte cur_wave = 0
 
   ; Variable enemy speed
-  ubyte enemy_speed = 4
+  ubyte enemy_speed = 3
   ubyte enemy_sub_counter
 
   ; Fixed player speed? Power ups? Split gun/bullet speed?
@@ -45,7 +46,7 @@ main {
   gun.y = DBORDER - 1
   gun.draw()
     
-  enemy.setup()
+  enemy.setup_wave(cur_wave)
 ;  enemy.draw()
 
 gameloop:
@@ -71,6 +72,13 @@ gameloop:
       }
 
       drawScore()
+
+      if (enemy.enemies_left == 0) {
+        cur_wave++
+        if cur_wave > 1 ; only two "waves" right now
+          cur_wave = 0
+        enemy.setup_wave(cur_wave)
+      }
     }
 
     ubyte key = c64.GETIN()
@@ -114,6 +122,10 @@ gameloop:
     txt.plot (RBORDER + 2, UBORDER + 3 )
     txt.print_uw(move)
     txt.print("  ")
+;    txt.plot (RBORDER + 2, UBORDER + 4 )
+;    uword test = enemy.test as uword
+;    txt.print_uw(test)
+;    txt.print("  ")
   }
 
   sub wait_space() {
