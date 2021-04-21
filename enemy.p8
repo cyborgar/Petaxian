@@ -61,6 +61,11 @@ enemy {
     $E1, $21, $87, $03, $84, $B4, $0C, $2F,
     $E4, $11, $8D, $22, $80, $75, $04, $AB ]
 
+
+  ; Coding two bools in one byte. 
+  const ubyte LEFTMOST = 1 
+  const ubyte TOPMOST =  2
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
   ; Use offsets to "emulate" something like a strcutre
@@ -72,11 +77,10 @@ enemy {
   const ubyte EN_MOVE_CNT = 4 ; Pattern count. Movement in pattern.
   const ubyte EN_X      = 5 ; x char pos
   const ubyte EN_Y      = 6 ; y char pos
-  const ubyte EN_LEFTM  = 7 ; char pos leftomost?
-  const ubyte EN_TOPM   = 8 ; char pos teopmost?
-  const ubyte EN_DIR    = 9 ; 
-  const ubyte EN_DURAB  = 10; durability value (thoughness)
-  const ubyte EN_FIELDS = 11
+  const ubyte EN_SUBPOS = 7 ; leftmost/topmost coded as bits
+  const ubyte EN_DIR    = 8 ; 
+  const ubyte EN_DURAB  = 9; durability value (thoughness)
+  const ubyte EN_FIELDS = 10
   ; Max number of enemies in structure
   const ubyte ENEMY_COUNT = 16
   ; Actual array holding enemies
@@ -110,7 +114,8 @@ enemy {
         enemies_left += 8
         while( i < enemies_left ) { 
           setup_enemy(i, WaveRef[wave.WV_DEPL_DELAY] + i*4, 
-	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY], true)
+	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY],
+		      LEFTMOST)
           i++
         }
       }
@@ -121,20 +126,19 @@ enemy {
   ; Initiate one enemy
   sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
                    ubyte wave_delay, ubyte leftmost ) {
-    en_offset = enemy_num * EN_FIELDS
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    enemyData[en_offset + EN_ACTIVE] = 1 ; All enemies active at deployment
-    enemyData[en_offset + EN_PAT] = pattern ;
+    EnemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
+    EnemyRef[EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
-    enemyData[en_offset + EN_DELAY] = move_delay ; Delayed deployment counter
-    enemyData[en_offset + EN_WAVE_DELAY] = wave_delay
-    enemyData[en_offset + EN_MOVE_CNT] = 0
-    enemyData[en_offset + EN_X] = PatternRef[move_patterns.MP_START_X]
-    enemyData[en_offset + EN_Y] = PatternRef[move_patterns.MP_START_Y]
-    enemyData[en_offset + EN_LEFTM] = leftmost
-    enemyData[en_offset + EN_TOPM] = false
-    enemyData[en_offset + EN_DIR] = PatternRef[move_patterns.MP_DIR];
-    enemyData[en_offset + EN_DURAB] = 1; Not in use yet
+    EnemyRef[EN_DELAY] = move_delay ; Delayed deployment counter
+    EnemyRef[EN_WAVE_DELAY] = wave_delay
+    EnemyRef[EN_MOVE_CNT] = 0
+    EnemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
+    EnemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
+    EnemyRef[EN_SUBPOS] = LEFTMOST
+    EnemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
+    EnemyRef[EN_DURAB] = 1; Not in use yet
   }
 
   sub set_deltas(ubyte enemy_num, ubyte mvdir) {
@@ -223,57 +227,57 @@ enemy {
   }
 
   sub move_left(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    if enemyData[en_offset + EN_LEFTM] {
+    if EnemyRef[EN_SUBPOS] & LEFTMOST {
       clear(enemy_num)
-      enemyData[en_offset + EN_X]--
-      enemyData[en_offset + EN_LEFTM] = false
+      EnemyRef[EN_X]--
+      EnemyRef[EN_SUBPOS] &= ~LEFTMOST
       draw(enemy_num)
     } else {
-      enemyData[en_offset + EN_LEFTM] = true
+      EnemyRef[EN_SUBPOS] |= LEFTMOST
       draw(enemy_num)
     }
   }
 
   sub move_right(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if enemyData[en_offset + EN_LEFTM] {
-      enemyData[en_offset + EN_LEFTM] = false
+    if EnemyRef[EN_SUBPOS] & LEFTMOST {
+      EnemyRef[EN_SUBPOS] &= ~LEFTMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
-      enemyData[en_offset + EN_X]++
-      enemyData[en_offset + EN_LEFTM] = true
+      EnemyRef[EN_X]++
+      EnemyRef[EN_SUBPOS] |= LEFTMOST
       draw(enemy_num)
     }
   }
   
   sub move_up(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if enemyData[en_offset + EN_TOPM] {
+    if EnemyRef[EN_SUBPOS] & TOPMOST {
       clear(enemy_num)
-      enemyData[en_offset + EN_Y]--
-      enemyData[en_offset + EN_TOPM] = false
+      EnemyRef[EN_Y]--
+      EnemyRef[EN_SUBPOS] &= ~TOPMOST
       draw(enemy_num)
     } else {
-      enemyData[en_offset + EN_TOPM] = true
+      EnemyRef[EN_SUBPOS] |= TOPMOST
       draw(enemy_num)
     }
   }
 
   sub move_down(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
       
-    if enemyData[en_offset + EN_TOPM] {
-      enemyData[en_offset + EN_TOPM] = false
+    if EnemyRef[EN_SUBPOS] & TOPMOST {
+      EnemyRef[EN_SUBPOS] &= ~TOPMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
-      enemyData[en_offset + EN_Y]++
-      enemyData[en_offset + EN_TOPM] = true
+      EnemyRef[EN_Y]++
+      EnemyRef[EN_SUBPOS] |= TOPMOST
       draw(enemy_num)
     }
   }
@@ -298,8 +302,8 @@ enemy {
     
     ; Look up sub-byte position
     cur = enemyData[en_offset + EN_DIR]
-    cur += (not enemyData[en_offset + EN_TOPM]) * 4
-    cur += (not enemyData[en_offset + EN_LEFTM]) * 2
+    cur += (not enemyData[en_offset + EN_SUBPOS] & TOPMOST) * 4
+    cur += (not enemyData[en_offset + EN_SUBPOS] & LEFTMOST) * 2
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
