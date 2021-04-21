@@ -97,20 +97,25 @@ enemy {
   ubyte cur
   ubyte tmp_x
   ubyte tmp_y
-  ubyte i
 
-  ; Initiate enemies - later include "wave" config here maybe
-  sub setup() {
-    i = 0
-    while( i < 8 ) { 
-      setup_enemy( i, i*4, move_patterns.TOP_FROM_LEFT_1, 0, true )
-      i++
+  sub setup_wave(ubyte cur_wave) {
+    uword WaveRef = wave.list[cur_wave]
+
+    ubyte i = 0
+    ubyte level
+
+    ; Each way have potentially 3 "lines" of enemies 
+    for level in 0 to 2 {
+      if WaveRef[ 0 ] == true {
+        enemies_left += 8
+        while( i < enemies_left ) { 
+          setup_enemy(i, WaveRef[wave.WV_MOVE_DEALY] + i*4, 
+	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY], true)
+          i++
+        }
+      }
+      WaveRef += 4
     }
-    while( i < 16 ) { 
-      setup_enemy( i, 38 + i*4, move_patterns.MED_FROM_LEFT_1, 70, true )
-      i++   
-    }
-    enemies_left = ENEMY_COUNT
   }
 
   ; Initiate one enemy
@@ -165,7 +170,7 @@ enemy {
 
   sub move_all() {
     move_tick++ ; Test variable priting out "step" count
-    i = 0
+    ubyte i = 0
     while( i < ENEMY_COUNT ) { 
       move(i)
       i++
@@ -310,7 +315,7 @@ enemy {
   ; Check for enemy detection. Currently we only allow a single
   ; hit (so we can return on a full hit).
   sub check_collision(uword BulletRef) -> ubyte {
-    i = 0
+    ubyte i = 0
     while( i < ENEMY_COUNT ) {
       uword EnemyRef = &enemyData + i * EN_FIELDS
 
