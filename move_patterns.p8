@@ -10,15 +10,20 @@
 ;         4  0  1
 ;         6  2  3
 ; (e.g 8 is up, 1 is right and 9 is then both). 0 is no movement
-; ----- Some old description that may be re-introduced later -----
-; Note that the last two movement positions are repeated (When we we are
-; done with the last stage we loop the last two over and over
-
+; 
+; Enemies first get startet in a deployment pattern and when this
+; is done we switch to the "stable" (pre-attack) patterns. Currently
+; all patterns have a "from the left" and "from the right" version.
+; including the "stable" patterns
+;
+; I expect that attacks will be similar. Move from stable and try to end
+; end up in the same position (that will require attacks to be 28 or 56 
+; moves)
 move_patterns {
   const ubyte TOP_FROM_LEFT_1 =  2
   const ubyte TOP_FROM_RIGHT_1 = 3
-  const ubyte MED_FROM_LEFT_1 =  4
-  const ubyte MED_FROM_RIGHT_1 = 5
+  const ubyte MID_FROM_LEFT_1 =  4
+  const ubyte MID_FROM_RIGHT_1 = 5
   
   const ubyte MP_DIR = 1
   const ubyte MP_START_X = 2
@@ -88,6 +93,26 @@ move_patterns {
   ; Put patterns in array of address refs?
   uword[] list = [ &stable_left, &stable_right,
                    &deploy_left_1, &deploy_right_1,
-  	           &deploy_left_2, &deploy_right_2 ]
+                   &deploy_left_2, &deploy_right_2 ]
 
+}
+
+wave {
+
+  ; Sub patter refs
+  ubyte WV_LINE = 0
+  ubyte WV_PAT =  1
+  ubyte WV_MOVE_DELAY = 2
+  ubyte WV_WAVE_DELAY = 3
+
+  ubyte[] wave1 = [
+    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, 
+    true, move_patterns.MID_FROM_LEFT_1, 38, 70, 
+    false, 0, 0, 0 ]
+  ubyte[] wave2 = [
+    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0,
+    true, move_patterns.MID_FROM_RIGHT_1, 38, 70,
+    false, 0, 0, 0 ]
+
+  uword[] list = [ &wave1, &wave2 ]
 }
