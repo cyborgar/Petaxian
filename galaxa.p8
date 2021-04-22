@@ -59,7 +59,7 @@ gameloop:
       ; Player movements
       player_sub_counter++
       if player_sub_counter == player_speed {
-        bullets.move()
+        gun_bullets.move()
         gun.move()
 	player_sub_counter = 0
       }

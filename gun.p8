@@ -89,15 +89,15 @@ gun {
   }
 
   sub fire() {
-    bullets.trigger(x+1, y-1, leftmost)
+    gun_bullets.trigger(x+1, y-1, leftmost)
   }
 
 }
 
 ;
-; Draw and move bullets
+; Draw and move gun_bullets
 ;
-bullets {
+gun_bullets {
   const ubyte MAX_BULLETS = 3
   const ubyte FIELD_COUNT = 4
   ubyte active_bullets = 0
@@ -134,7 +134,7 @@ bullets {
   }
 
   sub clear(ubyte bullet_num) {
-    offset = bullet_num * 4
+    offset = bullet_num * FIELD_COUNT
 
     indx = offset + BD_X
     indy = offset + BD_Y

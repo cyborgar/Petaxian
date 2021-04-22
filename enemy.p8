@@ -326,14 +326,14 @@ enemy {
       if EnemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
-        if BulletRef[bullets.BD_Y] == EnemyRef[EN_Y] or
-	    BulletRef[bullets.BD_Y] == EnemyRef[EN_Y] + 1 {
+        if BulletRef[gun_bullets.BD_Y] == EnemyRef[EN_Y] or
+	    BulletRef[gun_bullets.BD_Y] == EnemyRef[EN_Y] + 1 {
           ; Save which Y line hit (upper or lower)
-	  ubyte dy = BulletRef[bullets.BD_Y] - EnemyRef[EN_Y]
-          if BulletRef[bullets.BD_X] == EnemyRef[EN_X] or
-              BulletRef[bullets.BD_X] == EnemyRef[EN_X] + 1 {
+	  ubyte dy = BulletRef[gun_bullets.BD_Y] - EnemyRef[EN_Y]
+          if BulletRef[gun_bullets.BD_X] == EnemyRef[EN_X] or
+              BulletRef[gun_bullets.BD_X] == EnemyRef[EN_X] + 1 {
 	    ; Save which X line hit (left or right)
-            ubyte dx = BulletRef[bullets.BD_X] - EnemyRef[EN_X]
+            ubyte dx = BulletRef[gun_bullets.BD_X] - EnemyRef[EN_X]
 
 	    ; We may still have a miss, we need to do some "nibble
             ; matching" 
@@ -357,7 +357,7 @@ enemy {
   sub check_detailed_collision( uword EnemyRef, ubyte dx, ubyte dy) -> ubyte {
 
     ubyte bullet_nib
-    if EnemyRef[bullets.BD_LEFTMOST] ; Find char for bullet
+    if EnemyRef[gun_bullets.BD_LEFTMOST] ; Find char for bullet
       bullet_nib = 5
     else
       bullet_nib = 25
