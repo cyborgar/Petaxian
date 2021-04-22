@@ -102,11 +102,6 @@ gun_bullets {
   const ubyte FIELD_COUNT = 4
   ubyte active_bullets = 0
 
-  ubyte i      ; Loop variable for functions
-  ubyte offset ; Offset holder
-  ubyte indx   ; temp x pos
-  ubyte indy   ; temp y pos
- 
   ubyte[FIELD_COUNT * MAX_BULLETS] bulletData
   const ubyte BD_ON = 0
   const ubyte BD_LEFTMOST = 1
@@ -117,9 +112,10 @@ gun_bullets {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return
 
-    i = 0
+    ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      offset = i * 4
+      ubyte offset = i * FIELD_COUNT
+      
       if bulletData[offset + BD_ON] == false { ; Find first "free" bullet
         bulletData[offset + BD_ON] = true
         bulletData[offset + BD_LEFTMOST] = lm
@@ -134,10 +130,10 @@ gun_bullets {
   }
 
   sub clear(ubyte bullet_num) {
-    offset = bullet_num * FIELD_COUNT
+    ubyte offset = bullet_num * FIELD_COUNT
 
-    indx = offset + BD_X
-    indy = offset + BD_Y
+    ubyte indx = offset + BD_X
+    ubyte indy = offset + BD_Y
     txt.setcc(bulletData[indx], bulletData[indy], main.CLR, 2)
   }
 
@@ -145,10 +141,10 @@ gun_bullets {
   ; actually hitting enemy. Could add a merge "function" of sort
   ; to combine bullet+char. Not sure if it visually is necessary yet
   sub draw(ubyte bullet_num) {
-    offset = bullet_num * 4
+    ubyte offset = bullet_num * FIELD_COUNT
 
-    indx = offset + BD_X
-    indy = offset + BD_Y
+    ubyte indx = offset + BD_X
+    ubyte indy = offset + BD_Y
     if bulletData[offset + BD_LEFTMOST]
       txt.setcc(bulletData[indx], bulletData[indy], 97, 1)
     else
@@ -156,9 +152,9 @@ gun_bullets {
   }
 
   sub move() {
-    i = 0
+    ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      uword BulletRef = &bulletData + i*4
+      uword BulletRef = &bulletData + i * FIELD_COUNT
 
       if BulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
