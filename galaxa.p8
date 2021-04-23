@@ -4,8 +4,9 @@
 
 %import splash
 %import decor
-%import enemy
 %import gun
+%import enemy
+%import bombs
 
 main {
   const ubyte CLR = $20
@@ -64,11 +65,14 @@ gameloop:
 	player_sub_counter = 0
       }
 
+      ; Enemy movement
       enemy_sub_counter++
       if enemy_sub_counter == enemy_speed {
         ; move enemies
         enemy.move_all()
 	enemy_sub_counter = 0
+        enemy.spawn_bomb()
+        bombs.move()      
       }
 
       drawScore()

@@ -66,7 +66,7 @@ bombs {
       if BombRef[BMB_ON] == true { 
         clear(i) ; Clear old position
         BombRef[BMB_Y]++;
-        if BombRef[BMB_Y] == main.LBORDER {
+        if BombRef[BMB_Y] == main.DBORDER {
           BombRef[BMB_ON] = false
           active_bombs--
         } else {

@@ -375,4 +375,24 @@ enemy {
     return 0
   }
 
+  sub spawn_bomb() {
+    ; First check if we are spawning a bomo
+    ubyte chance = rnd() % 100
+    if chance > 10
+      return
+
+    ; Find random enemy
+    ubyte enemy_num = rnd() % ENEMY_COUNT
+
+    ; Check if it's active
+    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    if EnemyRef[EN_ACTIVE] != 1
+      return
+
+    if EnemyRef[EN_DELAY] > 0
+      return
+
+    bombs.trigger(EnemyRef[EN_X], EnemyRef[EN_Y], EnemyRef[EN_SUBPOS])
+  }
+
 }
