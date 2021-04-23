@@ -71,8 +71,8 @@ gameloop:
         ; move enemies
         enemy.move_all()
 	enemy_sub_counter = 0
-        enemy.spawn_bomb()
         bombs.move()      
+        enemy.spawn_bomb()
       }
 
       drawScore()
