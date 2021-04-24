@@ -382,7 +382,7 @@ enemy {
     if enemyRef[EN_ACTIVE] != 1
       return
 
-    if enemyRef[EN_DELAY] > 0
+    if enemyRef[EN_PAT] > 1 ; Not in stable pattern yet
       return
 
     bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y], enemyRef[EN_SUBPOS])
