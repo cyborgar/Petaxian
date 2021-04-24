@@ -94,7 +94,6 @@ enemy {
   byte delta_y
 
   ; Temp vars in all the subs
-  ubyte en_offset
   ubyte cur
   ubyte tmp_x
   ubyte tmp_y
@@ -123,50 +122,50 @@ enemy {
   ; Initiate one enemy
   sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
                    ubyte wave_delay, ubyte leftmost ) {
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    EnemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
-    EnemyRef[EN_PAT] = pattern ;
+    enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
+    enemyRef[EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
-    EnemyRef[EN_DELAY] = move_delay ; Delayed deployment counter
-    EnemyRef[EN_WAVE_DELAY] = wave_delay
-    EnemyRef[EN_MOVE_CNT] = 0
-    EnemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
-    EnemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
-    EnemyRef[EN_SUBPOS] = LEFTMOST
-    EnemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
-    EnemyRef[EN_DURAB] = 1; Not in use yet
+    enemyRef[EN_DELAY] = move_delay ; Delayed deployment counter
+    enemyRef[EN_WAVE_DELAY] = wave_delay
+    enemyRef[EN_MOVE_CNT] = 0
+    enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
+    enemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
+    enemyRef[EN_SUBPOS] = LEFTMOST
+    enemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
+    enemyRef[EN_DURAB] = 1; Not in use yet
   }
 
   sub set_deltas(ubyte enemy_num, ubyte mvdir) {
-    en_offset = enemy_num * EN_FIELDS
-
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
+    
     delta_x = 0
     delta_y = 0
     
     if mvdir & 2 {
       delta_y = 1
-      enemyData[en_offset + EN_DIR] = DIR_DOWN
+      enemyRef[EN_DIR] = DIR_DOWN
     }
     if mvdir & 8 {
       delta_y = -1
-      enemyData[en_offset + EN_DIR] = DIR_UP
+      enemyRef[EN_DIR] = DIR_UP
     }
 
     ; left/right direction override up/down
     if mvdir & 1 {
       delta_x = 1
-      enemyData[en_offset + EN_DIR] = DIR_RIGHT
+      enemyRef[EN_DIR] = DIR_RIGHT
     }
     if mvdir & 4 {
       delta_x = -1
-      enemyData[en_offset + EN_DIR] = DIR_LEFT
+      enemyRef[EN_DIR] = DIR_LEFT
     }
 
     ; Awful, need to find some better way than this
-    cur = enemyData[en_offset + EN_PAT];
+    cur = enemyRef[EN_PAT];
     if cur <= 1
-      enemyData[en_offset + EN_DIR] = DIR_DOWN
+      enemyRef[EN_DIR] = DIR_DOWN
   }
 
   sub move_all() {
@@ -178,36 +177,33 @@ enemy {
   }
 
   sub move(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    if enemyData[en_offset + EN_ACTIVE] == 0
+    if enemyRef[EN_ACTIVE] == 0
       return
 
-    ; Need this variable a few times so this should be more efficent
-    uword EnemyMoveCnt = & enemyData + en_offset + EN_MOVE_CNT
-
     ; pre-display position
-    if @(EnemyMoveCnt) <= enemyData[en_offset + EN_DELAY] {
-      @(EnemyMoveCnt)++
+    if enemyRef[EN_MOVE_CNT] <= enemyRef[EN_DELAY] {
+      enemyRef[EN_MOVE_CNT]++
       return
     }
 
-    uword PatternRef = move_patterns.list[ enemyData[en_offset + EN_PAT] ]
+    uword PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
 
     ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
     ; based on deployment direction. Also reset all counters, movement
     ; is relative after deployment
-    if @(EnemyMoveCnt) > PatternRef[ move_patterns.MP_MOVE_COUNT ]
-      + enemyData[en_offset + EN_WAVE_DELAY] {
-      ubyte stable = enemyData[en_offset + EN_PAT] & 1
-      enemyData[en_offset + EN_PAT] = stable
-      enemyData[en_offset + EN_DELAY] = 0
-      enemyData[en_offset + EN_WAVE_DELAY] = 0
-      @(EnemyMoveCnt) = 1 ; 
+    if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ]
+      + enemyRef[EN_WAVE_DELAY] {
+      ubyte stable = enemyRef[EN_PAT] & 1
+      enemyRef[EN_PAT] = stable
+      enemyRef[EN_DELAY] = 0
+      enemyRef[EN_WAVE_DELAY] = 0
+      enemyRef[EN_MOVE_CNT] = 1 ; 
     }
 
     set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT
-        + @(EnemyMoveCnt) - enemyData[en_offset + EN_DELAY] ] )
+        + enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY] ] )
 
     if delta_x == -1
       move_left(enemy_num)
@@ -219,70 +215,70 @@ enemy {
     if delta_y == 1
       move_down(enemy_num)
 
-    @(EnemyMoveCnt)++
+    enemyRef[EN_MOVE_CNT]++
   }
 
   sub move_left(ubyte enemy_num) {
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    if EnemyRef[EN_SUBPOS] & LEFTMOST {
+    if enemyRef[EN_SUBPOS] & LEFTMOST {
       clear(enemy_num)
-      EnemyRef[EN_X]--
-      EnemyRef[EN_SUBPOS] &= ~LEFTMOST
+      enemyRef[EN_X]--
+      enemyRef[EN_SUBPOS] &= ~LEFTMOST
       draw(enemy_num)
     } else {
-      EnemyRef[EN_SUBPOS] |= LEFTMOST
+      enemyRef[EN_SUBPOS] |= LEFTMOST
       draw(enemy_num)
     }
   }
 
   sub move_right(ubyte enemy_num) {
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if EnemyRef[EN_SUBPOS] & LEFTMOST {
-      EnemyRef[EN_SUBPOS] &= ~LEFTMOST
+    if enemyRef[EN_SUBPOS] & LEFTMOST {
+      enemyRef[EN_SUBPOS] &= ~LEFTMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
-      EnemyRef[EN_X]++
-      EnemyRef[EN_SUBPOS] |= LEFTMOST
+      enemyRef[EN_X]++
+      enemyRef[EN_SUBPOS] |= LEFTMOST
       draw(enemy_num)
     }
   }
   
   sub move_up(ubyte enemy_num) {
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if EnemyRef[EN_SUBPOS] & TOPMOST {
+    if enemyRef[EN_SUBPOS] & TOPMOST {
       clear(enemy_num)
-      EnemyRef[EN_Y]--
-      EnemyRef[EN_SUBPOS] &= ~TOPMOST
+      enemyRef[EN_Y]--
+      enemyRef[EN_SUBPOS] &= ~TOPMOST
       draw(enemy_num)
     } else {
-      EnemyRef[EN_SUBPOS] |= TOPMOST
+      enemyRef[EN_SUBPOS] |= TOPMOST
       draw(enemy_num)
     }
   }
 
   sub move_down(ubyte enemy_num) {
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
       
-    if EnemyRef[EN_SUBPOS] & TOPMOST {
-      EnemyRef[EN_SUBPOS] &= ~TOPMOST
+    if enemyRef[EN_SUBPOS] & TOPMOST {
+      enemyRef[EN_SUBPOS] &= ~TOPMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
-      EnemyRef[EN_Y]++
-      EnemyRef[EN_SUBPOS] |= TOPMOST
+      enemyRef[EN_Y]++
+      enemyRef[EN_SUBPOS] |= TOPMOST
       draw(enemy_num)
     }
   }
 
   sub clear(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    tmp_x = enemyData[en_offset + EN_X]
-    tmp_y = enemyData[en_offset + EN_Y]
+    tmp_x = enemyRef[EN_X]
+    tmp_y = enemyRef[EN_Y]
 
     txt.setcc2(tmp_x,   tmp_y,   main.CLR, 1)
     txt.setcc2(tmp_x+1, tmp_y,   main.CLR, 1)
@@ -291,15 +287,15 @@ enemy {
   }
 
   sub draw(ubyte enemy_num) {
-    en_offset = enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    tmp_x = enemyData[en_offset + EN_X]
-    tmp_y = enemyData[en_offset + EN_Y]  
+    tmp_x = enemyRef[EN_X]
+    tmp_y = enemyRef[EN_Y]  
     
     ; Look up sub-byte position
-    cur = enemyData[en_offset + EN_DIR]
-    cur += (not enemyData[en_offset + EN_SUBPOS] & TOPMOST) * 4
-    cur += (not enemyData[en_offset + EN_SUBPOS] & LEFTMOST) * 2
+    cur = enemyRef[EN_DIR]
+    cur += (not enemyRef[EN_SUBPOS] & TOPMOST) * 4
+    cur += (not enemyRef[EN_SUBPOS] & LEFTMOST) * 2
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
@@ -317,24 +313,24 @@ enemy {
   sub check_collision(uword BulletRef) -> ubyte {
     ubyte i = 0
     while( i < ENEMY_COUNT ) {
-      uword EnemyRef = &enemyData + i * EN_FIELDS
+      uword enemyRef = &enemyData + i * EN_FIELDS
 
-      if EnemyRef[EN_ACTIVE] > 0 {
+      if enemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
-        if BulletRef[gun_bullets.BD_Y] == EnemyRef[EN_Y] or
-	    BulletRef[gun_bullets.BD_Y] == EnemyRef[EN_Y] + 1 {
+        if BulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] or
+	    BulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] + 1 {
           ; Save which Y line hit (upper or lower)
-	  ubyte dy = BulletRef[gun_bullets.BD_Y] - EnemyRef[EN_Y]
-          if BulletRef[gun_bullets.BD_X] == EnemyRef[EN_X] or
-              BulletRef[gun_bullets.BD_X] == EnemyRef[EN_X] + 1 {
+	  ubyte dy = BulletRef[gun_bullets.BD_Y] - enemyRef[EN_Y]
+          if BulletRef[gun_bullets.BD_X] == enemyRef[EN_X] or
+              BulletRef[gun_bullets.BD_X] == enemyRef[EN_X] + 1 {
 	    ; Save which X line hit (left or right)
-            ubyte dx = BulletRef[gun_bullets.BD_X] - EnemyRef[EN_X]
+            ubyte dx = BulletRef[gun_bullets.BD_X] - enemyRef[EN_X]
 
 	    ; We may still have a miss, we need to do some "nibble
             ; matching" 
-	    if check_detailed_collision(EnemyRef, dx, dy) {
-	      EnemyRef[EN_ACTIVE] = 0 ; Turn off
+	    if check_detailed_collision(enemyRef, dx, dy) {
+	      enemyRef[EN_ACTIVE] = 0 ; Turn off
 	      clear(i)
 	      enemies_left--
 	      main.score++
@@ -351,17 +347,17 @@ enemy {
     return 0
   }
 
-  sub check_detailed_collision( uword EnemyRef, ubyte dx, ubyte dy) -> ubyte {
+  sub check_detailed_collision( uword enemyRef, ubyte dx, ubyte dy) -> ubyte {
 
     ubyte bullet_nib
-    if EnemyRef[gun_bullets.BD_LEFTMOST] ; Find char for bullet
+    if enemyRef[gun_bullets.BD_LEFTMOST] ; Find char for bullet
       bullet_nib = 5
     else
       bullet_nib = 25
 
     ; Get petscii value at screen pos
-    tmp_x = EnemyRef[EN_X] + dx
-    tmp_y = EnemyRef[EN_Y] + dy
+    tmp_x = enemyRef[EN_X] + dx
+    tmp_y = enemyRef[EN_Y] + dy
            
     ; Get and map to Map from char to nibble ?
     ubyte nibble = convert.to_nibble( txt.getchr(tmp_x,tmp_y))
@@ -382,14 +378,14 @@ enemy {
     ubyte enemy_num = rnd() % ENEMY_COUNT
 
     ; Check if it's active
-    uword EnemyRef = &enemyData + enemy_num * EN_FIELDS
-    if EnemyRef[EN_ACTIVE] != 1
+    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
+    if enemyRef[EN_ACTIVE] != 1
       return
 
-    if EnemyRef[EN_DELAY] > 0
+    if enemyRef[EN_DELAY] > 0
       return
 
-    bombs.trigger(EnemyRef[EN_X], EnemyRef[EN_Y], EnemyRef[EN_SUBPOS])
+    bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y], enemyRef[EN_SUBPOS])
   }
 
 }
