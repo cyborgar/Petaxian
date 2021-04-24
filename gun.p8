@@ -92,6 +92,23 @@ gun {
     gun_bullets.trigger(x+1, y-1, leftmost)
   }
 
+  sub check_collision(uword BombRef) -> ubyte {
+    if BombRef[bombs.BMB_Y] != gun.y
+      return 0
+
+    if BombRef[bombs.BMB_X] < gun.x
+      return 0
+    if BombRef[bombs.BMB_X] > gun.x + 2
+      return 0
+
+    ; Save which X line hit (left or right)
+    ; need to check
+    ;ubyte dx = BombRef[bombs.BMB_] - gun.x
+    main.player_lives--
+    main.drawLives()
+    return 1
+  }
+
 }
 
 ;
