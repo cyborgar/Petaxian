@@ -1,4 +1,4 @@
-# Galaxa
+# Petaxian
 
 This is a small project started to scrach muliple itches
 
