@@ -35,14 +35,14 @@ main {
   sub start() {
   void cx16.screen_set_mode(0)
 
-  draw_board()
-  splash.draw( LBORDER + 1, UBORDER + 1 )
-  splash.write( 3, LBORDER + 4, UBORDER + 15, "press space to start" )
-  decor.draw ( RBORDER + 1, DBORDER - 14 )
+  splash.draw()
+  splash.write( 3, LBORDER + 10, UBORDER + 20, "press space to start" )
 
   wait_space();
 
-  splash.clear( LBORDER + 1, UBORDER + 1 )
+  splash.clear()
+  draw_board()
+  decor.draw ( RBORDER + 1, DBORDER - 14 )
 
   drawScore()
   drawLives()
