@@ -70,12 +70,12 @@ bombs {
           BombRef[BMB_ON] = false
           active_bombs--
         } else {
-;	  if enemy.check_collision( BombRef ) {
-;            BombRef[BMB_ON] = false
-;	    active_bombs--
-;	  } else {
+	  if gun.check_collision( BombRef ) {
+            BombRef[BMB_ON] = false
+	    active_bombs--
+	  } else {
             draw(i)
-;	  }
+	  }
         }
       }
       i++
