@@ -28,6 +28,7 @@ main {
   ubyte enemy_sub_counter
 
   ; Fixed player speed? Power ups? Split gun/bullet speed?
+  ubyte player_lives = 3
   ubyte player_speed = 2
   ubyte player_sub_counter
 
@@ -42,6 +43,9 @@ main {
   wait_space();
 
   splash.clear( LBORDER + 1, UBORDER + 1 )
+
+  drawScore()
+  drawLives()
 
   gun.x = ( RBORDER - LBORDER ) / 2
   gun.y = DBORDER - 1
@@ -74,8 +78,6 @@ gameloop:
         bombs.move()      
         enemy.spawn_bomb()
       }
-
-      drawScore()
 
       if (enemy.enemies_left == 0) {
         cur_wave++
@@ -122,14 +124,12 @@ gameloop:
     txt.color(1)
     txt.plot( RBORDER + 2, UBORDER + 2 )
     txt.print_uw(score)
-    uword move = enemy.move_tick as uword
+  }
+
+  sub drawLives() {
+    txt.color(1)
     txt.plot (RBORDER + 2, UBORDER + 3 )
-    txt.print_uw(move)
-    txt.print("  ")
-;    txt.plot (RBORDER + 2, UBORDER + 4 )
-;    uword test = enemy.test as uword
-;    txt.print_uw(test)
-;    txt.print("  ")
+    txt.print_uw(player_lives)
   }
 
   sub wait_space() {
