@@ -1,4 +1,6 @@
 bombs {
+  const ubyte COL = 7
+
   const ubyte MAX_BOMBS = 40
   const ubyte FIELD_COUNT = 4
 
@@ -42,7 +44,7 @@ bombs {
     
     ubyte indx = offset + BMB_X
     ubyte indy = offset + BMB_Y
-    txt.setcc(bombData[indx], bombData[indy], main.CLR, 2)
+    txt.setcc(bombData[indx], bombData[indy], main.CLR, 0)
   }
 
   ; Can bomb and bullet meet?
@@ -53,9 +55,9 @@ bombs {
     ubyte indx = offset + BMB_X
     ubyte indy = offset + BMB_Y
     if bombData[offset + BMB_LEFTMOST]
-      txt.setcc(bombData[indx], bombData[indy], 123, 1)
+      txt.setcc(bombData[indx], bombData[indy], 123, COL)
     else
-      txt.setcc(bombData[indx], bombData[indy], 108, 1)
+      txt.setcc(bombData[indx], bombData[indy], 108, COL)
   }
 
   sub move() {

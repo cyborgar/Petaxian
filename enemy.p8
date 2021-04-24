@@ -303,13 +303,13 @@ enemy {
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
-    txt.setcc2(tmp_x,   tmp_y, convert.get_high(ship_byte), 1)
-    txt.setcc2(tmp_x+1, tmp_y, convert.get_low(ship_byte), 1)
+    txt.setcc2(tmp_x,   tmp_y, convert.get_high(ship_byte), 5)
+    txt.setcc2(tmp_x+1, tmp_y, convert.get_low(ship_byte), 5)
     
     ; Convert second byte and draw
     ship_byte = raider[cur+1]
-    txt.setcc2(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 1)
-    txt.setcc2(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 1)
+    txt.setcc2(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 5)
+    txt.setcc2(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 5)
   }
 
   ; Check for enemy detection. Currently we only allow a single

@@ -13,7 +13,7 @@ gun {
   ubyte y
 
   byte direction = 0
-  const ubyte col = 1
+  const ubyte COL = 14
 
   ubyte[] gun_l = [ 254, 251, 123 ]
   ubyte[] gun_r = [ 108, 236, 252 ]
@@ -31,11 +31,11 @@ gun {
   sub draw() {
     if leftmost {
       for i in 0 to 2 {
-        txt.setcc( x + i, y, gun_l[i], col )
+        txt.setcc( x + i, y, gun_l[i], COL )
       }
     } else {
       for i in 0 to 2 {
-        txt.setcc( x + i, y, gun_r[i], col )
+        txt.setcc( x + i, y, gun_r[i], COL )
       }    
     }
   }
@@ -115,6 +115,8 @@ gun {
 ; Draw and move gun_bullets
 ;
 gun_bullets {
+  const ubyte COL = 15
+
   const ubyte MAX_BULLETS = 3
   const ubyte FIELD_COUNT = 4
   ubyte active_bullets = 0
@@ -163,9 +165,9 @@ gun_bullets {
     ubyte indx = offset + BD_X
     ubyte indy = offset + BD_Y
     if bulletData[offset + BD_LEFTMOST]
-      txt.setcc(bulletData[indx], bulletData[indy], 97, 1)
+      txt.setcc(bulletData[indx], bulletData[indy], 97, COL)
     else
-      txt.setcc(bulletData[indx], bulletData[indy], 225, 1)
+      txt.setcc(bulletData[indx], bulletData[indy], 225, COL)
   }
 
   sub move() {
