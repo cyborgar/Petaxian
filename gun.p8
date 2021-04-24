@@ -133,13 +133,13 @@ gun_bullets {
 
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      ubyte offset = i * FIELD_COUNT
+      uword bulletRef = &bulletData + i * FIELD_COUNT
       
-      if bulletData[offset + BD_ON] == false { ; Find first "free" bullet
-        bulletData[offset + BD_ON] = true
-        bulletData[offset + BD_LEFTMOST] = lm
-        bulletData[offset + BD_X] = x
-        bulletData[offset + BD_Y] = y
+      if bulletRef[BD_ON] == false { ; Find first "free" bullet
+        bulletRef[BD_ON] = true
+        bulletRef[BD_LEFTMOST] = lm
+        bulletRef[BD_X] = x
+        bulletRef[BD_Y] = y
 	draw(i)
         active_bullets++
         return ; No need to check any more
@@ -149,41 +149,37 @@ gun_bullets {
   }
 
   sub clear(ubyte bullet_num) {
-    ubyte offset = bullet_num * FIELD_COUNT
+    uword bulletRef = &bulletData + bullet_num * FIELD_COUNT
 
-    ubyte indx = offset + BD_X
-    ubyte indy = offset + BD_Y
-    txt.setcc(bulletData[indx], bulletData[indy], main.CLR, 2)
+    txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], main.CLR, 2)
   }
 
   ; NB. Bullet might be drawn on top of underlying char without
   ; actually hitting enemy. Could add a merge "function" of sort
   ; to combine bullet+char. Not sure if it visually is necessary yet
   sub draw(ubyte bullet_num) {
-    ubyte offset = bullet_num * FIELD_COUNT
+    uword bulletRef = &bulletData + bullet_num * FIELD_COUNT
 
-    ubyte indx = offset + BD_X
-    ubyte indy = offset + BD_Y
-    if bulletData[offset + BD_LEFTMOST]
-      txt.setcc(bulletData[indx], bulletData[indy], 97, COL)
+    if bulletRef[BD_LEFTMOST]
+      txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], 97, COL)
     else
-      txt.setcc(bulletData[indx], bulletData[indy], 225, COL)
+      txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], 225, COL)
   }
 
   sub move() {
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      uword BulletRef = &bulletData + i * FIELD_COUNT
+      uword bulletRef = &bulletData + i * FIELD_COUNT
 
-      if BulletRef[BD_ON] == true { 
+      if bulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
-        BulletRef[BD_Y]--;
-        if BulletRef[BD_Y] == main.UBORDER {
-          BulletRef[BD_ON] = false
+        bulletRef[BD_Y]--;
+        if bulletRef[BD_Y] == main.UBORDER {
+          bulletRef[BD_ON] = false
           active_bullets--
         } else {
-	  if enemy.check_collision( BulletRef ) {
-            BulletRef[BD_ON] = false
+	  if enemy.check_collision( bulletRef ) {
+            bulletRef[BD_ON] = false
 	    active_bullets--
 	  } else {
             draw(i)
