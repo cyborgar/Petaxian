@@ -93,9 +93,6 @@ enemy {
   byte delta_x
   byte delta_y
 
-  ; Temporary debug variable 
-  uword move_tick = 0
-
   ; Temp vars in all the subs
   ubyte en_offset
   ubyte cur
@@ -173,7 +170,6 @@ enemy {
   }
 
   sub move_all() {
-    move_tick++ ; Test variable priting out "step" count
     ubyte i = 0
     while( i < ENEMY_COUNT ) { 
       move(i)
@@ -342,6 +338,7 @@ enemy {
 	      clear(i)
 	      enemies_left--
 	      main.score++
+	      main.drawScore()
 
 	      return 1
             }
