@@ -12,13 +12,13 @@ main {
   const ubyte CLR = $20
 
   const ubyte LBORDER = 0
-  const ubyte RBORDER = 28; 58
+  const ubyte RBORDER = 30;
   const ubyte UBORDER = 0
-  const ubyte DBORDER = 24; 58
-  const ubyte FBORDER = 39; 79
+  const ubyte DBORDER = 25;
+  const ubyte FBORDER = 39;
 
-  const ubyte GUN_MAX_LEFT = LBORDER + 1
-  const ubyte GUN_MAX_RIGHT = RBORDER -  3
+  const ubyte GUN_MAX_LEFT = LBORDER
+  const ubyte GUN_MAX_RIGHT = RBORDER - 2
 
   uword score = 0
   ubyte cur_wave = 0
@@ -41,8 +41,8 @@ main {
   wait_space();
 
   splash.clear()
-  draw_board()
-  decor.draw ( RBORDER + 1, DBORDER - 14 )
+;  draw_board()
+  decor.draw()
 
   drawScore()
   drawLives()
