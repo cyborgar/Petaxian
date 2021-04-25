@@ -334,7 +334,7 @@ enemy {
 	      clear(i)
 	      enemies_left--
 	      main.score++
-	      main.drawScore()
+	      main.printScore()
 
 	      return 1
             }
