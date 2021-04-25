@@ -14,6 +14,8 @@ gun {
 
   byte direction = 0
   const ubyte COL = 14
+  const ubyte GUN_MAX_LEFT = main.LBORDER
+  const ubyte GUN_MAX_RIGHT = main.RBORDER - 2
 
   ubyte[] gun_l = [ 254, 251, 123 ]
   ubyte[] gun_r = [ 108, 236, 252 ]
@@ -59,7 +61,7 @@ gun {
   }
 
   sub move_left() {
-    if ( x <= main.GUN_MAX_LEFT and leftmost )
+    if ( x <= GUN_MAX_LEFT and leftmost )
       return
       
     if leftmost {
@@ -74,7 +76,7 @@ gun {
   }
 
   sub move_right() {
-    if ( x >= main.GUN_MAX_RIGHT and not leftmost )
+    if ( x >= GUN_MAX_RIGHT and not leftmost )
       return
 
     if leftmost {
@@ -173,11 +175,11 @@ gun_bullets {
 
       if bulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
-        bulletRef[BD_Y]--;
         if bulletRef[BD_Y] == main.UBORDER {
           bulletRef[BD_ON] = false
           active_bullets--
         } else {
+          bulletRef[BD_Y]--;
 	  if enemy.check_collision( bulletRef ) {
             bulletRef[BD_ON] = false
 	    active_bullets--

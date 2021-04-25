@@ -11,14 +11,11 @@
 main {
   const ubyte CLR = $20
 
+  ; Define playfield limits
   const ubyte LBORDER = 0
   const ubyte RBORDER = 30;
   const ubyte UBORDER = 0
-  const ubyte DBORDER = 25;
-  const ubyte FBORDER = 39;
-
-  const ubyte GUN_MAX_LEFT = LBORDER
-  const ubyte GUN_MAX_RIGHT = RBORDER - 2
+  const ubyte DBORDER = 24;
 
   uword score = 0
   ubyte cur_wave = 0
@@ -41,7 +38,6 @@ main {
   wait_space();
 
   splash.clear()
-;  draw_board()
   decor.draw()
 
   drawScore()
@@ -99,36 +95,15 @@ gameloop:
      txt.setcc(x, y, ch, 1 )
   }
 
-  sub draw_board() {
-    ubyte x
-    ubyte y
-
-    txt.setcc(LBORDER, UBORDER, 112, 1)
-    txt.setcc(LBORDER, DBORDER, 109, 1)
-    for x in LBORDER+1 to FBORDER {
-      txt.setcc(x, UBORDER, 67, 1)
-      txt.setcc(x, DBORDER, 67, 1)
-    }
-    txt.setcc(RBORDER, UBORDER, 114, 1)
-    txt.setcc(RBORDER, DBORDER, 113, 1)
-    for y in UBORDER+1 to DBORDER-1 {
-      txt.setcc(LBORDER, y, 93, 1)
-      txt.setcc(RBORDER, y, 93, 1)
-      txt.setcc(FBORDER, y, 93, 1)
-    }
-    txt.setcc(FBORDER, UBORDER, 110, 1)
-    txt.setcc(FBORDER, DBORDER, 125, 1)
-  }
-
   sub drawScore() {
     txt.color(1)
-    txt.plot( RBORDER + 2, UBORDER + 2 )
+    txt.plot( RBORDER + 8, UBORDER + 2 )
     txt.print_uw(score)
   }
 
   sub drawLives() {
     txt.color(1)
-    txt.plot (RBORDER + 2, UBORDER + 3 )
+    txt.plot (RBORDER + 8, UBORDER + 4 )
     txt.print_uw(player_lives)
   }
 
