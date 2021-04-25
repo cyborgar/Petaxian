@@ -107,7 +107,7 @@ gun {
     ; need to check
     ;ubyte dx = BombRef[bombs.BMB_] - gun.x
     main.player_lives--
-    main.drawLives()
+    main.printLives()
     return 1
   }
 

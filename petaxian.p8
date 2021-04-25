@@ -40,8 +40,8 @@ main {
   splash.clear()
   decor.draw()
 
-  drawScore()
-  drawLives()
+  printScore()
+  printLives()
 
   gun.x = ( RBORDER - LBORDER ) / 2
   gun.y = DBORDER - 1
@@ -80,6 +80,7 @@ gameloop:
         if cur_wave > 1 ; only two "waves" right now
           cur_wave = 0
         enemy.setup_wave(cur_wave)
+	printWave()
       }
     }
 
@@ -95,17 +96,33 @@ gameloop:
      txt.setcc(x, y, ch, 1 )
   }
 
-  sub drawScore() {
-    txt.color(1)
-    txt.plot( RBORDER + 8, UBORDER + 2 )
-    txt.print_uw(score)
+  sub printScore() {
+    uword tmp = score
+
+    ubyte var = tmp % 10 as ubyte
+    txt.setcc(RBORDER + 8, UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(RBORDER + 7, UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(RBORDER + 6, UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(RBORDER + 5, UBORDER + 2, var+176, 1)
+    var = tmp / 10 as ubyte
+    txt.setcc(RBORDER + 4, UBORDER + 2, var+176, 1)
   }
 
-  sub drawLives() {
-    txt.color(1)
-    txt.plot (RBORDER + 8, UBORDER + 4 )
-    txt.print_uw(player_lives)
+  sub printLives() {
+    txt.setcc(RBORDER + 8, UBORDER + 4, player_lives + 176, 1 )
   }
+
+  sub printWave() {
+    txt.setcc(RBORDER + 7, UBORDER + 6, cur_wave / 10 + 176, 1)
+    txt.setcc(RBORDER + 8, UBORDER + 6, cur_wave % 10 + 176, 1)
+  }
+
 
   sub wait_space() {
     ubyte key = 0
