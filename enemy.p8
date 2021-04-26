@@ -26,7 +26,7 @@
 %import move_patterns
 
 enemy {
-
+  
   const ubyte DIR_RIGHT = 0 ; Direction indexes into above "structure"
   const ubyte DIR_DOWN  = 8
   const ubyte DIR_LEFT  = 16
@@ -305,7 +305,7 @@ enemy {
 
   ; Check for enemy detection. Currently we only allow a single
   ; hit (so we can return on a full hit).
-  sub check_collision(uword BulletRef) -> ubyte {
+  sub check_collision(uword bulletRef) -> ubyte {
     ubyte i = 0
     while( i < ENEMY_COUNT ) {
       uword enemyRef = &enemyData + i * EN_FIELDS
@@ -313,18 +313,19 @@ enemy {
       if enemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
-        if BulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] or
-	    BulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] + 1 {
+        if bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] or
+	    bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] + 1 {
           ; Save which Y line hit (upper or lower)
-	  ubyte dy = BulletRef[gun_bullets.BD_Y] - enemyRef[EN_Y]
-          if BulletRef[gun_bullets.BD_X] == enemyRef[EN_X] or
-              BulletRef[gun_bullets.BD_X] == enemyRef[EN_X] + 1 {
+	  ubyte dy = bulletRef[gun_bullets.BD_Y] - enemyRef[EN_Y]
+          if bulletRef[gun_bullets.BD_X] == enemyRef[EN_X] or
+              bulletRef[gun_bullets.BD_X] == enemyRef[EN_X] + 1 {
 	    ; Save which X line hit (left or right)
-            ubyte dx = BulletRef[gun_bullets.BD_X] - enemyRef[EN_X]
+            ubyte dx = bulletRef[gun_bullets.BD_X] - enemyRef[EN_X]
 
 	    ; We may still have a miss, we need to do some "nibble
             ; matching" 
-	    if check_detailed_collision(enemyRef, dx, dy) {
+	    if check_detailed_collision(enemyRef, dx, dy,
+                  bulletRef[gun_bullets.BD_LEFTMOST]) {
 	      enemyRef[EN_ACTIVE] = 0 ; Turn off
 	      clear(i)
 	      enemies_left--
@@ -344,13 +345,14 @@ enemy {
     return 0
   }
 
-  sub check_detailed_collision( uword enemyRef, ubyte dx, ubyte dy) -> ubyte {
+  sub check_detailed_collision( uword enemyRef, ubyte dx, ubyte dy,
+                                ubyte leftmost ) -> ubyte {
 
     ubyte bullet_nib
-    if enemyRef[gun_bullets.BD_LEFTMOST] ; Find char for bullet
+    if leftmost ; Set nibble value for bullet
       bullet_nib = 5
     else
-      bullet_nib = 25
+      bullet_nib = 10
 
     ; Get petscii value at screen pos
     tmp_x = enemyRef[EN_X] + dx
