@@ -7,6 +7,7 @@
 %import gun
 %import enemy
 %import bombs
+%import explosion
 
 main {
   const ubyte CLR = $20
@@ -16,6 +17,10 @@ main {
   const ubyte RBORDER = 30;
   const ubyte UBORDER = 0
   const ubyte DBORDER = 24;
+
+  ; Coding two bools in one byte. 
+  const ubyte LEFTMOST = 1 
+  const ubyte TOPMOST =  2
 
   uword score = 0
   ubyte cur_wave = 0
@@ -28,6 +33,10 @@ main {
   ubyte player_lives = 3
   ubyte player_speed = 2
   ubyte player_sub_counter
+
+  ; Delay for animation 
+  const ubyte ANIMATION_SPEED = 5
+  ubyte animation_sub_counter
 
   sub start() {
   void cx16.screen_set_mode(0)
@@ -81,6 +90,13 @@ gameloop:
           cur_wave = 0
         enemy.setup_wave(cur_wave)
 	printWave()
+      }
+
+      ; explosions etc.
+      animation_sub_counter++
+      if animation_sub_counter == ANIMATION_SPEED {
+        animation_sub_counter = 0
+        explosion.animate()
       }
     }
 

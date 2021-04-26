@@ -61,11 +61,6 @@ enemy {
     $E1, $21, $87, $03, $84, $B4, $0C, $2F,
     $E4, $11, $8D, $22, $80, $75, $04, $AB ]
 
-
-  ; Coding two bools in one byte. 
-  const ubyte LEFTMOST = 1 
-  const ubyte TOPMOST =  2
-
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
   ; Use offsets to "emulate" something like a strcutre
@@ -111,7 +106,7 @@ enemy {
         while( i < enemies_left ) { 
           setup_enemy(i, WaveRef[wave.WV_DEPL_DELAY] + i*4, 
 	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY],
-		      LEFTMOST)
+		      main.LEFTMOST)
           i++
         }
       }
@@ -132,7 +127,7 @@ enemy {
     enemyRef[EN_MOVE_CNT] = 0
     enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
     enemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
-    enemyRef[EN_SUBPOS] = LEFTMOST
+    enemyRef[EN_SUBPOS] = main.LEFTMOST
     enemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
     enemyRef[EN_DURAB] = 1; Not in use yet
   }
@@ -221,13 +216,13 @@ enemy {
   sub move_left(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    if enemyRef[EN_SUBPOS] & LEFTMOST {
+    if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       clear(enemy_num)
       enemyRef[EN_X]--
-      enemyRef[EN_SUBPOS] &= ~LEFTMOST
+      enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
       draw(enemy_num)
     } else {
-      enemyRef[EN_SUBPOS] |= LEFTMOST
+      enemyRef[EN_SUBPOS] |= main.LEFTMOST
       draw(enemy_num)
     }
   }
@@ -235,13 +230,13 @@ enemy {
   sub move_right(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if enemyRef[EN_SUBPOS] & LEFTMOST {
-      enemyRef[EN_SUBPOS] &= ~LEFTMOST
+    if enemyRef[EN_SUBPOS] & main.LEFTMOST {
+      enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
       enemyRef[EN_X]++
-      enemyRef[EN_SUBPOS] |= LEFTMOST
+      enemyRef[EN_SUBPOS] |= main.LEFTMOST
       draw(enemy_num)
     }
   }
@@ -249,13 +244,13 @@ enemy {
   sub move_up(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
     
-    if enemyRef[EN_SUBPOS] & TOPMOST {
+    if enemyRef[EN_SUBPOS] & main.TOPMOST {
       clear(enemy_num)
       enemyRef[EN_Y]--
-      enemyRef[EN_SUBPOS] &= ~TOPMOST
+      enemyRef[EN_SUBPOS] &= ~main.TOPMOST
       draw(enemy_num)
     } else {
-      enemyRef[EN_SUBPOS] |= TOPMOST
+      enemyRef[EN_SUBPOS] |= main.TOPMOST
       draw(enemy_num)
     }
   }
@@ -263,13 +258,13 @@ enemy {
   sub move_down(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
       
-    if enemyRef[EN_SUBPOS] & TOPMOST {
-      enemyRef[EN_SUBPOS] &= ~TOPMOST
+    if enemyRef[EN_SUBPOS] & main.TOPMOST {
+      enemyRef[EN_SUBPOS] &= ~main.TOPMOST
       draw(enemy_num)
     } else {
       clear(enemy_num)
       enemyRef[EN_Y]++
-      enemyRef[EN_SUBPOS] |= TOPMOST
+      enemyRef[EN_SUBPOS] |= main.TOPMOST
       draw(enemy_num)
     }
   }
@@ -294,8 +289,8 @@ enemy {
     
     ; Look up sub-byte position
     cur = enemyRef[EN_DIR]
-    cur += (not enemyRef[EN_SUBPOS] & TOPMOST) * 4
-    cur += (not enemyRef[EN_SUBPOS] & LEFTMOST) * 2
+    cur += (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
+    cur += (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
@@ -333,6 +328,8 @@ enemy {
 	      enemyRef[EN_ACTIVE] = 0 ; Turn off
 	      clear(i)
 	      enemies_left--
+	      explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
+	      			enemyRef[EN_SUBPOS])
 	      main.score++
 	      main.printScore()
 
