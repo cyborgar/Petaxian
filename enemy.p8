@@ -367,10 +367,35 @@ enemy {
     return 0
   }
 
+  ; Random chance of dropping bomb per active enemy
+  ;   Note that this seem to be spawn way to much even with 
+  ;   a low percentage. rnd() fucnction may not distribute
+  ;   well for this use.
+  sub spawn_bomb_new() {
+    ubyte enemy_num
+    while ( enemy_num < ENEMY_COUNT ) {
+      uword enemyRef = &enemyData + enemy_num * EN_FIELDS
+      if enemyRef[EN_ACTIVE] == 1 { 
+        if enemyRef[EN_PAT] <= 1 { ; No bombs at deployment
+          ; Check if we drop bomb
+          ubyte chance = rnd() % 100
+          if chance < 1 
+            bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y],
+                          enemyRef[EN_SUBPOS])
+        }
+      }
+      enemy_num++
+    }
+  }
+
+  ; Random chance of one enemy dropping a bomb
   sub spawn_bomb() {
     ; First check if we are spawning a bomo
     ubyte chance = rnd() % 100
-    if chance > 10
+    
+    ; Increase bomb frequency with less enemies
+    ubyte factor = 1 + (ENEMY_COUNT - enemies_left) / 4
+    if chance > 5*factor
       return
 
     ; Find random enemy
