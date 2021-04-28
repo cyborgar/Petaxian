@@ -54,10 +54,10 @@ explosion {
     tmp_x = explosionRef[EX_X]
     tmp_y = explosionRef[EX_Y]
 
-    txt.setcc2(tmp_x,   tmp_y,   main.CLR, 1)
-    txt.setcc2(tmp_x+1, tmp_y,   main.CLR, 1)
-    txt.setcc2(tmp_x,   tmp_y+1, main.CLR, 1)
-    txt.setcc2(tmp_x+1, tmp_y+1, main.CLR, 1)
+    txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
+    txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
+    txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
+    txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
   }
 
   sub draw(ubyte explosion_num) {
@@ -77,14 +77,14 @@ explosion {
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte gfx_byte = gfx[gfx_ind]
-    txt.setcc2(tmp_x,   tmp_y, convert.get_high(gfx_byte), col)
-    txt.setcc2(tmp_x+1, tmp_y, convert.get_low(gfx_byte), col)
+    txt.setcc(tmp_x,   tmp_y, convert.get_high(gfx_byte), col)
+    txt.setcc(tmp_x+1, tmp_y, convert.get_low(gfx_byte), col)
 
     ; Convert second byte and draw
     gfx_ind++
     gfx_byte = gfx[gfx_ind]
-    txt.setcc2(tmp_x,   tmp_y+1, convert.get_high(gfx_byte), col)
-    txt.setcc2(tmp_x+1, tmp_y+1, convert.get_low(gfx_byte), col)
+    txt.setcc(tmp_x,   tmp_y+1, convert.get_high(gfx_byte), col)
+    txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(gfx_byte), col)
   }
 
   sub animate() {

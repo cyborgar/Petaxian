@@ -275,10 +275,10 @@ enemy {
     tmp_x = enemyRef[EN_X]
     tmp_y = enemyRef[EN_Y]
 
-    txt.setcc2(tmp_x,   tmp_y,   main.CLR, 1)
-    txt.setcc2(tmp_x+1, tmp_y,   main.CLR, 1)
-    txt.setcc2(tmp_x,   tmp_y+1, main.CLR, 1)
-    txt.setcc2(tmp_x+1, tmp_y+1, main.CLR, 1)
+    txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
+    txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
+    txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
+    txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
   }
 
   sub draw(ubyte enemy_num) {
@@ -294,13 +294,13 @@ enemy {
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
-    txt.setcc2(tmp_x,   tmp_y, convert.get_high(ship_byte), 5)
-    txt.setcc2(tmp_x+1, tmp_y, convert.get_low(ship_byte), 5)
+    txt.setcc(tmp_x,   tmp_y, convert.get_high(ship_byte), 5)
+    txt.setcc(tmp_x+1, tmp_y, convert.get_low(ship_byte), 5)
     
     ; Convert second byte and draw
     ship_byte = raider[cur+1]
-    txt.setcc2(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 5)
-    txt.setcc2(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 5)
+    txt.setcc(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 5)
+    txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 5)
   }
 
   ; Check for enemy detection. Currently we only allow a single
