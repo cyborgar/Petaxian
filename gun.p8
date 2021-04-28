@@ -15,8 +15,11 @@ gun {
   ubyte x
   ubyte y
 
+  ubyte post_hit = 0
+
   byte direction = 0
-  const ubyte COL = 14
+  ubyte gun_color = 14 ; Light blue
+
   const ubyte GUN_MAX_LEFT = main.LBORDER
   const ubyte GUN_MAX_RIGHT = main.RBORDER - 2
 
@@ -36,11 +39,11 @@ gun {
   sub draw() {
     if leftmost {
       for i in 0 to 2 {
-        txt.setcc( x + i, y, gun_l[i], COL )
+        txt.setcc( x + i, y, gun_l[i], gun_color )
       }
     } else {
       for i in 0 to 2 {
-        txt.setcc( x + i, y, gun_r[i], COL )
+        txt.setcc( x + i, y, gun_r[i], gun_color )
       }    
     }
   }
@@ -54,13 +57,29 @@ gun {
   }
 
   sub move() {
-    if direction  < 0 {
-      move_left()      
-    } else {
-      if direction > 0 {
-        move_right()
-      }
+    if post_hit { 
+      post_hit--
+
+      if post_hit > 25
+        return
+
+      if post_hit % 2
+        gun_color = 3
+      else 
+        gun_color = 14
     }
+
+    if direction  < 0 {
+      move_left()
+      return
+    }
+
+    if direction > 0 {
+      move_right()
+      return
+    }
+
+    draw()
   }
 
   sub move_left() {
@@ -98,6 +117,10 @@ gun {
   }
 
   sub check_collision(uword BombRef) -> ubyte {
+    ; Check that we are not in "quaranteen" from last hit
+    if post_hit 
+      return 0
+
     if BombRef[bombs.BMB_Y] != gun.y
       return 0
 
@@ -109,8 +132,15 @@ gun {
     ; Save which X line hit (left or right)
     ; need to check
     ;ubyte dx = BombRef[bombs.BMB_] - gun.x
+
+    ; We have a hit, explode and deduct a life
     main.player_lives--
     main.printLives()
+    direction=0 
+    post_hit = 40
+    explosion.trigger(gun.x, gun.y-1, main.LEFTMOST);
+    explosion.trigger(gun.x+1, gun.y-1, main.LEFTMOST);
+
     return 1
   }
 
