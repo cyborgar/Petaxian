@@ -88,11 +88,6 @@ enemy {
   byte delta_x
   byte delta_y
 
-  ; Temp vars in all the subs
-  ubyte cur
-  ubyte tmp_x
-  ubyte tmp_y
-
   sub setup_wave(ubyte cur_wave) {
     uword WaveRef = wave.list[cur_wave]
 
@@ -158,8 +153,7 @@ enemy {
     }
 
     ; Awful, need to find some better way than this
-    cur = enemyRef[EN_PAT];
-    if cur <= 1
+    if enemyRef[EN_PAT] <= 1
       enemyRef[EN_DIR] = DIR_DOWN
   }
 
@@ -272,6 +266,8 @@ enemy {
   sub clear(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
+    ubyte tmp_x
+    ubyte tmp_y
     tmp_x = enemyRef[EN_X]
     tmp_y = enemyRef[EN_Y]
 
@@ -284,13 +280,15 @@ enemy {
   sub draw(ubyte enemy_num) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
-    tmp_x = enemyRef[EN_X]
-    tmp_y = enemyRef[EN_Y]  
-    
     ; Look up sub-byte position
-    cur = enemyRef[EN_DIR]
-    cur += (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
-    cur += (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
+    ubyte cur = enemyRef[EN_DIR]
+       + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
+       + (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
+
+    ubyte tmp_x
+    ubyte tmp_y
+    tmp_x = enemyRef[EN_X]
+    tmp_y = enemyRef[EN_Y]
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = raider[cur]
@@ -355,11 +353,11 @@ enemy {
       bullet_nib = 10
 
     ; Get petscii value at screen pos
-    tmp_x = enemyRef[EN_X] + dx
-    tmp_y = enemyRef[EN_Y] + dy
+    ubyte tmp_x = enemyRef[EN_X] + dx
+    ubyte tmp_y = enemyRef[EN_Y] + dy
            
     ; Get and map to Map from char to nibble ?
-    ubyte nibble = convert.to_nibble( txt.getchr(tmp_x,tmp_y))
+    ubyte nibble = convert.to_nibble( txt.getchr(tmp_x, tmp_y))
 
     if ( nibble & bullet_nib)
       return 1
