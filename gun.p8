@@ -64,7 +64,7 @@ gun {
         return
 
       if post_hit % 2
-        gun_color = 3
+        gun_color = 0
       else 
         gun_color = 14
     }
