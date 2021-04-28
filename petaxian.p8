@@ -1,4 +1,3 @@
-%target cx16
 %import syslib
 %import textio
 
@@ -39,7 +38,9 @@ main {
   ubyte animation_sub_counter
 
   sub start() {
-  void cx16.screen_set_mode(0)
+
+  ; Set 40 column mode - Remove this line to compile for C64
+  void cx16.screen_set_mode(0) 
 
   splash.draw()
   splash.write( 3, LBORDER + 10, UBORDER + 20, "press space to start" )
