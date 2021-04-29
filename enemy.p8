@@ -32,6 +32,16 @@ enemy {
   const ubyte DIR_LEFT  = 16
   const ubyte DIR_UP    = 24
 
+  ; Maps to get from move pattern to x and y deltas for movement
+  ; Direction  12 8 9
+  ;   pattern   4 0 1  was made for different bit for each direction used
+  ;             6 2 3  in delta function, but can now be reduced to 8+1
+  byte[] TO_X = [ 1, 1, 0, -1, -1, -1, 0, 1 ]
+  byte[] TO_Y = [ 0, 1, 1, 1, 0, -1, -1, -1 ]
+  ; Direction left/right have precende over up/down
+  ubyte[] TO_DIR = [ DIR_RIGHT, DIR_RIGHT, DIR_DOWN, DIR_LEFT, DIR_LEFT, 
+                     DIR_LEFT, DIR_UP, DIR_RIGHT ]
+
   ; X
   ;  X 
   ; X 
@@ -129,32 +139,16 @@ enemy {
 
   sub set_deltas(ubyte enemy_num, ubyte mvdir) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-    
-    delta_x = 0
-    delta_y = 0
-    
-    if mvdir & 2 {
-      delta_y = 1
-      enemyRef[EN_DIR] = DIR_DOWN
-    }
-    if mvdir & 8 {
-      delta_y = -1
-      enemyRef[EN_DIR] = DIR_UP
-    }
 
-    ; left/right direction override up/down
-    if mvdir & 1 {
-      delta_x = 1
-      enemyRef[EN_DIR] = DIR_RIGHT
-    }
-    if mvdir & 4 {
-      delta_x = -1
-      enemyRef[EN_DIR] = DIR_LEFT
-    }
+    delta_x = TO_X[mvdir]
+    delta_y = TO_Y[mvdir]
 
-    ; Awful, need to find some better way than this
-    if enemyRef[EN_PAT] <= 1
+    ; Force 
+    if enemyRef[EN_PAT] <= 1 {
       enemyRef[EN_DIR] = DIR_DOWN
+      return
+    }
+    enemyRef[EN_DIR] = TO_DIR[mvdir]
   }
 
   sub move_all() {
