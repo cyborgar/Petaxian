@@ -2,15 +2,12 @@
 ; is a
 ;    initial facing, position x, position,y, count of moves
 ; and then a list of moves as directions.
-; Note that movement is defined using 4 bit (one for each direction)
-; as a "clever" way to use bit checking to find deltas (also for enemy
-; "facing" handling. This may turn out to not be so clever and removed
-; later, the values map like this :
-;        12  8  9  
-;         4  0  1
-;         6  2  3
-; (e.g 8 is up, 1 is right and 9 is then both). 0 is no movement
-; 
+; Movement is using a simple list of direction which we just look 
+; up using tables. The directions are start with 0 as right and then
+; clockwise for each direction
+;         5  6  7  
+;         4     0
+;         3  2  1
 ; Enemies first get startet in a deployment pattern and when this
 ; is done we switch to the "stable" (pre-attack) patterns. Currently
 ; all patterns have a "from the left" and "from the right" version.
