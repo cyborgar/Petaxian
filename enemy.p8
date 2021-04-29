@@ -110,8 +110,7 @@ enemy {
         enemies_left += 8
         while( i < enemies_left ) { 
           setup_enemy(i, WaveRef[wave.WV_DEPL_DELAY] + i*4, 
-	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY],
-		      main.LEFTMOST)
+	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY] )
           i++
         }
       }
@@ -121,7 +120,7 @@ enemy {
 
   ; Initiate one enemy
   sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
-                   ubyte wave_delay, ubyte leftmost ) {
+                   ubyte wave_delay ) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
@@ -132,7 +131,10 @@ enemy {
     enemyRef[EN_MOVE_CNT] = 0
     enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
     enemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
-    enemyRef[EN_SUBPOS] = main.LEFTMOST
+    if pattern % 2 == 0 
+      enemyRef[EN_SUBPOS] = main.LEFTMOST
+    else 
+      enemyRef[EN_SUBPOS] = 0
     enemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
     enemyRef[EN_DURAB] = 1; Not in use yet
   }
