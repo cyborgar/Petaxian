@@ -190,15 +190,19 @@ enemy {
     set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT
         + enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY] ] )
 
+    clear(enemy_num)
+      
     if delta_x == -1
       move_left(enemy_num)
-    if delta_x == 1
+    else if delta_x == 1
       move_right(enemy_num)
 
     if delta_y == -1
       move_up(enemy_num)
-    if delta_y == 1
+    else if delta_y == 1
       move_down(enemy_num)
+
+    draw(enemy_num)
 
     enemyRef[EN_MOVE_CNT]++
   }
@@ -207,13 +211,10 @@ enemy {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
-      clear(enemy_num)
       enemyRef[EN_X]--
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
-      draw(enemy_num)
     } else {
       enemyRef[EN_SUBPOS] |= main.LEFTMOST
-      draw(enemy_num)
     }
   }
 
@@ -222,12 +223,9 @@ enemy {
     
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
-      draw(enemy_num)
     } else {
-      clear(enemy_num)
       enemyRef[EN_X]++
       enemyRef[EN_SUBPOS] |= main.LEFTMOST
-      draw(enemy_num)
     }
   }
   
@@ -235,13 +233,10 @@ enemy {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
     
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
-      clear(enemy_num)
       enemyRef[EN_Y]--
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
-      draw(enemy_num)
     } else {
       enemyRef[EN_SUBPOS] |= main.TOPMOST
-      draw(enemy_num)
     }
   }
 
@@ -250,12 +245,9 @@ enemy {
       
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
-      draw(enemy_num)
     } else {
-      clear(enemy_num)
       enemyRef[EN_Y]++
       enemyRef[EN_SUBPOS] |= main.TOPMOST
-      draw(enemy_num)
     }
   }
 
