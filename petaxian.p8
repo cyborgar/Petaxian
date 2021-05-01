@@ -57,7 +57,7 @@ main {
     splash.draw()
     splash.write( 3, LBORDER + 10, DBORDER - 4, "press space to start" )
 
-    wait_space();
+    wait_key(32);
   }
 
   sub game_loop() {
@@ -154,8 +154,8 @@ endloop:
     game_over.clear()
     game_over.draw()
 
-    splash.write( 3, LBORDER + 8, DBORDER - 2, "press space to continue" )
-    wait_space();    
+    splash.write( 3, LBORDER + 8, DBORDER - 2, "press return to continue" )
+    wait_key(13);    
   }
 
   sub printScore() {
@@ -185,10 +185,10 @@ endloop:
     txt.setcc(RBORDER + 8, UBORDER + 6, cur_wave % 10 + 176, 1)
   }
 
-  sub wait_space() {
-    ubyte key = 0
-    while key != 32 {
-       key = c64.GETIN()
+  sub wait_key(ubyte key) {
+    ubyte inp = 0
+    while inp != key {
+       inp = c64.GETIN()
     }
     return
   }
