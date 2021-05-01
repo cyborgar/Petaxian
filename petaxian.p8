@@ -1,6 +1,8 @@
 %import syslib
 %import textio
 
+%import base_cx16
+
 %import splash
 %import decor
 %import game_over
@@ -12,12 +14,6 @@
 
 main {
   const ubyte CLR = $20
-
-  ; Define playfield limits
-  const ubyte LBORDER = 0
-  const ubyte RBORDER = 30;
-  const ubyte UBORDER = 0
-  const ubyte DBORDER = UBORDER + 24;
 
   ; Coding two bools in one byte. 
   const ubyte LEFTMOST = 1 
@@ -41,10 +37,8 @@ main {
   ubyte animation_sub_counter
 
   sub start() {
-
-    ; Set 40 column mode - Remove this line to compile for C64
-    void cx16.screen_set_mode(0)
-
+    base.platform_setup()
+    
     while 1 {
       game_title()
       game_loop()
@@ -53,16 +47,17 @@ main {
   }
 
   sub game_title() {
-    splash.clear()
+    base.clear_screen()
     splash.draw()
-    splash.write( 3, LBORDER + 10, DBORDER - 4, "press space to start" )
+    splash.write( 3, base.LBORDER + 10, base.DBORDER - 4, "press space to start" )
 
     wait_key(32);
   }
 
   sub game_loop() {
-    splash.clear()
+    base.clear_screen()
     decor.draw()
+    base.draw_extra_border()
 
     player_lives = 3
     score = 0
@@ -151,38 +146,11 @@ endloop:
     if end_counter > 0
       goto endloop
 
-    game_over.clear()
+    base.clear_screen()
     game_over.draw()
 
-    splash.write( 3, LBORDER + 8, DBORDER - 2, "press return to continue" )
+    splash.write( 3, base.LBORDER + 8, base.DBORDER - 2, "press return to continue" )
     wait_key(13);    
-  }
-
-  sub printScore() {
-    uword tmp = score
-
-    ubyte var = tmp % 10 as ubyte
-    txt.setcc(RBORDER + 8, UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(RBORDER + 7, UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(RBORDER + 6, UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(RBORDER + 5, UBORDER + 2, var+176, 1)
-    var = tmp / 10 as ubyte
-    txt.setcc(RBORDER + 4, UBORDER + 2, var+176, 1)
-  }
-
-  sub printLives() {
-    txt.setcc(RBORDER + 8, UBORDER + 4, player_lives + 176, 1 )
-  }
-
-  sub printWave() {
-    txt.setcc(RBORDER + 7, UBORDER + 6, cur_wave / 10 + 176, 1)
-    txt.setcc(RBORDER + 8, UBORDER + 6, cur_wave % 10 + 176, 1)
   }
 
   sub wait_key(ubyte key) {
@@ -199,6 +167,33 @@ endloop:
 	   29, '/' -> gun.set_right()
 	   32      -> gun.fire()
     }
+  }
+
+  sub printScore() {
+    uword tmp = main.score
+
+    ubyte var = tmp % 10 as ubyte
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(base.RBORDER + 7, base.UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(base.RBORDER + 6, base.UBORDER + 2, var+176, 1)
+    tmp /= 10
+    var = tmp % 10 as ubyte
+    txt.setcc(base.RBORDER + 5, base.UBORDER + 2, var+176, 1)
+    var = tmp / 10 as ubyte
+    txt.setcc(base.RBORDER + 4, base.UBORDER + 2, var+176, 1)
+  }
+
+  sub printLives() {
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 4, main.player_lives + 176, 1 )
+  }
+
+  sub printWave() {
+    txt.setcc(base.RBORDER + 7, base.UBORDER + 6, main.cur_wave / 10 + 176, 1)
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_wave % 10 + 176, 1)
   }
 
 }

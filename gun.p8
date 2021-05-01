@@ -20,8 +20,8 @@ gun {
   byte direction = 0
   ubyte gun_color = 14 ; Light blue
 
-  const ubyte GUN_MAX_LEFT = main.LBORDER
-  const ubyte GUN_MAX_RIGHT = main.RBORDER - 2
+  const ubyte GUN_MAX_LEFT = base.LBORDER
+  const ubyte GUN_MAX_RIGHT = base.RBORDER - 2
 
   ubyte[] gun_l = [ 254, 251, 123 ]
   ubyte[] gun_r = [ 108, 236, 252 ]
@@ -34,8 +34,8 @@ gun {
     post_hit = 0 ; Make sure we have hit animation off at startup
 
     ; Default start position of gun
-    x = ( main.RBORDER - main.LBORDER ) / 2
-    y = main.DBORDER - 1
+    x = ( base.RBORDER - base.LBORDER ) / 2
+    y = base.DBORDER - 1
     draw()
   }
 

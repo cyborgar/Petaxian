@@ -42,7 +42,7 @@ move_patterns {
   ; Entry pattern 1
   ;   May consider eventually convering into nibbles to save space
   ubyte[] deploy_left_1 = [
-    0, enemy.DIR_RIGHT, main.LBORDER, main.DBORDER-5, 117,
+    0, enemy.DIR_RIGHT, base.LBORDER, base.DBORDER-5, 117,
     $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $0,
     $7, $0, $7, $7, $6, $7, $6, $6, $6, $5, $6, $5, $5, $4, $5, $4,   
     $4, $4, $3, $4, $3, $3, $2, $3, $2, $2, $2, $1, $2, $1, $1, $0,   
@@ -54,7 +54,7 @@ move_patterns {
 
   ; Same pattern (almost) from the right
   ubyte[] deploy_right_1 = [
-    0, enemy.DIR_LEFT, main.RBORDER-1, main.DBORDER-5, 117,
+    0, enemy.DIR_LEFT, base.RBORDER-1, base.DBORDER-5, 117,
     $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $4,
     $5, $4, $5, $5, $6, $5, $6, $6, $6, $7, $6, $7, $7, $0, $7, $0,   
     $0, $0, $1, $0, $1, $1, $2, $1, $2, $2, $2, $3, $2, $3, $3, $4,   
@@ -65,7 +65,7 @@ move_patterns {
     $0, $0, $0, $0, $0, $0 ]
 
   ubyte[] deploy_left_2 = [
-    0, enemy.DIR_RIGHT, main.LBORDER, main.DBORDER-9, 137,
+    0, enemy.DIR_RIGHT, base.LBORDER, base.DBORDER-9, 137,
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,   
     $0, $0, $0, $0, $0, $0, $0, $0, $7, $0, $7, $6, $7, $6, $6, $5,   
@@ -77,7 +77,7 @@ move_patterns {
     $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
 
   ubyte[] deploy_right_2 = [
-    0, enemy.DIR_LEFT, main.RBORDER-1, main.DBORDER-9, 137,
+    0, enemy.DIR_LEFT, base.RBORDER-1, base.DBORDER-9, 137,
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,   
     $4, $4, $4, $4, $4, $4, $4, $4, $5, $4, $5, $6, $5, $6, $6, $7,   

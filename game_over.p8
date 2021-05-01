@@ -48,16 +48,12 @@ game_over {
   const ubyte WDT = 26
   const ubyte HGT = 8
 
-  sub clear() {
-    splash.clear()
-  }
-
   sub draw() {
     ubyte i
     for i in 0 to (WDT*HGT - 1) {
-      txt.setcc( main.LBORDER+ 2 + (i % WDT), main.UBORDER+ 2 + (i/WDT),
+      txt.setcc( base.LBORDER+ 2 + (i % WDT), base.UBORDER+ 2 + (i/WDT),
                  game[i], game_colors[i] )
-      txt.setcc( main.LBORDER+12 + (i % WDT), main.UBORDER+12 + (i/WDT),
+      txt.setcc( base.LBORDER+12 + (i % WDT), base.UBORDER+12 + (i/WDT),
                  over[i], over_colors[i] )
     }
   }

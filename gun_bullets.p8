@@ -78,7 +78,7 @@ gun_bullets {
 
       if bulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
-        if bulletRef[BD_Y] == main.UBORDER {
+        if bulletRef[BD_Y] == base.UBORDER {
           bulletRef[BD_ON] = false
           active_bullets--
         } else {

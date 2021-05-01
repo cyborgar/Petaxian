@@ -42,19 +42,11 @@ splash {
   const ubyte WDT = 40
   const ubyte HGT = 5
 
-  sub clear() {
-    ubyte x
-    ubyte y
-    for x in 0 to 39 
-      for y in 0 to 24 
-        txt.setcc( x, y, main.CLR, 0 )
-  }
-
   sub draw() {
     ubyte i
     for i in 0 to (WDT*HGT - 1) {
-      txt.setcc( (i % WDT), main.UBORDER + 2 + (i/WDT), title_p1[i], colors_p1[i] )
-      txt.setcc( (i % WDT), main.UBORDER + 7 + (i/WDT), title_p2[i], colors_p2[i] )
+      txt.setcc( (i % WDT), base.UBORDER + 2 + (i/WDT), title_p1[i], colors_p1[i] )
+      txt.setcc( (i % WDT), base.UBORDER + 7 + (i/WDT), title_p2[i], colors_p2[i] )
     }
   }
 
