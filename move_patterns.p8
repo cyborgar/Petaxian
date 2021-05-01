@@ -103,8 +103,9 @@ wave {
   ; each sub sub patter conists of 
   const ubyte WV_LINE_ACTIVE = 0 ; Is this line in use 
   const ubyte WV_PAT =  1        ; Deployment patter
-  const ubyte WV_DEPL_DELAY = 2  ; Delay from wave start before depolyment starts
-  const ubyte WV_WAVE_DELAY = 3  ; Delay from 
+  const ubyte WV_DEPL_DELAY = 2  ; Delay from sub wave start before depolyment starts
+  const ubyte WV_WAVE_DELAY = 3  ; Delay from wave start
+  const ubyte WV_FIELDS = 4
 
   ubyte[] wave1 = [
     true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
