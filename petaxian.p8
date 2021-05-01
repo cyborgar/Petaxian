@@ -3,6 +3,8 @@
 
 %import splash
 %import decor
+%import game_over
+
 %import gun
 %import enemy
 %import bombs
@@ -15,21 +17,22 @@ main {
   const ubyte LBORDER = 0
   const ubyte RBORDER = 30;
   const ubyte UBORDER = 0
-  const ubyte DBORDER = 24;
+  const ubyte DBORDER = UBORDER + 24;
 
   ; Coding two bools in one byte. 
   const ubyte LEFTMOST = 1 
   const ubyte TOPMOST =  2
 
+  ; Game "loop" variables
   uword score = 0
   ubyte cur_wave = 0
+  ubyte player_lives
 
   ; Variable enemy speed
   ubyte enemy_speed = 3
   ubyte enemy_sub_counter
 
   ; Fixed player speed? Power ups? Split gun/bullet speed?
-  ubyte player_lives = 3
   ubyte player_speed = 2
   ubyte player_sub_counter
 
@@ -40,27 +43,42 @@ main {
   sub start() {
 
     ; Set 40 column mode - Remove this line to compile for C64
-    void cx16.screen_set_mode(0) 
+    void cx16.screen_set_mode(0)
 
+    while 1 {
+      game_title()
+      game_loop()
+      game_end()
+    }
+  }
+
+  sub game_title() {
+    splash.clear()
     splash.draw()
-    splash.write( 3, LBORDER + 10, UBORDER + 20, "press space to start" )
+    splash.write( 3, LBORDER + 10, DBORDER - 4, "press space to start" )
 
     wait_space();
+  }
 
+  sub game_loop() {
     splash.clear()
     decor.draw()
 
+    player_lives = 3
+    score = 0
+    cur_wave = 0 
+
     printScore()
     printLives()
+    printWave()
 
     gun.x = ( RBORDER - LBORDER ) / 2
     gun.y = DBORDER - 1
     gun.draw()
-    
-    enemy.setup_wave(cur_wave)
-;  enemy.draw()
 
-gameloop:
+    enemy.setup_wave(cur_wave)
+
+loop:
     ubyte time_lo = lsb(c64.RDTIM16())
 
     ; May needed to find a better timer
@@ -81,7 +99,7 @@ gameloop:
         ; move enemies
         enemy.move_all()
 	enemy_sub_counter = 0
-        bombs.move()      
+        bombs.move()
         enemy.spawn_bomb()
       }
 
@@ -101,16 +119,43 @@ gameloop:
       }
     }
 
+    if player_lives == 0
+      return
+
     ubyte key = c64.GETIN()
-    if key == 0 goto gameloop
+    if key == 0 goto loop
 
     keypress(key)
 
-    goto gameloop
+    goto loop
   } 
 
-  sub plot(ubyte x, ubyte y, ubyte ch) {
-     txt.setcc(x, y, ch, 1 )
+  sub game_end() {
+    ; Let explosion animation finish loop
+    ubyte end_counter = 50
+endloop:
+    ubyte time_lo = lsb(c64.RDTIM16())
+
+    if time_lo >= 1 {
+      c64.SETTIM(0,0,0)
+
+      ; explosions etc.
+      animation_sub_counter++
+      if animation_sub_counter == ANIMATION_SPEED {
+        animation_sub_counter = 0
+        explosion.animate()
+      }
+      end_counter--
+    }
+    
+    if end_counter > 0
+      goto endloop
+
+    game_over.clear()
+    game_over.draw()
+
+    splash.write( 3, LBORDER + 8, DBORDER - 2, "press space to continue" )
+    wait_space();    
   }
 
   sub printScore() {
@@ -139,7 +184,6 @@ gameloop:
     txt.setcc(RBORDER + 7, UBORDER + 6, cur_wave / 10 + 176, 1)
     txt.setcc(RBORDER + 8, UBORDER + 6, cur_wave % 10 + 176, 1)
   }
-
 
   sub wait_space() {
     ubyte key = 0
