@@ -4,8 +4,8 @@
 ; 
 convert {
 
-  ubyte[] tbl = [   32, 126, 124, 226, 123,  97, 255, 236,
-                   108, 127, 225, 251,  98, 252, 254, 160 ]
+  ubyte[] tbl = [  $20, $7E, $7C, $E2, $7B, $61, $FF, $EC,
+                   $6C, $7F, $E1, $FB, $E2, $FC, $FE, $A0 ]
 
   sub get_high(ubyte data) -> ubyte {
       return tbl[ (data & 240) >> 4 ]
