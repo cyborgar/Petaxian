@@ -62,7 +62,8 @@ decor {
   sub draw() {
     ubyte i
     for i in 0 to (WDT*HGT - 1) {
-      txt.setcc( 31 + (i % WDT), (i/WDT), sidebar[i], sidebar_col[i] )
+      txt.setcc( main.RBORDER+1 + (i % WDT), main.UBORDER + (i/WDT),
+                 sidebar[i], sidebar_col[i] )
     }
   }
 
