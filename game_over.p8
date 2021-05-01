@@ -55,7 +55,7 @@ game_over {
   sub draw() {
     ubyte i
     for i in 0 to (WDT*HGT - 1) {
-      txt.setcc( main.LBORDER+ 2 + (i % WDT), main.UBORDER+ 3 + (i/WDT),
+      txt.setcc( main.LBORDER+ 2 + (i % WDT), main.UBORDER+ 2 + (i/WDT),
                  game[i], game_colors[i] )
       txt.setcc( main.LBORDER+12 + (i % WDT), main.UBORDER+12 + (i/WDT),
                  over[i], over_colors[i] )
