@@ -30,6 +30,15 @@ gun {
 
   ubyte i ; shared loop variable
 
+  sub set_data() {
+    post_hit = 0 ; Make sure we have hit animation off at startup
+
+    ; Default start position of gun
+    x = ( main.RBORDER - main.LBORDER ) / 2
+    y = main.DBORDER - 1
+    draw()
+  }
+
   sub clear() {
     for i in 0 to 2 {
       txt.setcc( x + i, y, main.CLR, 0 )

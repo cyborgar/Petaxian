@@ -68,15 +68,15 @@ main {
     score = 0
     cur_wave = 0 
 
+    enemy.set_data()
+    gun.set_data()
+    gun_bullets.set_data()
+    bombs.set_data()
+    enemy.setup_wave(cur_wave)
+
     printScore()
     printLives()
     printWave()
-
-    gun.x = ( RBORDER - LBORDER ) / 2
-    gun.y = DBORDER - 1
-    gun.draw()
-
-    enemy.setup_wave(cur_wave)
 
 loop:
     ubyte time_lo = lsb(c64.RDTIM16())

@@ -22,6 +22,16 @@ gun_bullets {
   const ubyte BD_X = 2
   const ubyte BD_Y = 3
 
+  sub set_data() {
+    ; make sure bullets are turned off at new game
+    ubyte i = 0
+    while ( i < MAX_BULLETS ) {
+      uword bulletRef = &bulletData + i * FIELD_COUNT
+      bulletRef[BD_ON] = false
+      i++
+    }
+  }
+
   sub trigger(ubyte x, ubyte y, ubyte lm) {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return

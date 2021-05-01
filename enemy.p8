@@ -98,12 +98,15 @@ enemy {
   byte delta_x
   byte delta_y
 
+  sub set_data() {
+    enemies_left = 0
+  }
+
   sub setup_wave(ubyte cur_wave) {
     uword WaveRef = wave.list[cur_wave]
 
     ubyte i = 0
     ubyte level
-    enemies_left = 0
 
     ; Each way have potentially 3 "lines" of enemies
     for level in 0 to 2 {

@@ -12,6 +12,16 @@ bombs {
   const ubyte BMB_X = 2
   const ubyte BMB_Y = 3
 
+  sub set_data() {
+    ; make sure bombs are turned off at new game
+    ubyte i = 0
+    while ( i < MAX_BOMBS ) {
+      uword bombRef = &bombData + i * FIELD_COUNT
+      bombRef[BMB_ON] = false
+      i++
+    }
+  }
+
   sub trigger(ubyte x, ubyte y, ubyte leftmost) {
     if active_bombs == MAX_BOMBS ; No more (is this required?)
       return
