@@ -39,25 +39,25 @@ main {
 
   sub start() {
 
-  ; Set 40 column mode - Remove this line to compile for C64
-  void cx16.screen_set_mode(0) 
+    ; Set 40 column mode - Remove this line to compile for C64
+    void cx16.screen_set_mode(0) 
 
-  splash.draw()
-  splash.write( 3, LBORDER + 10, UBORDER + 20, "press space to start" )
+    splash.draw()
+    splash.write( 3, LBORDER + 10, UBORDER + 20, "press space to start" )
 
-  wait_space();
+    wait_space();
 
-  splash.clear()
-  decor.draw()
+    splash.clear()
+    decor.draw()
 
-  printScore()
-  printLives()
+    printScore()
+    printLives()
 
-  gun.x = ( RBORDER - LBORDER ) / 2
-  gun.y = DBORDER - 1
-  gun.draw()
+    gun.x = ( RBORDER - LBORDER ) / 2
+    gun.y = DBORDER - 1
+    gun.draw()
     
-  enemy.setup_wave(cur_wave)
+    enemy.setup_wave(cur_wave)
 ;  enemy.draw()
 
 gameloop:
