@@ -61,13 +61,13 @@ main {
 
     player_lives = 3
     score = 0
-    cur_stage = 0 
+    cur_stage = 1 
 
     enemy.set_data()
     gun.set_data()
     gun_bullets.set_data()
     bombs.set_data()
-    enemy.setup_stage(cur_stage)
+    enemy.setup_stage(cur_stage - 1)
 
     printScore()
     printLives()
@@ -100,8 +100,8 @@ loop:
 
       if (enemy.enemies_left == 0) {
         cur_stage++
-        if cur_stage > 1 ; only two "stages" right now
-          cur_stage = 0
+        if cur_stage > stage.MAX_STAGE
+          cur_stage = 1
         enemy.setup_stage(cur_stage)
 	printStage()
       }
