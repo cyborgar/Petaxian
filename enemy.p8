@@ -68,8 +68,14 @@ enemy {
   ubyte[] raider3 = [
     $B4, $30, $2D, $21, $C0, $E1, $84, $87,
     $D5, $20, $AE, $01, $44, $B1, $88, $27,
-    $E1, $21, $87, $03, $84, $B4, $0C, $2F,
+    $E1, $21, $87, $03, $84, $B4, $0C, $2D,
     $E4, $11, $8D, $22, $80, $75, $04, $AB ]
+
+  uword[] enemy_types = [ &raider, &raider2, &raider3 ]
+
+  const ubyte RAIDER1 = 0
+  const ubyte RAIDER2 = 1
+  const ubyte RAIDER3 = 2
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
@@ -84,8 +90,9 @@ enemy {
   const ubyte EN_Y      = 6 ; y char pos
   const ubyte EN_SUBPOS = 7 ; leftmost/topmost coded as bits
   const ubyte EN_DIR    = 8 ; 
-  const ubyte EN_DURAB  = 9; durability value (thoughness)
-  const ubyte EN_FIELDS = 10
+  const ubyte EN_DURAB  = 9 ; durability value (thoughness)
+  const ubyte EN_TYPE   = 10; enemy type
+  const ubyte EN_FIELDS = 11
   ; Max number of enemies in structure
   const ubyte ENEMY_COUNT = 16
   ; Actual array holding enemies
@@ -108,13 +115,14 @@ enemy {
     ubyte i = 0
     ubyte wave
 
-    ; Each way have 2 waves of enemies
-    for wave in 0 to 1 {
+    ; Each stage has 2 waves of 8 enemies
+    for wave in 1 to 2 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 
-          setup_enemy(i, StageRef[stage.STG_DEPL_DELAY] + i*4, 
-	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY] )
+          setup_enemy(i, StageRef[stage.STG_DEPL_DELAY] + i*4,
+	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
+		      StageRef[stage.STG_ENEMY_TYPE])
           i++
         }
       }
@@ -124,7 +132,7 @@ enemy {
 
   ; Initiate one enemy
   sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
-                   ubyte stage_delay ) {
+                   ubyte stage_delay, ubyte enemy_type ) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
@@ -141,6 +149,7 @@ enemy {
       enemyRef[EN_SUBPOS] = 0
     enemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
     enemyRef[EN_DURAB] = 1; Not in use yet
+    enemyRef[EN_TYPE] = enemy_type
   }
 
   sub set_deltas(ubyte enemy_num, ubyte mvdir) {
@@ -282,13 +291,15 @@ enemy {
     tmp_x = enemyRef[EN_X]
     tmp_y = enemyRef[EN_Y]
 
+    uword shipRef = enemy_types[ enemyRef[EN_TYPE] ]
+
     ; Convert first byte to two PETSCII chars and draw
-    ubyte ship_byte = raider[cur]
+    ubyte ship_byte = shipRef[cur] as ubyte
     txt.setcc(tmp_x,   tmp_y, convert.get_high(ship_byte), 5)
     txt.setcc(tmp_x+1, tmp_y, convert.get_low(ship_byte), 5)
     
     ; Convert second byte and draw
-    ship_byte = raider[cur+1]
+    ship_byte = shipRef[cur+1] as ubyte
     txt.setcc(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 5)
     txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 5)
   }

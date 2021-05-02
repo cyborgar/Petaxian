@@ -111,20 +111,20 @@ stage {
   const ubyte MAX_STAGE = 4
 
   ubyte[] stage1 = [
-    true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70 ]
+    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, enemy.RAIDER1,
+    true, move_patterns.MID_FROM_RIGHT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage2 = [
-    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0,
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70 ]
+    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0, enemy.RAIDER1,
+    true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage3 = [
-    true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70 ]
+    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, enemy.RAIDER2,
+    true, move_patterns.MID_FROM_RIGHT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage4 = [
-    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0,
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70 ]
+    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0, enemy.RAIDER2,
+    true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER1 ]
 
   uword[] list = [ &stage1, &stage2, &stage3, &stage4 ]
 }
