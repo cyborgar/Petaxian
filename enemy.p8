@@ -106,10 +106,10 @@ enemy {
     uword StageRef = stage.list[cur_stage]
 
     ubyte i = 0
-    ubyte level
+    ubyte wave
 
-    ; Each way have potentially 3 "lines" of enemies
-    for level in 0 to 2 {
+    ; Each way have 2 waves of enemies
+    for wave in 0 to 1 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 

@@ -99,22 +99,22 @@ move_patterns {
 ; Set up
 ;
 stage {
-  ; Each stage consists of 3 "lines" of deployment (only 2 used so far)
+  ; Each stage consists of 2 "waves" of deployment 
   ; each sub sub patter conists of 
   const ubyte STG_LINE_ACTIVE = 0 ; Is this line in use 
   const ubyte STG_PAT =  1        ; Deployment patter
   const ubyte STG_DEPL_DELAY = 2  ; Delay from sub stage start before depolyment starts
   const ubyte STG_WAVE_DELAY = 3  ; Delay from stage start
-  const ubyte STG_FIELDS = 4
+  const ubyte STG_ENEMY_TYPE = 4 
+  const ubyte STG_FIELDS = 5
 
   ubyte[] stage1 = [
     true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70,
-    false, 0, 0, 0 ]
+    true, move_patterns.MID_FROM_RIGHT_1, 38, 70 ]
+
   ubyte[] stage2 = [
     true, move_patterns.TOP_FROM_RIGHT_1, 0, 0,
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70,
-    false, 0, 0, 0 ]
+    true, move_patterns.MID_FROM_LEFT_1, 38, 70 ]
 
   uword[] list = [ &stage1, &stage2 ]
 }
