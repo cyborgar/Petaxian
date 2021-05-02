@@ -1,3 +1,5 @@
+%import sound_c64
+
 base {
 
   ; Define playfield limits
@@ -22,4 +24,3 @@ base {
   sub draw_extra_border() {
   }
 }
-

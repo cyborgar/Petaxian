@@ -1,7 +1,8 @@
 %import syslib
 %import textio
 
-%import base_cx16
+;%import base_cx16
+%import base_c64
 
 %import splash
 %import decor
@@ -80,6 +81,9 @@ loop:
     if time_lo >= 1 {
       c64.SETTIM(0,0,0)
 
+      ; controll sound effects
+      sound.check()
+
       ; Player movements
       player_sub_counter++
       if player_sub_counter == player_speed {
@@ -146,6 +150,7 @@ endloop:
     if end_counter > 0
       goto endloop
 
+    sound.off()
     base.clear_screen()
     game_over.draw()
 

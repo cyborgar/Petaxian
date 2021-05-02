@@ -42,6 +42,7 @@ bombs {
         bombRef[BMB_Y] = y + 1
 	draw(i)
         active_bombs++
+	sound.bomb()
         return ; No need to check any more
       }
       i++

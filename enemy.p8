@@ -328,6 +328,7 @@ enemy {
 	    if check_detailed_collision(enemyRef, dx, dy,
                   bulletRef[gun_bullets.BD_LEFTMOST]) {
 	      enemyRef[EN_ACTIVE] = 0 ; Turn off
+	      sound.small_explosion()
 	      clear(i)
 	      enemies_left--
 	      explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],

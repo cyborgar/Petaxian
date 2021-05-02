@@ -1,3 +1,5 @@
+%import sound_cx16
+
 base {
 
   ; Define playfield limits
@@ -9,6 +11,8 @@ base {
   sub platform_setup() {
     ; Set 40 column mode 
     void cx16.screen_set_mode(0)
+    ; Init sound
+    sound.init()
   }
 
   sub clear_screen() {

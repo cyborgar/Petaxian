@@ -122,6 +122,7 @@ gun {
   }
 
   sub fire() {
+    sound.fire()
     gun_bullets.trigger(x+1, y-1, leftmost)
   }
 
@@ -143,6 +144,7 @@ gun {
     ;ubyte dx = BombRef[bombs.BMB_] - gun.x
 
     ; We have a hit, explode and deduct a life
+    sound.large_explosion()
     main.player_lives--
     main.printLives()
     direction=0 
