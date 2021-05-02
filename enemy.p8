@@ -91,7 +91,7 @@ enemy {
   ; Actual array holding enemies
   ubyte[EN_FIELDS * ENEMY_COUNT] enemyData 
 
-  ; How many enemies left in wave
+  ; How many enemies left in stage
   ubyte enemies_left
  
   ; Temp variables to hold deltas for movement of enemies
@@ -102,36 +102,36 @@ enemy {
     enemies_left = 0
   }
 
-  sub setup_wave(ubyte cur_wave) {
-    uword WaveRef = wave.list[cur_wave]
+  sub setup_stage(ubyte cur_stage) {
+    uword StageRef = stage.list[cur_stage]
 
     ubyte i = 0
     ubyte level
 
     ; Each way have potentially 3 "lines" of enemies
     for level in 0 to 2 {
-      if WaveRef[ wave.WV_LINE_ACTIVE ] == true {
+      if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 
-          setup_enemy(i, WaveRef[wave.WV_DEPL_DELAY] + i*4, 
-	  	      WaveRef[wave.WV_PAT], WaveRef[wave.WV_WAVE_DELAY] )
+          setup_enemy(i, StageRef[stage.STG_DEPL_DELAY] + i*4, 
+	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY] )
           i++
         }
       }
-      WaveRef += wave.WV_FIELDS
+      StageRef += stage.STG_FIELDS
     }
   }
 
   ; Initiate one enemy
   sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
-                   ubyte wave_delay ) {
+                   ubyte stage_delay ) {
     uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyRef[EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
     enemyRef[EN_DELAY] = move_delay ; Delayed deployment counter
-    enemyRef[EN_WAVE_DELAY] = wave_delay
+    enemyRef[EN_WAVE_DELAY] = stage_delay
     enemyRef[EN_MOVE_CNT] = 0
     enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
     enemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]

@@ -21,7 +21,7 @@ main {
 
   ; Game "loop" variables
   uword score = 0
-  ubyte cur_wave = 0
+  ubyte cur_stage = 0
   ubyte player_lives
 
   ; Variable enemy speed
@@ -61,17 +61,17 @@ main {
 
     player_lives = 3
     score = 0
-    cur_wave = 0 
+    cur_stage = 0 
 
     enemy.set_data()
     gun.set_data()
     gun_bullets.set_data()
     bombs.set_data()
-    enemy.setup_wave(cur_wave)
+    enemy.setup_stage(cur_stage)
 
     printScore()
     printLives()
-    printWave()
+    printStage()
 
 loop:
     ubyte time_lo = lsb(c64.RDTIM16())
@@ -99,11 +99,11 @@ loop:
       }
 
       if (enemy.enemies_left == 0) {
-        cur_wave++
-        if cur_wave > 1 ; only two "waves" right now
-          cur_wave = 0
-        enemy.setup_wave(cur_wave)
-	printWave()
+        cur_stage++
+        if cur_stage > 1 ; only two "stages" right now
+          cur_stage = 0
+        enemy.setup_stage(cur_stage)
+	printStage()
       }
 
       ; explosions etc.
@@ -191,9 +191,9 @@ endloop:
     txt.setcc(base.RBORDER + 8, base.UBORDER + 4, main.player_lives + 176, 1 )
   }
 
-  sub printWave() {
-    txt.setcc(base.RBORDER + 7, base.UBORDER + 6, main.cur_wave / 10 + 176, 1)
-    txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_wave % 10 + 176, 1)
+  sub printStage() {
+    txt.setcc(base.RBORDER + 7, base.UBORDER + 6, main.cur_stage / 10 + 176, 1)
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_stage % 10 + 176, 1)
   }
 
 }
