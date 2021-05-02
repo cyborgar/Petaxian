@@ -102,7 +102,7 @@ loop:
         cur_stage++
         if cur_stage > stage.MAX_STAGE
           cur_stage = 1
-        enemy.setup_stage(cur_stage)
+        enemy.setup_stage(cur_stage - 1)
 	printStage()
       }
 
