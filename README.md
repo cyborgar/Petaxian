@@ -17,7 +17,16 @@ This is written in Prog8, see
 
 and this is mostly a fun test project (it may never reach a finished state)
 
-Though I have been working with the X16 emulator so far, the code compiles fine for the C64
-if you remove the lines setting 40 column mode (in petaxian.p8). I've kept the playfield in the
-40x25 C64 limit so this should work on both platforms (though the game runs a bit too slow
-on the C64).
+Though I have been working with the X16 emulator so far, the code compiles fine for the C64,
+just replace line
+```
+%import base_cx16
+```
+with
+```
+%import base_c64
+```
+
+in the main file (```petaxian.p8```)
+
+Note that the game runs a bit too slow on the C64).
