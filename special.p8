@@ -5,7 +5,7 @@
 convert {
 
   ubyte[] tbl = [  $20, $7E, $7C, $E2, $7B, $61, $FF, $EC,
-                   $6C, $7F, $E1, $FB, $E2, $FC, $FE, $A0 ]
+                   $6C, $7F, $E1, $FB, $62, $FC, $FE, $A0 ]
 
   sub get_high(ubyte data) -> ubyte {
       return tbl[ (data & 240) >> 4 ]
