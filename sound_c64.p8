@@ -8,6 +8,9 @@ sound {
     sub fire() {
     }
 
+    sub hit() {
+    }
+
     sub bomb() {
     }
 

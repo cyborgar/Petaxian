@@ -25,12 +25,25 @@ sound {
       return
     }
 
-    uword freq = 300
+    uword freq = 800
     cx16.vpoke(1, $f9c0, lsb(freq))
     cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11111100)     ; half volume
-    cx16.vpoke(1, $f9c3, %10000000)     ; noise waveform
+    cx16.vpoke(1, $f9c2, %11110000)     ; volume
+    cx16.vpoke(1, $f9c3, %01000000)     ; Sawtooth
     sound_cutoff = 4
+  }
+
+  sub hit() {
+    if (sound_cutoff > 2) { ; Prioritize explosions
+      return
+    }
+
+    uword freq = 5000
+    cx16.vpoke(1, $f9c0, lsb(freq))
+    cx16.vpoke(1, $f9c1, msb(freq))
+    cx16.vpoke(1, $f9c2, %11110000)     ; volume
+    cx16.vpoke(1, $f9c3, %01000000)     ; noise waveform
+    sound_cutoff = 2
   }
 
   sub bomb() {
