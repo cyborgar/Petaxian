@@ -1,8 +1,8 @@
 %import syslib
 %import textio
 
-;%import base_cx16
-%import base_c64
+%import base_cx16
+;%import base_c64
 
 %import splash
 %import decor
