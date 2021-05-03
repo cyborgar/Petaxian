@@ -8,6 +8,8 @@
 %import decor
 %import game_over
 
+%import stage
+
 %import gun
 %import enemy
 %import bombs
@@ -62,7 +64,7 @@ main {
 
     player_lives = 3
     score = 0
-    cur_stage = 1 
+    cur_stage = 1
 
     enemy.set_data()
     gun.set_data()
