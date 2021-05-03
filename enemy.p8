@@ -77,6 +77,11 @@ enemy {
   const ubyte RAIDER2 = 1
   const ubyte RAIDER3 = 2
 
+  ; Durability array (based on positions above)
+  ubyte[] enemy_durability = [ 1, 2, 3 ]
+  ; Color for enemies based on current durability (lookup start at 1)
+  ubyte[] enemy_color = [ 0, 2, 8, 7 ]
+
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
   ; Use offsets to "emulate" something like a strcutre
@@ -148,7 +153,7 @@ enemy {
     else 
       enemyRef[EN_SUBPOS] = 0
     enemyRef[EN_DIR] = PatternRef[move_patterns.MP_DIR];
-    enemyRef[EN_DURAB] = 1; Not in use yet
+    enemyRef[EN_DURAB] = enemy_durability[ enemy_type ]
     enemyRef[EN_TYPE] = enemy_type
   }
 
@@ -291,17 +296,19 @@ enemy {
     tmp_x = enemyRef[EN_X]
     tmp_y = enemyRef[EN_Y]
 
+    ubyte col = enemy_color[ enemyRef[EN_DURAB] ]
+
     uword shipRef = enemy_types[ enemyRef[EN_TYPE] ]
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte ship_byte = shipRef[cur] as ubyte
-    txt.setcc(tmp_x,   tmp_y, convert.get_high(ship_byte), 5)
-    txt.setcc(tmp_x+1, tmp_y, convert.get_low(ship_byte), 5)
+    txt.setcc(tmp_x,   tmp_y, convert.get_high(ship_byte), col)
+    txt.setcc(tmp_x+1, tmp_y, convert.get_low(ship_byte), col)
     
     ; Convert second byte and draw
     ship_byte = shipRef[cur+1] as ubyte
-    txt.setcc(tmp_x,   tmp_y+1, convert.get_high(ship_byte), 5)
-    txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), 5)
+    txt.setcc(tmp_x,   tmp_y+1, convert.get_high(ship_byte), col)
+    txt.setcc(tmp_x+1, tmp_y+1, convert.get_low(ship_byte), col)
   }
 
   ; Check for enemy detection. Currently we only allow a single
@@ -327,16 +334,23 @@ enemy {
             ; matching" 
 	    if check_detailed_collision(enemyRef, dx, dy,
                   bulletRef[gun_bullets.BD_LEFTMOST]) {
-	      enemyRef[EN_ACTIVE] = 0 ; Turn off
-	      sound.small_explosion()
-	      clear(i)
-	      enemies_left--
-	      explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
+              ; More "Hitpoints?"
+	      if enemyRef[EN_DURAB] == 1 {
+	        enemyRef[EN_ACTIVE] = 0 ; Turn off
+	        sound.small_explosion()
+	        clear(i)
+	        enemies_left--
+	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
-	      main.score++
-	      main.printScore()
+	        main.score++
+	        main.printScore()
 
-	      return 1
+	        return 1
+	      } else {
+	        enemyRef[EN_DURAB]--
+		sound.hit()
+		return 1
+	      }
             }
           }
         }
