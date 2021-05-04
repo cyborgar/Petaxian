@@ -55,6 +55,7 @@ enemy {
 
   ; X
   ; XX
+
   ; X
   ubyte[] raider2 = [
     $D0, $10, $A4, $20, $40, $70, $80, $A1,
@@ -79,15 +80,17 @@ enemy {
 
   ; Durability array (based on positions above)
   ubyte[] enemy_durability = [ 1, 2, 3 ]
-  ; Color for enemies based on current durability (lookup start at 1)
-  ubyte[] enemy_color = [ 0, 2, 8, 7 ]
+  ; Score value
+  ubyte[] enemy_score = [ 5, 10, 15 ]
+  ; Color for enemies based on current durability (lookup start at 1)  
+  ubyte[] enemy_color = [ 0, 5, 13, 3 ]
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
   ; Use offsets to "emulate" something like a strcutre
   ;
   const ubyte EN_ACTIVE = 0 ; Placed first for quick checking
-  const ubyte EN_PAT    = 1 ; Only one movement pattern so far
+  const ubyte EN_PAT    = 1 ; Movement pattern
   const ubyte EN_DELAY  = 2 ; Deployment delay counter
   const ubyte EN_WAVE_DELAY = 3; Deploy pattern delay
   const ubyte EN_MOVE_CNT = 4 ; Pattern count. Movement in pattern.
@@ -342,8 +345,16 @@ enemy {
 	        enemies_left--
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
-	        main.score++
-	        main.printScore()
+
+	        ; Score based on type and pattern
+                ubyte add_scr
+		add_scr = enemy_score[ enemyRef[EN_TYPE] ]
+		; Bonus for flight
+		if enemyRef[EN_PAT] > 1
+		   add_scr <<= 1		   
+	        main.score += add_scr
+
+		main.printScore()
 
 	        return 1
 	      } else {
