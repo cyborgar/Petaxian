@@ -52,7 +52,7 @@ main {
   sub game_title() {
     base.clear_screen()
     splash.draw()
-    splash.write( 3, base.LBORDER + 10, base.DBORDER - 4, "press space to start" )
+    splash.write( 8, base.LBORDER + 7, base.DBORDER - 1, ">>> press space to start <<<" )
 
     wait_key(32);
   }
