@@ -10,6 +10,7 @@ base {
 
   ; Not needed on C64
   sub platform_setup() {
+    @($d020) = $c
   }
 
   sub clear_screen() {
