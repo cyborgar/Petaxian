@@ -123,15 +123,18 @@ enemy {
     ubyte i = 0
     ubyte wave
 
+    uword enemyRef = &enemyData
+
     ; Each stage has 2 waves of 8 enemies
     for wave in 1 to 2 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 
-          setup_enemy(i, StageRef[stage.STG_DEPL_DELAY] + i*4,
+          setup_enemy(enemyRef, StageRef[stage.STG_DEPL_DELAY] + i*4,
 	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
 		      StageRef[stage.STG_ENEMY_TYPE])
           i++
+	  enemyRef += EN_FIELDS
         }
       }
       StageRef += stage.STG_FIELDS
@@ -139,9 +142,8 @@ enemy {
   }
 
   ; Initiate one enemy
-  sub setup_enemy( ubyte enemy_num, ubyte move_delay, ubyte pattern,
+  sub setup_enemy( uword enemyRef, ubyte move_delay, ubyte pattern,
                    ubyte stage_delay, ubyte enemy_type ) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyRef[EN_PAT] = pattern ;
@@ -160,9 +162,7 @@ enemy {
     enemyRef[EN_TYPE] = enemy_type
   }
 
-  sub set_deltas(ubyte enemy_num, ubyte mvdir) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-
+  sub set_deltas(uword enemyRef, ubyte mvdir) {
     delta_x = TO_X[mvdir]
     delta_y = TO_Y[mvdir]
 
@@ -175,16 +175,16 @@ enemy {
   }
 
   sub move_all() {
+    uword enemyRef = &enemyData
     ubyte i = 0
     while( i < ENEMY_COUNT ) { 
-      move(i)
+      move(enemyRef)
       i++
+      enemyRef += EN_FIELDS
     }
   }
 
-  sub move(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-
+  sub move(uword enemyRef) {
     if enemyRef[EN_ACTIVE] == 0
       return
 
@@ -208,29 +208,27 @@ enemy {
       enemyRef[EN_MOVE_CNT] = 1 ; 
     }
 
-    set_deltas( enemy_num, PatternRef[ move_patterns.MP_MOVE_COUNT
+    set_deltas( enemyRef, PatternRef[ move_patterns.MP_MOVE_COUNT
         + enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY] ] )
 
-    clear(enemy_num)
+    clear(enemyRef)
       
     if delta_x == -1
-      move_left(enemy_num)
+      move_left(enemyRef)
     else if delta_x == 1
-      move_right(enemy_num)
+      move_right(enemyRef)
 
     if delta_y == -1
-      move_up(enemy_num)
+      move_up(enemyRef)
     else if delta_y == 1
-      move_down(enemy_num)
+      move_down(enemyRef)
 
-    draw(enemy_num)
+    draw(enemyRef)
 
     enemyRef[EN_MOVE_CNT]++
   }
 
-  sub move_left(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-
+  sub move_left(uword enemyRef) {
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       enemyRef[EN_X]--
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
@@ -239,9 +237,7 @@ enemy {
     }
   }
 
-  sub move_right(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-    
+  sub move_right(uword enemyRef) {
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
     } else {
@@ -250,9 +246,7 @@ enemy {
     }
   }
   
-  sub move_up(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-    
+  sub move_up(uword enemyRef) {
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
       enemyRef[EN_Y]--
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
@@ -261,9 +255,7 @@ enemy {
     }
   }
 
-  sub move_down(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-      
+  sub move_down(uword enemyRef) {
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
     } else {
@@ -272,9 +264,7 @@ enemy {
     }
   }
 
-  sub clear(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-
+  sub clear(uword enemyRef) {
     ubyte tmp_x
     ubyte tmp_y
     tmp_x = enemyRef[EN_X]
@@ -286,9 +276,7 @@ enemy {
     txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
   }
 
-  sub draw(ubyte enemy_num) {
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
-
+  sub draw(uword enemyRef) {
     ; Look up sub-byte position
     ubyte cur = enemyRef[EN_DIR]
        + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
@@ -341,7 +329,7 @@ enemy {
 	      if enemyRef[EN_DURAB] == 1 {
 	        enemyRef[EN_ACTIVE] = 0 ; Turn off
 	        sound.small_explosion()
-	        clear(i)
+	        clear(enemyRef)
 	        enemies_left--
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
@@ -400,8 +388,8 @@ enemy {
   ;   well for this use.
   sub spawn_bomb_new() {
     ubyte enemy_num
+    uword enemyRef = &enemyData
     while ( enemy_num < ENEMY_COUNT ) {
-      uword enemyRef = &enemyData + enemy_num * EN_FIELDS
       if enemyRef[EN_ACTIVE] == 1 { 
         if enemyRef[EN_PAT] <= 1 { ; No bombs at deployment
           ; Check if we drop bomb
@@ -411,6 +399,7 @@ enemy {
                           enemyRef[EN_SUBPOS])
         }
       }
+      enemyRef += EN_FIELDS
       enemy_num++
     }
   }

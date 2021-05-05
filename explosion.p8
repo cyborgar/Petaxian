@@ -29,10 +29,9 @@ explosion {
     if active == MAX_EXPL  ; May not be required.
       return
 
+    uword explosionRef = &explosionData
     ubyte i = 0
     while ( i < MAX_EXPL ) {
-      uword explosionRef = &explosionData + i * FIELD_COUNT
-
       if explosionRef[EX_STAGE] == 0 { ; First free data slot
         explosionRef[EX_STAGE] = 1
         explosionRef[EX_SUBPOS] = subpos
@@ -42,6 +41,7 @@ explosion {
         active++
         return 
       }
+      explosionRef += FIELD_COUNT
       i++
     }
   }

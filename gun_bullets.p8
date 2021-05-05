@@ -24,10 +24,11 @@ gun_bullets {
 
   sub set_data() {
     ; make sure bullets are turned off at new game
+    uword bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      uword bulletRef = &bulletData + i * FIELD_COUNT
       bulletRef[BD_ON] = false
+      bulletRef += FIELD_COUNT
       i++
     }
   }
@@ -36,10 +37,9 @@ gun_bullets {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return
 
+    uword bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      uword bulletRef = &bulletData + i * FIELD_COUNT
-      
       if bulletRef[BD_ON] == false { ; Find first "free" bullet
         bulletRef[BD_ON] = true
         bulletRef[BD_LEFTMOST] = lm
@@ -49,6 +49,7 @@ gun_bullets {
         active_bullets++
         return ; No need to check any more
       }
+      bulletRef += FIELD_COUNT
       i++
     }
   }
@@ -72,10 +73,9 @@ gun_bullets {
   }
 
   sub move() {
+    uword bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
-      uword bulletRef = &bulletData + i * FIELD_COUNT
-
       if bulletRef[BD_ON] == true { 
         clear(i) ; Clear old position
         if bulletRef[BD_Y] == base.UBORDER {
@@ -91,6 +91,7 @@ gun_bullets {
 	  }
         }
       }
+      bulletRef += FIELD_COUNT
       i++
     }
   }  

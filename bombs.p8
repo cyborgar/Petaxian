@@ -14,10 +14,11 @@ bombs {
 
   sub set_data() {
     ; make sure bombs are turned off at new game
+    uword bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
-      uword bombRef = &bombData + i * FIELD_COUNT
       bombRef[BMB_ON] = false
+      bombRef += FIELD_COUNT
       i++
     }
   }
@@ -26,10 +27,9 @@ bombs {
     if active_bombs == MAX_BOMBS ; No more (is this required?)
       return
 
+    uword bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
-      uword bombRef = &bombData + i * FIELD_COUNT
-
       if bombRef[BMB_ON] == false { ; Find first "free" bomb
         bombRef[BMB_ON] = true
 	if leftmost == true {
@@ -45,6 +45,7 @@ bombs {
 	sound.bomb()
         return ; No need to check any more
       }
+      bombRef += FIELD_COUNT
       i++
     }
 
@@ -68,10 +69,9 @@ bombs {
   }
 
   sub move() {
+    uword bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
-      uword bombRef = &bombData + i * FIELD_COUNT
-
       if bombRef[BMB_ON] == true { 
         clear(i) ; Clear old position
         bombRef[BMB_Y]++;
@@ -87,6 +87,7 @@ bombs {
 	  }
         }
       }
+      bombRef += FIELD_COUNT
       i++
     }
   }  
