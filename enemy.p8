@@ -22,7 +22,7 @@
 ; "block" chars
 ;
 
-%import special
+%import convert
 %import move_patterns
 
 enemy {

@@ -1,4 +1,4 @@
-%import special
+%import convert
 
 explosion {
   const ubyte ANIM_LENGHT = 5
