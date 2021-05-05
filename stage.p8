@@ -9,7 +9,7 @@ stage {
   const ubyte STG_DEPL_DELAY = 2  ; Delay from sub stage start before depolyment starts
   const ubyte STG_WAVE_DELAY = 3  ; Delay from stage start
   const ubyte STG_ENEMY_TYPE = 4 
-  const ubyte STG_FIELDS = 5
+  const ubyte FIELD_COUNT = 5
 
   const ubyte MAX_STAGE = 8
 

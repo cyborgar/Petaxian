@@ -100,11 +100,11 @@ enemy {
   const ubyte EN_DIR    = 8 ; 
   const ubyte EN_DURAB  = 9 ; durability value (thoughness)
   const ubyte EN_TYPE   = 10; enemy type
-  const ubyte EN_FIELDS = 11
+  const ubyte FIELD_COUNT = 11
   ; Max number of enemies in structure
   const ubyte ENEMY_COUNT = 16
   ; Actual array holding enemies
-  ubyte[EN_FIELDS * ENEMY_COUNT] enemyData 
+  ubyte[FIELD_COUNT * ENEMY_COUNT] enemyData 
 
   ; How many enemies left in stage
   ubyte enemies_left
@@ -134,10 +134,10 @@ enemy {
 	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
 		      StageRef[stage.STG_ENEMY_TYPE])
           i++
-	  enemyRef += EN_FIELDS
+	  enemyRef += FIELD_COUNT
         }
       }
-      StageRef += stage.STG_FIELDS
+      StageRef += stage.FIELD_COUNT
     }
   }
 
@@ -180,7 +180,7 @@ enemy {
     while( i < ENEMY_COUNT ) { 
       move(enemyRef)
       i++
-      enemyRef += EN_FIELDS
+      enemyRef += FIELD_COUNT
     }
   }
 
@@ -307,7 +307,7 @@ enemy {
   sub check_collision(uword bulletRef) -> ubyte {
     ubyte i = 0
     while( i < ENEMY_COUNT ) {
-      uword enemyRef = &enemyData + i * EN_FIELDS
+      uword enemyRef = &enemyData + i * FIELD_COUNT
 
       if enemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
@@ -399,7 +399,7 @@ enemy {
                           enemyRef[EN_SUBPOS])
         }
       }
-      enemyRef += EN_FIELDS
+      enemyRef += FIELD_COUNT
       enemy_num++
     }
   }
@@ -418,7 +418,7 @@ enemy {
     ubyte enemy_num = rnd() % ENEMY_COUNT
 
     ; Check if it's active
-    uword enemyRef = &enemyData + enemy_num * EN_FIELDS
+    uword enemyRef = &enemyData + enemy_num * FIELD_COUNT
     if enemyRef[EN_ACTIVE] != 1
       return
 
