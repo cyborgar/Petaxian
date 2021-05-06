@@ -109,9 +109,10 @@ enemy {
   ; How many enemies left in stage
   ubyte enemies_left
  
-  ; Temp variables to hold deltas for movement of enemies
+  ; Module variables used to avoid passing to subs as args
   byte delta_x
   byte delta_y
+  uword enemyRef; Point to data for current enemy
 
   sub set_data() {
     enemies_left = 0
@@ -123,14 +124,14 @@ enemy {
     ubyte i = 0
     ubyte wave
 
-    uword enemyRef = &enemyData
+    enemyRef = &enemyData
 
     ; Each stage has 2 waves of 8 enemies
     for wave in 1 to 2 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while( i < enemies_left ) { 
-          setup_enemy(enemyRef, StageRef[stage.STG_DEPL_DELAY] + i*4,
+          setup_enemy(StageRef[stage.STG_DEPL_DELAY] + i*4,
 	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
 		      StageRef[stage.STG_ENEMY_TYPE])
           i++
@@ -142,7 +143,7 @@ enemy {
   }
 
   ; Initiate one enemy
-  sub setup_enemy( uword enemyRef, ubyte move_delay, ubyte pattern,
+  sub setup_enemy( ubyte move_delay, ubyte pattern,
                    ubyte stage_delay, ubyte enemy_type ) {
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
@@ -162,7 +163,7 @@ enemy {
     enemyRef[EN_TYPE] = enemy_type
   }
 
-  sub set_deltas(uword enemyRef, ubyte mvdir) {
+  sub set_deltas(ubyte mvdir) {
     delta_x = TO_X[mvdir]
     delta_y = TO_Y[mvdir]
 
@@ -175,16 +176,16 @@ enemy {
   }
 
   sub move_all() {
-    uword enemyRef = &enemyData
+    enemyRef = &enemyData
     ubyte i = 0
     while( i < ENEMY_COUNT ) { 
-      move(enemyRef)
+      move()
       i++
       enemyRef += FIELD_COUNT
     }
   }
 
-  sub move(uword enemyRef) {
+  sub move() {
     if enemyRef[EN_ACTIVE] == 0
       return
 
@@ -208,27 +209,33 @@ enemy {
       enemyRef[EN_MOVE_CNT] = 1 ; 
     }
 
-    set_deltas( enemyRef, PatternRef[ move_patterns.MP_MOVE_COUNT
+    set_deltas( PatternRef[ move_patterns.MP_MOVE_COUNT
         + enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY] ] )
 
-    clear(enemyRef)
+    clear()
       
     if delta_x == -1
-      move_left(enemyRef)
+      move_left()
     else if delta_x == 1
-      move_right(enemyRef)
+      move_right()
 
     if delta_y == -1
-      move_up(enemyRef)
+      move_up()
     else if delta_y == 1
-      move_down(enemyRef)
+      move_down()
 
-    draw(enemyRef)
+    draw()
 
     enemyRef[EN_MOVE_CNT]++
   }
 
-  sub move_left(uword enemyRef) {
+  asmsub move_left_asm(uword value @AY) clobbers(Y) {
+    %asm {{
+    }}
+  }
+
+
+  sub move_left() {
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       enemyRef[EN_X]--
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
@@ -237,7 +244,7 @@ enemy {
     }
   }
 
-  sub move_right(uword enemyRef) {
+  sub move_right() {
     if enemyRef[EN_SUBPOS] & main.LEFTMOST {
       enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
     } else {
@@ -246,7 +253,7 @@ enemy {
     }
   }
   
-  sub move_up(uword enemyRef) {
+  sub move_up() {
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
       enemyRef[EN_Y]--
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
@@ -255,7 +262,7 @@ enemy {
     }
   }
 
-  sub move_down(uword enemyRef) {
+  sub move_down() {
     if enemyRef[EN_SUBPOS] & main.TOPMOST {
       enemyRef[EN_SUBPOS] &= ~main.TOPMOST
     } else {
@@ -264,7 +271,7 @@ enemy {
     }
   }
 
-  sub clear(uword enemyRef) {
+  sub clear() {
     ubyte tmp_x
     ubyte tmp_y
     tmp_x = enemyRef[EN_X]
@@ -276,7 +283,7 @@ enemy {
     txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
   }
 
-  sub draw(uword enemyRef) {
+  sub draw() {
     ; Look up sub-byte position
     ubyte cur = enemyRef[EN_DIR]
        + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
@@ -306,9 +313,8 @@ enemy {
   ; hit (so we can return on a full hit).
   sub check_collision(uword bulletRef) -> ubyte {
     ubyte i = 0
+    enemyRef = &enemyData
     while( i < ENEMY_COUNT ) {
-      uword enemyRef = &enemyData + i * FIELD_COUNT
-
       if enemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
@@ -323,13 +329,13 @@ enemy {
 
 	    ; We may still have a miss, we need to do some "nibble
             ; matching" 
-	    if check_detailed_collision(enemyRef, dx, dy,
+	    if check_detailed_collision(dx, dy,
                   bulletRef[gun_bullets.BD_LEFTMOST]) {
               ; More "Hitpoints?"
 	      if enemyRef[EN_DURAB] == 1 {
 	        enemyRef[EN_ACTIVE] = 0 ; Turn off
 	        sound.small_explosion()
-	        clear(enemyRef)
+	        clear()
 	        enemies_left--
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
@@ -354,13 +360,14 @@ enemy {
           }
         }
       }
+      enemyRef += FIELD_COUNT
       i++
     }
 
     return 0
   }
 
-  sub check_detailed_collision( uword enemyRef, ubyte dx, ubyte dy,
+  sub check_detailed_collision( ubyte dx, ubyte dy,
                                 ubyte leftmost ) -> ubyte {
 
     ubyte bullet_nib
