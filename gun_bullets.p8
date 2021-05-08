@@ -22,9 +22,11 @@ gun_bullets {
   const ubyte BD_X = 2
   const ubyte BD_Y = 3
 
+  uword bulletRef ; Global to save on parameter passing
+
   sub set_data() {
     ; make sure bullets are turned off at new game
-    uword bulletRef = &bulletData
+    bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
       bulletRef[BD_ON] = false
@@ -37,7 +39,7 @@ gun_bullets {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return
 
-    uword bulletRef = &bulletData
+    bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
       if bulletRef[BD_ON] == false { ; Find first "free" bullet
@@ -45,7 +47,7 @@ gun_bullets {
         bulletRef[BD_LEFTMOST] = lm
         bulletRef[BD_X] = x
         bulletRef[BD_Y] = y
-	draw(i)
+	draw()
         active_bullets++
         return ; No need to check any more
       }
@@ -54,18 +56,14 @@ gun_bullets {
     }
   }
 
-  sub clear(ubyte bullet_num) {
-    uword bulletRef = &bulletData + bullet_num * FIELD_COUNT
-
+  sub clear() {
     txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], main.CLR, 2)
   }
 
   ; NB. Bullet might be drawn on top of underlying char without
   ; actually hitting enemy. Could add a merge "function" of sort
   ; to combine bullet+char. Not sure if it visually is necessary yet
-  sub draw(ubyte bullet_num) {
-    uword bulletRef = &bulletData + bullet_num * FIELD_COUNT
-
+  sub draw() {
     if bulletRef[BD_LEFTMOST]
       txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], $61, COL)
     else
@@ -73,11 +71,11 @@ gun_bullets {
   }
 
   sub move() {
-    uword bulletRef = &bulletData
+    bulletRef = &bulletData
     ubyte i = 0
     while ( i < MAX_BULLETS ) {
       if bulletRef[BD_ON] == true { 
-        clear(i) ; Clear old position
+        clear() ; Clear old position
         if bulletRef[BD_Y] == base.UBORDER {
           bulletRef[BD_ON] = false
           active_bullets--
@@ -87,7 +85,7 @@ gun_bullets {
             bulletRef[BD_ON] = false
 	    active_bullets--
 	  } else {
-            draw(i)
+            draw()
 	  }
         }
       }
