@@ -22,28 +22,28 @@ stage {
     true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage3 = [
-    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, enemy.RAIDER2,
+    true, move_patterns.TOP_FROM_LEFT_2, 0, 0, enemy.RAIDER2,
     true, move_patterns.MID_FROM_RIGHT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage4 = [
-    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0, enemy.RAIDER2,
+    true, move_patterns.TOP_FROM_RIGHT_2, 0, 0, enemy.RAIDER2,
     true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER1 ]
 
   ubyte[] stage5 = [
     true, move_patterns.TOP_FROM_LEFT_1, 0, 0, enemy.RAIDER2,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70, enemy.RAIDER2 ]
+    true, move_patterns.MID_FROM_RIGHT_2, 38, 70, enemy.RAIDER2 ]
 
   ubyte[] stage6 = [
     true, move_patterns.TOP_FROM_RIGHT_1, 0, 0, enemy.RAIDER2,
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER2 ]
+    true, move_patterns.MID_FROM_LEFT_2, 38, 70, enemy.RAIDER2 ]
 
   ubyte[] stage7 = [
-    true, move_patterns.TOP_FROM_LEFT_1, 0, 0, enemy.RAIDER3,
-    true, move_patterns.MID_FROM_RIGHT_1, 38, 70, enemy.RAIDER2 ]
+    true, move_patterns.TOP_FROM_LEFT_2, 0, 0, enemy.RAIDER3,
+    true, move_patterns.MID_FROM_RIGHT_2, 38, 70, enemy.RAIDER2 ]
 
   ubyte[] stage8 = [
-    true, move_patterns.TOP_FROM_RIGHT_1, 0, 0, enemy.RAIDER3,
-    true, move_patterns.MID_FROM_LEFT_1, 38, 70, enemy.RAIDER2 ]
+    true, move_patterns.TOP_FROM_RIGHT_2, 0, 0, enemy.RAIDER3,
+    true, move_patterns.MID_FROM_LEFT_2, 38, 70, enemy.RAIDER2 ]
 
   uword[] list = [ &stage1, &stage2, &stage3, &stage4,
                    &stage5, &stage6, &stage7, &stage8 ]

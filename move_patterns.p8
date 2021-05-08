@@ -21,6 +21,10 @@ move_patterns {
   const ubyte TOP_FROM_RIGHT_1 = 3
   const ubyte MID_FROM_LEFT_1 =  4
   const ubyte MID_FROM_RIGHT_1 = 5
+  const ubyte TOP_FROM_LEFT_2 =  6
+  const ubyte TOP_FROM_RIGHT_2 = 7
+  const ubyte MID_FROM_LEFT_2 =  8
+  const ubyte MID_FROM_RIGHT_2 = 9
   
   const ubyte MP_DIR = 1
   const ubyte MP_START_X = 2
@@ -39,7 +43,7 @@ move_patterns {
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0 ]
 
-  ; Entry pattern 1
+  ; Entry pattern 1 - high
   ;   May consider eventually convering into nibbles to save space
   ubyte[] deploy_left_1 = [
     0, enemy.DIR_RIGHT, base.LBORDER, base.DBORDER-5, 117,
@@ -52,7 +56,7 @@ move_patterns {
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,   
     $4, $4, $4, $4, $4 ]
 
-  ; Same pattern (almost) from the right
+  ; Entry pattern 1 reverse - high
   ubyte[] deploy_right_1 = [
     0, enemy.DIR_LEFT, base.RBORDER-1, base.DBORDER-5, 117,
     $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $4,
@@ -64,6 +68,7 @@ move_patterns {
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,
     $0, $0, $0, $0, $0, $0 ]
 
+  ; Entry pattern 2 - low
   ubyte[] deploy_left_2 = [
     0, enemy.DIR_RIGHT, base.LBORDER, base.DBORDER-9, 137,
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,
@@ -76,6 +81,7 @@ move_patterns {
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,   
     $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
 
+  ; Entry pattern 2 reverse - low
   ubyte[] deploy_right_2 = [
     0, enemy.DIR_LEFT, base.RBORDER-1, base.DBORDER-9, 137,
     $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
@@ -88,9 +94,51 @@ move_patterns {
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,   
     $0, $0, $0, $0, $0, $0, $0, $0, $0 ]
 
+  ; Entry pattern 3 - high
+  ubyte[] deploy_left_3 = [
+    0, enemy.DIR_DOWN, base.LBORDER+6, base.UBORDER, 106,
+    $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $3, $3, $4, $3, $2,
+    $3, $2, $2, $1, $2, $1, $0, $1, $0, $0, $7, $0, $7, $6, $7, $7,
+    $7, $7, $7, $7, $7, $7, $7, $7, $7, $0, $0, $0, $0, $0, $0, $0,
+    $0, $0, $0, $0, $0, $0, $0, $0, $0, $7, $7, $6, $6, $6, $6, $5,
+    $5, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
+
+  ; Entry pattern 3 reverse - high
+  ubyte[] deploy_right_3 = [
+    0, enemy.DIR_DOWN, base.RBORDER-7, base.UBORDER, 106,
+    $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $1, $1, $0, $1, $2,   
+    $1, $2, $2, $3, $2, $3, $4, $3, $4, $4, $5, $4, $5, $6, $5, $5,   
+    $5, $5, $5, $5, $5, $5, $5, $5, $5, $4, $4, $4, $4, $4, $4, $4,   
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $5, $5, $6, $6, $6, $6, $7,   
+    $7, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,   
+    $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,   
+    $0, $0, $0, $0, $0, $0, $0, $0, $0, $0 ]
+
+  ; Entry pattern 4 - low
+  ubyte[] deploy_left_4 = [
+    0, enemy.DIR_DOWN, base.LBORDER+4, base.UBORDER, 79,
+    $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2,   
+    $2, $2, $2, $2, $2, $2, $2, $1, $1, $0, $0, $0, $0, $0, $7, $7,   
+    $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $6,   
+    $6, $5, $5, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4,   
+    $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4, $4 ]
+
+  ; Entry pattern 4 reverse - low
+  ubyte[] deploy_right_4 = [
+    0, enemy.DIR_DOWN, base.RBORDER-5, base.UBORDER, 79,
+    $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2, $2,
+    $2, $2, $2, $2, $2, $2, $2, $3, $3, $4, $4, $4, $4, $4, $5, $5,
+    $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $5, $6,
+    $6, $7, $7, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,
+    $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0 ]
+
   ; Put patterns in array of address refs?
   uword[] list = [ &stable_left, &stable_right,
                    &deploy_left_1, &deploy_right_1,
-                   &deploy_left_2, &deploy_right_2 ]
+                   &deploy_left_2, &deploy_right_2,
+		   &deploy_left_3, &deploy_right_3,
+		   &deploy_left_4, &deploy_right_4 ]
 
 }
