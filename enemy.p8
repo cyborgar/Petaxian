@@ -535,14 +535,14 @@ _move_down_else
     ubyte enemy_num = rnd() % ENEMY_COUNT
 
     ; Check if it's active
-    uword enemyRef = &enemyData + enemy_num * FIELD_COUNT
-    if enemyRef[EN_ACTIVE] != 1
+    uword eRef = &enemyData + enemy_num * FIELD_COUNT
+    if eRef[EN_ACTIVE] != 1
       return
 
-    if enemyRef[EN_PAT] > 1 ; Not in stable pattern yet
+    if eRef[EN_PAT] > 1 ; Not in stable pattern yet
       return
 
-    bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y], enemyRef[EN_SUBPOS])
+    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
   }
 
 }
