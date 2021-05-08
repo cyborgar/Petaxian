@@ -12,9 +12,11 @@ bombs {
   const ubyte BMB_X = 2
   const ubyte BMB_Y = 3
 
+  uword bombRef ; Global to avoid sending reference to subs
+
   sub set_data() {
     ; make sure bombs are turned off at new game
-    uword bombRef = &bombData
+    bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
       bombRef[BMB_ON] = false
@@ -27,7 +29,7 @@ bombs {
     if active_bombs == MAX_BOMBS ; No more (is this required?)
       return
 
-    uword bombRef = &bombData
+    bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
       if bombRef[BMB_ON] == false { ; Find first "free" bomb
@@ -40,7 +42,7 @@ bombs {
           bombRef[BMB_X] = x
 	}
         bombRef[BMB_Y] = y + 1
-	draw(i)
+	draw()
         active_bombs++
 	sound.bomb()
         return ; No need to check any more
@@ -51,17 +53,13 @@ bombs {
 
   }
 
-  sub clear(ubyte bomb_num) {
-    uword bombRef = &bombData + bomb_num * FIELD_COUNT
-    
+  sub clear() {
     txt.setcc(bombRef[BMB_X], bombRef[BMB_Y], main.CLR, 0)
   }
 
   ; Can bomb and bullet meet?
   ;
-  sub draw(ubyte bomb_num) {
-    uword bombRef = &bombData + bomb_num * FIELD_COUNT
-
+  sub draw() {
     if bombRef[BMB_LEFTMOST]
       txt.setcc(bombRef[BMB_X], bombRef[BMB_Y], 123, COL)
     else
@@ -69,11 +67,11 @@ bombs {
   }
 
   sub move() {
-    uword bombRef = &bombData
+    bombRef = &bombData
     ubyte i = 0
     while ( i < MAX_BOMBS ) {
       if bombRef[BMB_ON] == true { 
-        clear(i) ; Clear old position
+        clear() ; Clear old position
         bombRef[BMB_Y]++;
         if bombRef[BMB_Y] == base.DBORDER {
           bombRef[BMB_ON] = false
@@ -83,7 +81,7 @@ bombs {
             bombRef[BMB_ON] = false
 	    active_bombs--
 	  } else {
-            draw(i)
+            draw()
 	  }
         }
       }
