@@ -11,6 +11,7 @@ base {
   ; Not needed on C64
   sub platform_setup() {
     @($d020) = $c
+    sound.init()
   }
 
   sub clear_screen() {
