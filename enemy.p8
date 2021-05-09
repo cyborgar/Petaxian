@@ -522,15 +522,13 @@ _move_down_else
   }
 
   ; Random chance of one enemy dropping a bomb
+  ;   Bomb frequency increas when the count of enemies
+  ;   drop so there are bombs even when there just a few
+  ;   enemies left
+  ;   This routine is a bit wonkey in that we randomly try
+  ;   to pick an active enemy first (and just return at a
+  ;   miss
   sub spawn_bomb() {
-    ; First check if we are spawning a bomo
-    ubyte chance = rnd() % 100
-    
-    ; Increase bomb frequency with less enemies
-    ubyte factor = 1 + (ENEMY_COUNT - enemies_left) / 4
-    if chance > 5*factor
-      return
-
     ; Find random enemy
     ubyte enemy_num = rnd() % ENEMY_COUNT
 
@@ -539,7 +537,20 @@ _move_down_else
     if eRef[EN_ACTIVE] != 1
       return
 
+    ; May allow bombs at deployments later
     if eRef[EN_PAT] > 1 ; Not in stable pattern yet
+      return
+  
+    ; First check if we are spawning a bomb
+    ubyte chance = rnd() % 100
+
+    ; Stage base freqency
+    ubyte stage_factor = 4 + main.cur_stage / 2
+
+    ; Increase bomb frequency with less enemies
+    ubyte enemy_count_factor = 1 + (ENEMY_COUNT - enemies_left) / 4
+    
+    if chance > stage_factor * enemy_count_factor
       return
 
     bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
