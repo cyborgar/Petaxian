@@ -30,8 +30,8 @@ main {
   const ubyte TOPMOST =  2
 
   ; Game "loop" variables
-  uword score = 0
-  ubyte cur_stage = 0
+  uword score
+  ubyte cur_stage
   ubyte player_lives
 
   ; Variable enemy speed
