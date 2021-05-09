@@ -18,6 +18,13 @@
 main {
   const ubyte CLR = $20
 
+  ubyte[] start_msg_cols = [6, 14, 14, 3, 3, 3, 1, 1, 1, 1,
+  	  		    3, 3, 3, 14, 14, 6, 6, 0, 0, 0]
+
+  ubyte[] end_msg_cols = [2, 8, 8, 7, 7, 7, 1, 1, 1, 1,
+  	                  7, 7, 7, 8, 8, 2, 2, 0, 0, 0]
+  
+
   ; Coding two bools in one byte. 
   const ubyte LEFTMOST = 1 
   const ubyte TOPMOST =  2
@@ -52,9 +59,9 @@ main {
   sub game_title() {
     base.clear_screen()
     splash.draw()
-    splash.write( 8, base.LBORDER + 7, base.DBORDER - 1, ">>> press space to start <<<" )
 
-    wait_key(32);
+    wait_key(32, ">>> press space to start <<<",
+             base.LBORDER + 7, base.DBORDER - 1, &start_msg_cols);
   }
 
   sub game_loop() {
@@ -156,16 +163,26 @@ endloop:
     base.clear_screen()
     game_over.draw()
 
-    splash.write( 3, base.LBORDER + 8, base.DBORDER - 2, "press return to continue" )
-    wait_key(13);    
+    wait_key(13, "press return to continue",
+             base.LBORDER + 8, base.DBORDER - 2, &end_msg_cols);    
   }
 
-  sub wait_key(ubyte key) {
+  sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y, uword colRef) {
+    ubyte time_lo = lsb(c64.RDTIM16())
+    ubyte col = 0 
+
     ubyte inp = 0
     while inp != key {
        inp = c64.GETIN()
+       if time_lo >= 2 {
+	 c64.SETTIM(0,0,0)
+         splash.write( colRef[col], x, y, strRef )
+	 col++
+	 if col == 20
+	   col = 0
+       }
+       time_lo = lsb(c64.RDTIM16())
     }
-    return
   }
 
   sub keypress(ubyte key) {
