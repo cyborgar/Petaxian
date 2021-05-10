@@ -26,8 +26,12 @@ base {
   ; Not needed on C64
   sub draw_extra_border() {
   }
-
+  
   ; No support yet
+
+  sub pull_joystick_info() {
+  }
+
   sub joystick_start() -> ubyte {
     return 0
   }

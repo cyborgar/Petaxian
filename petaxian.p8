@@ -1,8 +1,8 @@
 %import syslib
 %import textio
 
-%import base_cx16
-;%import base_c64
+;%import base_cx16
+%import base_c64
 
 %import splash
 %import decor
@@ -46,6 +46,9 @@ main {
   const ubyte ANIMATION_SPEED = 5
   ubyte animation_sub_counter
 
+  ; Delay between bullets
+  ubyte bullet_delay
+
   sub start() {
     base.platform_setup()
     
@@ -60,6 +63,10 @@ main {
     base.clear_screen()
     splash.draw()
 
+    ; Add startup delay to prevent "start" button press from
+    ; immediately trigger start of game
+    wait_dticks(6)
+
     wait_key(32, ">>> press space to start <<<",
              base.LBORDER + 6, base.DBORDER - 1, &start_msg_cols);
   }
@@ -72,6 +79,7 @@ main {
     player_lives = 3
     score = 0
     cur_stage = 1
+    bullet_delay = 0
 
     enemy.set_data()
     gun.set_data()
@@ -125,16 +133,36 @@ loop:
         animation_sub_counter = 0
         explosion.animate()
       }
-    }
+      
+      if player_lives == 0
+        return
 
-    if player_lives == 0
-      return
+      ; Check joystick
+      base.pull_joystick_info()
+      if base.joystick_fire() { 
+        if bullet_delay == 0 {
+          gun.fire()
+          bullet_delay = 3
+        } else 
+	  bullet_delay--
+      }
 
-    ubyte key = c64.GETIN()
-    if key == 0 goto loop
+      if base.joystick_left() {
+        gun.set_left()
+      } else if base.joystick_right() {
+        gun.set_right()
+      }
+   
+      ubyte key = c64.GETIN()
+      if key == 0
+        goto loop
 
-    keypress(key)
-
+      when key {
+  	  157, ',' -> gun.set_left()
+	   29, '/' -> gun.set_right()
+	   32      -> gun.fire()
+      }
+    }    
     goto loop
   } 
 
@@ -164,7 +192,22 @@ endloop:
     game_over.draw()
 
     wait_key(13, "press return to continue",
-             base.LBORDER + 8, base.DBORDER - 2, &end_msg_cols);    
+             base.LBORDER + 8, base.DBORDER - 2, &end_msg_cols)
+  }
+
+  sub wait_dticks(ubyte dticks) {
+    ubyte time_lo = lsb(c64.RDTIM16())
+    c64.SETTIM(0,0,0)
+
+wait_loop:
+    if time_lo > 10 {
+      dticks--
+      if dticks == 0
+        return
+      c64.SETTIM(0,0,0)
+    }
+    time_lo = lsb(c64.RDTIM16())
+    goto wait_loop
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y, uword colRef) {
@@ -182,19 +225,11 @@ endloop:
 	   col = 0
        }
        ; Let's also check joystick start
-       base.get_joystick_info()
+       base.pull_joystick_info()
        if base.joystick_start()
          return
 
        time_lo = lsb(c64.RDTIM16())
-    }
-  }
-
-  sub keypress(ubyte key) {
-    when key {
-	  157, ',' -> gun.set_left()
-	   29, '/' -> gun.set_right()
-	   32      -> gun.fire()
     }
   }
 

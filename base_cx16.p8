@@ -1,3 +1,7 @@
+;
+; Contains functions/setup that differes by platform (C64/CX16)
+;
+
 %import sound_cx16
 
 base {
@@ -43,15 +47,17 @@ base {
     }
   }
 
-
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;
   ; NES/SNES joystick support
-  sub get_joystick_info() {
-    get_raw_joystick(0)
-  }
-  
-  ; Fetch joystick 
-  asmsub get_raw_joystick(ubyte value @A) clobbers(X, Y) {
+  ;
+  ; Note that all joystic bits are reversed (i.e 1 when not in use so
+  ; any check need to XOR to get be able to compare with &
+
+  ; Get joystick info from kernal to variables
+  asmsub pull_joystick_info() clobbers(A, X, Y) {
     %asm {{
+      lda #0                 ; Joystick 0
       jsr cx16.joystick_get
       sta joy_info
       stx joy_info2
@@ -61,22 +67,31 @@ base {
   }
 
   sub joystick_start() -> ubyte {
-    if joy_info ^ 255 == 32
+    ubyte pushed = joy_info ^ 255    
+    if pushed & 16
       return 1
     return 0
   }
 
   sub joystick_fire() -> ubyte {
-    if joy_info ^ 255 == 192 ; A or B on NES, Y or X on SNES
+    ubyte pushed = joy_info ^ 255
+    if pushed & 192    ; A or B on NES, B or Y on SNES
       return 1
     return 0
   }
 
   sub joystick_left() -> ubyte {
+    ubyte pushed = joy_info ^ 255
+    if pushed & 2
+      return 1
+
     return 0
   }
 
   sub joystick_right() -> ubyte{
+    ubyte pushed = joy_info ^ 255
+    if pushed & 1
+      return 1
     return 0
   }
 
