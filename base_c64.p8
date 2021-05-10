@@ -14,6 +14,7 @@ base {
     sound.init()
   }
 
+  ; Clear 25 line screen
   sub clear_screen() {
     ubyte x
     ubyte y
@@ -25,4 +26,22 @@ base {
   ; Not needed on C64
   sub draw_extra_border() {
   }
+
+  ; No support yet
+  sub joystick_start() -> ubyte {
+    return 0
+  }
+
+  sub joystick_fire() -> ubyte {
+    return 0
+  }
+
+  sub joystick_left() -> ubyte {
+    return 0
+  }
+
+  sub joystick_right() -> ubyte{
+    return 0
+  }
+
 }

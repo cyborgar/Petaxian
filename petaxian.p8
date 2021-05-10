@@ -61,7 +61,7 @@ main {
     splash.draw()
 
     wait_key(32, ">>> press space to start <<<",
-             base.LBORDER + 7, base.DBORDER - 1, &start_msg_cols);
+             base.LBORDER + 6, base.DBORDER - 1, &start_msg_cols);
   }
 
   sub game_loop() {
@@ -181,6 +181,11 @@ endloop:
 	 if col == 20
 	   col = 0
        }
+       ; Let's also check joystick start
+       base.get_joystick_info()
+       if base.joystick_start()
+         return
+
        time_lo = lsb(c64.RDTIM16())
     }
   }
