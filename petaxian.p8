@@ -1,8 +1,8 @@
 %import syslib
 %import textio
 
-;%import base_cx16
-%import base_c64
+%import base_cx16
+;%import base_c64
 
 %import splash
 %import decor
@@ -41,6 +41,7 @@ main {
   ; Fixed player speed? Power ups? Split gun/bullet speed?
   ubyte player_speed = 2
   ubyte player_sub_counter
+  ubyte glide_movement = 1;  Keyboard "glide" mechanic for now
 
   ; Delay for animation 
   const ubyte ANIMATION_SPEED = 5
@@ -51,7 +52,7 @@ main {
 
   sub start() {
     base.platform_setup()
-    
+
     while 1 {
       game_title()
       game_loop()
@@ -67,8 +68,8 @@ main {
     ; immediately trigger start of game
     wait_dticks(6)
 
-    wait_key(32, ">>> press space to start <<<",
-             base.LBORDER + 6, base.DBORDER - 1, &start_msg_cols);
+    wait_key(32, ">>> press start or space to begin <<<",
+             base.LBORDER + 1, base.DBORDER - 1, &start_msg_cols);
   }
 
   sub game_loop() {
@@ -91,79 +92,81 @@ main {
     printLives()
     printStage()
 
-loop:
-    ubyte time_lo = lsb(c64.RDTIM16())
+    while 1 {
+      ubyte time_lo = lsb(c64.RDTIM16())
 
-    ; May needed to find a better timer
-    if time_lo >= 1 {
-      c64.SETTIM(0,0,0)
+      ; May needed to find a better timer
+      if time_lo >= 1 {
+        c64.SETTIM(0,0,0)
 
-      ; controll sound effects
-      sound.check()
+        ; controll sound effects
+        sound.check()
 
-      ; Player movements
-      player_sub_counter++
-      if player_sub_counter == player_speed {
-        gun_bullets.move()
-        gun.move()
-	player_sub_counter = 0
-      }
+        ; Player movements
+        player_sub_counter++
+        if player_sub_counter == player_speed {
+          printDebug(joystick.joy_info3)
+          ; Check joystick
+          joystick.pull_info()
+          if joystick.pushing_fire() { 
+            if bullet_delay == 0 {
+              gun.fire()
+              bullet_delay = 3
+            } else 
+              bullet_delay--
+          }
 
-      ; Enemy movement
-      enemy_sub_counter++
-      if enemy_sub_counter == enemy_speed {
-        ; move enemies
-        enemy.move_all()
-	enemy_sub_counter = 0
-        bombs.move()
-        enemy.spawn_bomb()
-      }
-
-      if (enemy.enemies_left == 0) {
-        cur_stage++
-        if cur_stage > stage.MAX_STAGE
-          cur_stage = 1
-        enemy.setup_stage(cur_stage - 1)
-	printStage()
-      }
-
-      ; explosions etc.
-      animation_sub_counter++
-      if animation_sub_counter == ANIMATION_SPEED {
-        animation_sub_counter = 0
-        explosion.animate()
-      }
-      
-      if player_lives == 0
-        return
-
-      ; Check joystick
-      base.pull_joystick_info()
-      if base.joystick_fire() { 
-        if bullet_delay == 0 {
-          gun.fire()
-          bullet_delay = 3
-        } else 
-	  bullet_delay--
-      }
-
-      if base.joystick_left() {
-        gun.set_left()
-      } else if base.joystick_right() {
-        gun.set_right()
-      }
+          if joystick.pushing_left() {
+            gun.set_left()
+          } else if joystick.pushing_right() {
+            gun.set_right()
+          }
    
-      ubyte key = c64.GETIN()
-      if key == 0
-        goto loop
+          ubyte key = c64.GETIN()
 
-      when key {
-  	  157, ',' -> gun.set_left()
-	   29, '/' -> gun.set_right()
-	   32      -> gun.fire()
-      }
-    }    
-    goto loop
+          when key {
+             157, ',' -> gun.set_left()
+              29, '/' -> gun.set_right()
+                  'z' -> gun.fire()
+          }
+
+          gun_bullets.move()
+          gun.move()
+          if glide_movement == 0  ; If joystic "mode" is set avoid gliding
+	    gun.direction = 0
+
+          player_sub_counter = 0
+        }
+
+        ; Enemy movement
+        enemy_sub_counter++
+        if enemy_sub_counter == enemy_speed {
+          ; move enemies
+          enemy.move_all()
+	  enemy_sub_counter = 0
+          bombs.move()
+          enemy.spawn_bomb()
+        }
+
+        if (enemy.enemies_left == 0) {
+          cur_stage++
+          if cur_stage > stage.MAX_STAGE
+            cur_stage = 1
+          enemy.setup_stage(cur_stage - 1)
+          printStage()
+        }
+
+        ; explosions etc.
+        animation_sub_counter++
+        if animation_sub_counter == ANIMATION_SPEED {
+          animation_sub_counter = 0
+          explosion.animate()
+        }
+      
+        if player_lives == 0
+          return
+      }    
+    }
   } 
 
   sub game_end() {
@@ -191,8 +194,8 @@ endloop:
     base.clear_screen()
     game_over.draw()
 
-    wait_key(13, "press return to continue",
-             base.LBORDER + 8, base.DBORDER - 2, &end_msg_cols)
+    wait_key(32, "press start or space to continue",
+             base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols)
   }
 
   sub wait_dticks(ubyte dticks) {
@@ -225,8 +228,8 @@ wait_loop:
 	   col = 0
        }
        ; Let's also check joystick start
-       base.pull_joystick_info()
-       if base.joystick_start()
+       joystick.pull_info()
+       if joystick.pushing_start()
          return
 
        time_lo = lsb(c64.RDTIM16())
@@ -260,4 +263,13 @@ wait_loop:
     txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_stage % 10 + 176, 1)
   }
 
+  sub printDebug(ubyte val) {
+    ubyte var = val % 10
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 9, var+176, 1)
+    val /= 10
+    var = val % 10
+    txt.setcc(base.RBORDER + 7, base.UBORDER + 9, var+176, 1)
+    val /= 10
+    txt.setcc(base.RBORDER + 6, base.UBORDER + 9, val+176, 1)
+  }
 }

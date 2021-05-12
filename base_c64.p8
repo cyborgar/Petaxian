@@ -1,4 +1,5 @@
 %import sound_c64
+%import joystick_c64
 
 base {
 
@@ -25,27 +26,6 @@ base {
 
   ; Not needed on C64
   sub draw_extra_border() {
-  }
-  
-  ; No support yet
-
-  sub pull_joystick_info() {
-  }
-
-  sub joystick_start() -> ubyte {
-    return 0
-  }
-
-  sub joystick_fire() -> ubyte {
-    return 0
-  }
-
-  sub joystick_left() -> ubyte {
-    return 0
-  }
-
-  sub joystick_right() -> ubyte{
-    return 0
   }
 
 }
