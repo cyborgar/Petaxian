@@ -458,6 +458,11 @@ _move_down_else
 		   add_scr <<= 1		   
 	        main.score += add_scr
 
+                if main.score > main.next_new_life {
+		  main.player_lives++
+		  main.next_new_life += 3000
+		  main.printLives()
+		}
 		main.printScore()
 
 	        return 1

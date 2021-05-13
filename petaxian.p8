@@ -32,6 +32,7 @@ main {
 
   ; Game "loop" variables
   uword score
+  uword next_new_life
   ubyte cur_stage
   ubyte player_lives
 
@@ -81,6 +82,7 @@ main {
 
     player_lives = 3
     score = 0
+    next_new_life = 1000
     cur_stage = 1
     bullet_delay = 0
 
