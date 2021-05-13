@@ -20,8 +20,8 @@ gun {
   byte direction = 0
   ubyte gun_color = 14 ; Light blue
 
-  const ubyte GUN_MAX_LEFT = base.LBORDER
-  const ubyte GUN_MAX_RIGHT = base.RBORDER - 2
+  const ubyte GUN_MAX_LEFT = base.LBORDER + 1
+  const ubyte GUN_MAX_RIGHT = base.RBORDER - 3
 
   ubyte[] gun_l = [ 254, 251, 123 ]
   ubyte[] gun_r = [ 108, 236, 252 ]
@@ -88,7 +88,7 @@ gun {
       return
     }
 
-    draw()
+    draw() ; Needed after "kill".
   }
 
   sub move_left() {
