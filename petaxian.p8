@@ -5,6 +5,7 @@
 ;%import base_c64
 
 %import splash
+%import usage
 %import decor
 %import game_over
 
@@ -25,7 +26,7 @@ main {
   	                  7, 7, 7, 8, 8, 2, 2, 0, 0, 0]
   
 
-  ; Coding two bools in one byte. 
+  ; Used for coding two bool's in one byte
   const ubyte LEFTMOST = 1 
   const ubyte TOPMOST =  2
 
@@ -63,6 +64,7 @@ main {
   sub game_title() {
     base.clear_screen()
     splash.draw()
+    usage.setup()
 
     ; Add startup delay to prevent "start" button press from
     ; immediately trigger start of game
@@ -75,7 +77,7 @@ main {
   sub game_loop() {
     base.clear_screen()
     decor.draw()
-    base.draw_extra_border()
+    base.draw_extra_border() ; Mark unused area on XC16
 
     player_lives = 3
     score = 0
@@ -105,7 +107,6 @@ main {
         ; Player movements
         player_sub_counter++
         if player_sub_counter == player_speed {
-          printDebug(joystick.joy_info3)
           ; Check joystick
           joystick.pull_info()
           if joystick.pushing_fire() { 
@@ -224,8 +225,10 @@ wait_loop:
 	 c64.SETTIM(0,0,0)
          splash.write( colRef[col], x, y, strRef )
 	 col++
-	 if col == 20
+	 if col == 20 {
 	   col = 0
+	   usage.draw()
+	 }
        }
        ; Let's also check joystick start
        joystick.pull_info()
