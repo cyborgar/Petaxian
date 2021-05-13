@@ -71,7 +71,7 @@ main {
     wait_dticks(6)
 
     wait_key(32, ">>> press start or space to begin <<<",
-             base.LBORDER + 1, base.DBORDER - 1, &start_msg_cols);
+             base.LBORDER + 1, base.DBORDER - 1, &start_msg_cols, 1);
   }
 
   sub game_loop() {
@@ -196,7 +196,7 @@ endloop:
     game_over.draw()
 
     wait_key(32, "press start or space to continue",
-             base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols)
+             base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols, 0)
   }
 
   sub wait_dticks(ubyte dticks) {
@@ -214,7 +214,8 @@ wait_loop:
     goto wait_loop
   }
 
-  sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y, uword colRef) {
+  sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
+               uword colRef, ubyte do_usage) {
     ubyte time_lo = lsb(c64.RDTIM16())
     ubyte col = 0 
 
@@ -227,7 +228,8 @@ wait_loop:
 	 col++
 	 if col == 20 {
 	   col = 0
-	   usage.draw()
+	   if do_usage
+             usage.draw()
 	 }
        }
        ; Let's also check joystick start
