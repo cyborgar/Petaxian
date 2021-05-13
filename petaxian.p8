@@ -4,7 +4,7 @@
 %import base_cx16
 ;%import base_c64
 
-%import splash
+%import title
 %import usage
 %import decor
 %import game_over
@@ -63,7 +63,7 @@ main {
 
   sub game_title() {
     base.clear_screen()
-    splash.draw()
+    title.draw()
     usage.setup()
 
     ; Add startup delay to prevent "start" button press from
@@ -223,7 +223,7 @@ wait_loop:
        inp = c64.GETIN()
        if time_lo >= 2 {
 	 c64.SETTIM(0,0,0)
-         splash.write( colRef[col], x, y, strRef )
+         title.write( colRef[col], x, y, strRef )
 	 col++
 	 if col == 20 {
 	   col = 0
