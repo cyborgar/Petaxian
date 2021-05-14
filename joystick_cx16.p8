@@ -24,6 +24,7 @@ joystick {
     %asm {{
       lda #0                 ; Joystick 0
       jsr cx16.joystick_get
+      eor #$ff               ; reverse bit pattern for easier testing
       sta joy_info
       stx joy_info2
       sty joy_info3
@@ -33,30 +34,26 @@ joystick {
   }
 
   sub pushing_start() -> ubyte {
-    ubyte pushed = joy_info ^ 255    
-    if pushed & 16
+    if joy_info & 16
       return 1
     return 0
   }
 
   sub pushing_fire() -> ubyte {
-    ubyte pushed = joy_info ^ 255
-    if pushed & 192    ; A or B on NES, B or Y on SNES
+    if joy_info & 192    ; A or B on NES, B or Y on SNES
       return 1
     return 0
   }
 
   sub pushing_left() -> ubyte {
-    ubyte pushed = joy_info ^ 255
-    if pushed & 2
+    if joy_info & 2
       return 1
 
     return 0
   }
 
   sub pushing_right() -> ubyte{
-    ubyte pushed = joy_info ^ 255
-    if pushed & 1
+    if joy_info & 1
       return 1
     return 0
   }
