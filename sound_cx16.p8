@@ -21,7 +21,7 @@ sound {
   }
 
   sub fire() {
-    if (sound_cutoff > 4) { ; Prioritize explosions
+    if sound_cutoff > 4 { ; Prioritize explosions
       return
     }
 
@@ -34,7 +34,7 @@ sound {
   }
 
   sub hit() {
-    if (sound_cutoff > 2) { ; Prioritize explosions
+    if sound_cutoff > 2 { ; Prioritize explosions
       return
     }
 
@@ -48,7 +48,7 @@ sound {
 
   sub bomb() {
     ; swish
-    if (sound_cutoff > 6) { ; Prioritize explosions
+    if sound_cutoff > 6 { ; Prioritize explosions
       return
     }
 
@@ -62,7 +62,7 @@ sound {
 
   sub small_explosion() {
     ; explosion
-    if (sound_cutoff > 8) { ; Prioritize large explosions
+    if sound_cutoff > 8 { ; Prioritize large explosions
       return
     }
 

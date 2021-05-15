@@ -31,7 +31,7 @@ explosion {
 
     uword explosionRef = &explosionData
     ubyte i = 0
-    while ( i < MAX_EXPL ) {
+    while i < MAX_EXPL {
       if explosionRef[EX_STAGE] == 0 { ; First free data slot
         explosionRef[EX_STAGE] = 1
         explosionRef[EX_SUBPOS] = subpos
@@ -92,7 +92,7 @@ explosion {
       return
 
     ubyte i = 0
-    while ( i < MAX_EXPL ) {
+    while i < MAX_EXPL {
       uword explosionRef = &explosionData + i * FIELD_COUNT
 
       if explosionRef[EX_STAGE] > 0 {

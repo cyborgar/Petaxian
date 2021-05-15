@@ -28,7 +28,7 @@ gun_bullets {
     ; make sure bullets are turned off at new game
     bulletRef = &bulletData
     ubyte i = 0
-    while ( i < MAX_BULLETS ) {
+    while i < MAX_BULLETS {
       bulletRef[BD_ON] = false
       bulletRef += FIELD_COUNT
       i++
@@ -41,7 +41,7 @@ gun_bullets {
 
     bulletRef = &bulletData
     ubyte i = 0
-    while ( i < MAX_BULLETS ) {
+    while i < MAX_BULLETS {
       if bulletRef[BD_ON] == false { ; Find first "free" bullet
         bulletRef[BD_ON] = true
         bulletRef[BD_LEFTMOST] = lm
@@ -73,7 +73,7 @@ gun_bullets {
   sub move() {
     bulletRef = &bulletData
     ubyte i = 0
-    while ( i < MAX_BULLETS ) {
+    while i < MAX_BULLETS {
       if bulletRef[BD_ON] == true { 
         clear() ; Clear old position
         if bulletRef[BD_Y] == base.UBORDER {

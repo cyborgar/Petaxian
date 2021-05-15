@@ -55,7 +55,7 @@ main {
   sub start() {
     base.platform_setup()
 
-    while 1 {
+    repeat {
       game_title()
       game_loop()
       game_end()
@@ -96,7 +96,7 @@ main {
     printLives()
     printStage()
 
-    while 1 {
+    repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
 
       ; May needed to find a better timer

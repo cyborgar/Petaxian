@@ -18,7 +18,7 @@ bombs {
     ; make sure bombs are turned off at new game
     bombRef = &bombData
     ubyte i = 0
-    while ( i < MAX_BOMBS ) {
+    while i < MAX_BOMBS {
       bombRef[BMB_ON] = false
       bombRef += FIELD_COUNT
       i++
@@ -31,7 +31,7 @@ bombs {
 
     bombRef = &bombData
     ubyte i = 0
-    while ( i < MAX_BOMBS ) {
+    while i < MAX_BOMBS {
       if bombRef[BMB_ON] == false { ; Find first "free" bomb
         bombRef[BMB_ON] = true
 	if leftmost == true {
@@ -69,7 +69,7 @@ bombs {
   sub move() {
     bombRef = &bombData
     ubyte i = 0
-    while ( i < MAX_BOMBS ) {
+    while i < MAX_BOMBS {
       if bombRef[BMB_ON] == true { 
         clear() ; Clear old position
         bombRef[BMB_Y]++;

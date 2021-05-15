@@ -130,7 +130,7 @@ enemy {
     for wave in 1 to 2 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
-        while( i < enemies_left ) { 
+        while i < enemies_left { 
           setup_enemy(StageRef[stage.STG_DEPL_DELAY] + i*4,
 	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
 		      StageRef[stage.STG_ENEMY_TYPE])
@@ -178,7 +178,7 @@ enemy {
   sub move_all() {
     enemyRef = &enemyData
     ubyte i = 0
-    while( i < ENEMY_COUNT ) { 
+    while i < ENEMY_COUNT { 
       move()
       i++
       enemyRef += FIELD_COUNT
@@ -424,7 +424,7 @@ _move_down_else
   sub check_collision(uword bulletRef) -> ubyte {
     ubyte i = 0
     enemyRef = &enemyData
-    while( i < ENEMY_COUNT ) {
+    while i < ENEMY_COUNT {
       if enemyRef[EN_ACTIVE] > 0 {
         ; First check if we have Y position hit
 
@@ -511,7 +511,7 @@ _move_down_else
   sub spawn_bomb_new() {
     ubyte enemy_num
     uword enemyRef = &enemyData
-    while ( enemy_num < ENEMY_COUNT ) {
+    while enemy_num < ENEMY_COUNT {
       if enemyRef[EN_ACTIVE] == 1 { 
         if enemyRef[EN_PAT] <= 1 { ; No bombs at deployment
           ; Check if we drop bomb
