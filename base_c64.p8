@@ -11,7 +11,7 @@ base {
 
   ; Not needed on C64
   sub platform_setup() {
-    @($d020) = $c
+    c64.EXTCOL = $c
     sound.init()
   }
 
