@@ -22,15 +22,6 @@ base {
     joystick.init()
   }
 
-  ; Clear 40 line screen
-  sub clear_screen() {
-    ubyte x
-    ubyte y
-    for x in 0 to 39 
-      for y in 0 to 29 
-        txt.setcc( x, y, main.CLR, 0 )
-  }
-
   ; This simple additional decor is only for the X16
   sub draw_extra_border() {
     ubyte i

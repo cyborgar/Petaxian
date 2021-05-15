@@ -63,7 +63,7 @@ main {
   }
 
   sub game_title() {
-    base.clear_screen()
+    txt.clear_screen()
     title.draw()
     usage.setup()
 
@@ -76,7 +76,7 @@ main {
   }
 
   sub game_loop() {
-    base.clear_screen()
+    txt.clear_screen()
     decor.draw()
     base.draw_extra_border() ; Mark unused area on XC16
 
@@ -194,7 +194,7 @@ endloop:
       goto endloop
 
     sound.off()
-    base.clear_screen()
+    txt.clear_screen()
     game_over.draw()
 
     wait_key(32, "press start or space to continue",
