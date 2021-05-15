@@ -69,7 +69,7 @@ main {
 
     ; Add startup delay to prevent "start" button press from
     ; immediately trigger start of game
-    wait_dticks(6)
+    sys.wait(50)
 
     wait_key(32, ">>> press start or space to begin <<<",
              base.LBORDER + 1, base.DBORDER - 1, &start_msg_cols, 1);
@@ -199,21 +199,6 @@ endloop:
 
     wait_key(32, "press start or space to continue",
              base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols, 0)
-  }
-
-  sub wait_dticks(ubyte dticks) {
-    ubyte time_lo = lsb(c64.RDTIM16())
-    c64.SETTIM(0,0,0)
-
-wait_loop:
-    if time_lo > 10 {
-      dticks--
-      if dticks == 0
-        return
-      c64.SETTIM(0,0,0)
-    }
-    time_lo = lsb(c64.RDTIM16())
-    goto wait_loop
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
