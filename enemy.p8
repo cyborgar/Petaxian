@@ -168,7 +168,7 @@ enemy {
     delta_y = TO_Y[mvdir]
 
     ; Force 
-    if enemyRef[EN_PAT] <= 1 {
+    if enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
       enemyRef[EN_DIR] = DIR_DOWN
       return
     }
@@ -543,7 +543,7 @@ _move_down_else
       return
 
     ; May allow bombs at deployments later
-    if eRef[EN_PAT] > 1 ; Not in stable pattern yet
+    if eRef[EN_PAT] >= move_patterns.TOP_FROM_LEFT_1 ; No bombs in deploy
       return
   
     ; First check if we are spawning a bomb
