@@ -258,15 +258,6 @@ _move_left_else
     }}
   }
 
-  sub move_left_old() {
-    if enemyRef[EN_SUBPOS] & main.LEFTMOST {
-      enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
-      enemyRef[EN_X]--
-    } else {
-      enemyRef[EN_SUBPOS] |= main.LEFTMOST
-    }
-  }
-
   asmsub move_right() clobbers(Y) {
     ; if enemyRef[EN_SUBPOS] & main.LEFTMOST {
     ;   enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
@@ -294,15 +285,6 @@ _move_right_else
       sta (enemyRef),y
       rts
     }}
-  }
-
-  sub move_right_old() {
-    if enemyRef[EN_SUBPOS] & main.LEFTMOST {
-      enemyRef[EN_SUBPOS] &= ~main.LEFTMOST
-    } else {
-      enemyRef[EN_SUBPOS] |= main.LEFTMOST
-      enemyRef[EN_X]++
-    }
   }
 
   asmsub move_up() clobbers(Y) {
@@ -333,15 +315,6 @@ _move_up_else
       rts
     }}
   }
-  
-  sub move_up_old() {
-    if enemyRef[EN_SUBPOS] & main.TOPMOST {
-      enemyRef[EN_SUBPOS] &= ~main.TOPMOST
-      enemyRef[EN_Y]--
-    } else {
-      enemyRef[EN_SUBPOS] |= main.TOPMOST
-    }
-  }
 
   asmsub move_down() clobbers(Y) {
     ; if enemyRef[EN_SUBPOS] & main.TOPMOST {
@@ -370,15 +343,6 @@ _move_down_else
       sta (enemyRef),y
       rts
     }}
-  }
-
-  sub move_down_od() {
-    if enemyRef[EN_SUBPOS] & main.TOPMOST {
-      enemyRef[EN_SUBPOS] &= ~main.TOPMOST
-    } else {
-      enemyRef[EN_SUBPOS] |= main.TOPMOST
-      enemyRef[EN_Y]++
-    }
   }
 
   sub clear() {
