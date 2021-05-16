@@ -17,14 +17,14 @@
 ; end up in the same position (that will require attacks to be 28 or 56 
 ; moves)
 move_patterns {
-  const ubyte TOP_FROM_LEFT_1 =  2
-  const ubyte TOP_FROM_RIGHT_1 = 3
-  const ubyte MID_FROM_LEFT_1 =  4
-  const ubyte MID_FROM_RIGHT_1 = 5
-  const ubyte TOP_FROM_LEFT_2 =  6
-  const ubyte TOP_FROM_RIGHT_2 = 7
-  const ubyte MID_FROM_LEFT_2 =  8
-  const ubyte MID_FROM_RIGHT_2 = 9
+  const ubyte TOP_FROM_LEFT_1 =  4
+  const ubyte TOP_FROM_RIGHT_1 = 5
+  const ubyte MID_FROM_LEFT_1 =  6
+  const ubyte MID_FROM_RIGHT_1 = 7
+  const ubyte TOP_FROM_LEFT_2 =  8
+  const ubyte TOP_FROM_RIGHT_2 = 9
+  const ubyte MID_FROM_LEFT_2 =  10
+  const ubyte MID_FROM_RIGHT_2 = 11
   
   const ubyte MP_DIR = 1
   const ubyte MP_START_X = 2
@@ -134,8 +134,34 @@ move_patterns {
     $6, $7, $7, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0,
     $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0, $0 ]
 
+  ;
+  ; Attack patterns need to use a multiple of steps from the stable
+  ; move (36 currently) to end up in the same position.
+  ;
+  ubyte[] attack_1 = [
+    0, enemy.DIR_DOWN, 0, 0, 72,
+    $3, $3, $3, $3, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
+    $7, $7, $7, $7, $1, $1, $1, $1, $3, $3, $3, $3, $3, $3, $3, $3,
+    $5, $5, $5, $5, $3, $3, $3, $3, $5, $5, $5, $5, $7, $7, $7, $7,
+    $5, $5, $5, $5, $7, $7, $7, $7, $1, $1, $1, $1, $7, $7, $7, $7,
+    $5, $5, $5, $5, $5, $5, $5, $5 ]
+
+  ubyte[] attack_2 = [
+    0, enemy.DIR_DOWN, 0, 0, 72,
+    $1, $1, $1, $1, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3,   
+    $5, $5, $5, $5, $3, $3, $3, $3, $1, $1, $1, $1, $1, $1, $1, $1,   
+    $7, $7, $7, $7, $1, $1, $1, $1, $7, $7, $7, $7, $5, $5, $5, $5,   
+    $7, $7, $7, $7, $5, $5, $5, $5, $3, $3, $3, $3, $5, $5, $5, $5,   
+    $7, $7, $7, $7, $7, $7, $7, $7 ]
+
+;DL  $3, $3, $3, $3,
+;DR  $1, $1, $1, $1,
+;UL  $5, $5, $5, $5,
+;UR  $7, $7, $7, $7,
+
   ; Put patterns in array of address refs?
   uword[] list = [ &stable_left, &stable_right,
+  	       	   &attack_1, &attack_2,
                    &deploy_left_1, &deploy_right_1,
                    &deploy_left_2, &deploy_right_2,
 		   &deploy_left_3, &deploy_right_3,
