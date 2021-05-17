@@ -149,7 +149,7 @@ enemy {
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyRef[EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
-    enemyRef[EN_DELAY] = move_delay ; Delayed deployment counter
+    enemyRef[EN_DELAY] = move_delay - stage_delay ; Delayed deployment counter
     enemyRef[EN_WAVE_DELAY] = stage_delay
     enemyRef[EN_MOVE_CNT] = 0
     enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
@@ -189,6 +189,12 @@ enemy {
     if enemyRef[EN_ACTIVE] == 0
       return
 
+    ; wave delay
+    if enemyRef[EN_WAVE_DELAY] {
+      enemyRef[EN_WAVE_DELAY]--
+      return
+    }
+
     ; pre-display position
     if enemyRef[EN_MOVE_CNT] <= enemyRef[EN_DELAY] {
       enemyRef[EN_MOVE_CNT]++
@@ -200,8 +206,7 @@ enemy {
     ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
     ; based on deployment direction. Also reset all counters, movement
     ; is relative after deployment
-    if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ]
-      + enemyRef[EN_WAVE_DELAY] {
+    if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       ubyte stable = enemyRef[EN_PAT] & 1
       enemyRef[EN_PAT] = stable
       enemyRef[EN_DELAY] = 0
