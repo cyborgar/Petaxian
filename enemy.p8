@@ -108,7 +108,12 @@ enemy {
 
   ; How many enemies left in stage
   ubyte enemies_left
- 
+
+  ; Variables for enemy attacks
+  ubyte attack = 0
+  ubyte save_pat
+  ubyte save_move
+
   ; Module variables used to avoid passing to subs as args
   byte delta_x
   byte delta_y
@@ -150,7 +155,7 @@ enemy {
     enemyRef[EN_PAT] = pattern ;
     uword PatternRef = move_patterns.list[pattern]
     enemyRef[EN_DELAY] = move_delay - stage_delay ; Delayed deployment counter
-    enemyRef[EN_WAVE_DELAY] = stage_delay
+    enemyRef[EN_WAVE_DELAY] = stage_delay         ;   relative from wave start
     enemyRef[EN_MOVE_CNT] = 0
     enemyRef[EN_X] = PatternRef[move_patterns.MP_START_X]
     enemyRef[EN_Y] = PatternRef[move_patterns.MP_START_Y]
@@ -163,11 +168,12 @@ enemy {
     enemyRef[EN_TYPE] = enemy_type
   }
 
+  ; Convert from single byte direction to x/y deltas
   sub set_deltas(ubyte mvdir) {
     delta_x = TO_X[mvdir]
     delta_y = TO_Y[mvdir]
 
-    ; Force 
+    ; Lock downward after depolyment
     if enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
       enemyRef[EN_DIR] = DIR_DOWN
       return
@@ -201,21 +207,30 @@ enemy {
       return
     }
 
-    uword PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
-
     ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
-    ; based on deployment direction. Also reset all counters, movement
-    ; is relative after deployment
+    ; (deployment or attacks) based on deployment direction. Also
+    ; reset all counters, movement is relative after deployment
+    uword PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
-      ubyte stable = enemyRef[EN_PAT] & 1
-      enemyRef[EN_PAT] = stable
-      enemyRef[EN_DELAY] = 0
-      enemyRef[EN_WAVE_DELAY] = 0
-      enemyRef[EN_MOVE_CNT] = 1 ; 
+      if enemyRef[EN_PAT] > 1 and
+        enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
+        ; Return from attack
+        enemyRef[EN_PAT] = save_pat
+	PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
+        enemyRef[EN_MOVE_CNT] = save_move
+        attack = 0
+      } else { ; Switch from deployment to baseline
+        ubyte stable = enemyRef[EN_PAT] & 1
+        enemyRef[EN_PAT] = stable
+	PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
+        enemyRef[EN_DELAY] = 0
+        enemyRef[EN_WAVE_DELAY] = 0
+        enemyRef[EN_MOVE_CNT] = 1
+      }
     }
-
-    set_deltas( PatternRef[ move_patterns.MP_MOVE_COUNT
-        + enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY] ] )
+    
+    ubyte offset = enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY]
+    set_deltas( PatternRef[move_patterns.MP_MOVE_COUNT + offset] )
 
     clear()
       
@@ -528,6 +543,49 @@ _move_down_else
       return
 
     bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+  }
+
+  ; Random attack. Don't do during deployment
+  sub trigger_attack() {
+    if attack
+      return
+
+    ; Find random enemy
+    ubyte enemy_num = rnd() % ENEMY_COUNT
+
+    ; Check if it's active
+    uword eRef = &enemyData + enemy_num * FIELD_COUNT
+    if eRef[EN_ACTIVE] != 1
+      return
+
+    ; No attack during deployment or existing attack
+    if eRef[EN_PAT] > 1
+      return
+
+    ; First check if we are attacking
+    ubyte chance = rnd() % 100
+
+    ; Stage base freqency for attack
+    ubyte stage_factor = 1 + main.cur_stage / 3
+
+    ; Increase attack frequency with less enemies
+    ubyte enemy_count_factor = 1 + (ENEMY_COUNT - enemies_left) / 4
+
+    ; Are we attacking?
+    if chance > stage_factor * enemy_count_factor
+      return
+
+    ; Need to add code to determine which pattern here
+
+    ; We need to save line pattern and current move counter so we can switch
+    ; back later
+    save_pat = eRef[EN_PAT]
+    save_move = eRef[EN_MOVE_CNT]
+
+    ; Set attack pattern
+    eRef[EN_PAT] = 2
+    eRef[EN_MOVE_CNT] = 1 ;
+    attack = 1
   }
 
 }
