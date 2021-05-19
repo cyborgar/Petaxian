@@ -427,6 +427,10 @@ _move_down_else
 	        sound.small_explosion()
 	        clear()
 	        enemies_left--
+		; Check if it's in attack
+		if enemyRef[EN_PAT] > 1 and enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1
+		  attack = 0
+		
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
 
@@ -541,7 +545,8 @@ _move_down_else
     bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
   }
 
-  ; Random attack. Don't do during deployment
+  ; Add random attack of enemies. These only happen from the "line".
+  ; Frequency increase by level. May want to "up" bombing as well.
   sub trigger_attack() {
     if attack
       return
@@ -571,15 +576,19 @@ _move_down_else
     if chance > stage_factor * enemy_count_factor
       return
 
-    ; Need to add code to determine which pattern here
-
     ; We need to save line pattern and current move counter so we can switch
     ; back later
     save_pat = eRef[EN_PAT]
     save_move = eRef[EN_MOVE_CNT]
 
-    ; Set attack pattern
-    eRef[EN_PAT] = 2
+    ; Set attack pattern based on position left or right of middle
+    ; Should have more than 1 (mirrored) pattern and also a different
+    ; pattern in the middle
+    ubyte div = ( base.RBORDER - base.LBORDER ) / 2
+    if eRef[EN_X] < div
+      eRef[EN_PAT] = 2     
+    else
+      eRef[EN_PAT] = 3
     eRef[EN_MOVE_CNT] = 1 ;
     attack = 1
   }
