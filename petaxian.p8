@@ -144,7 +144,7 @@ main {
         ; Enemy movement
         enemy_sub_counter++
         if enemy_sub_counter == enemy_speed {
-          ; move enemies
+	  enemy.trigger_attack()
           enemy.move_all()
 	  enemy_sub_counter = 0
           bombs.move()
@@ -255,13 +255,13 @@ endloop:
     txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_stage % 10 + 176, 1)
   }
 
-  sub printDebug(ubyte val) {
+  sub printDebug(ubyte line, ubyte val) {
     ubyte var = val % 10
-    txt.setcc(base.RBORDER + 8, base.UBORDER + 9, var+176, 1)
+    txt.setcc(base.RBORDER + 8, base.UBORDER + line, var+176, 1)
     val /= 10
     var = val % 10
-    txt.setcc(base.RBORDER + 7, base.UBORDER + 9, var+176, 1)
+    txt.setcc(base.RBORDER + 7, base.UBORDER + line, var+176, 1)
     val /= 10
-    txt.setcc(base.RBORDER + 6, base.UBORDER + 9, val+176, 1)
+    txt.setcc(base.RBORDER + 6, base.UBORDER + line, val+176, 1)
   }
 }
