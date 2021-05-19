@@ -366,10 +366,8 @@ _move_down_else
   }
 
   sub clear() {
-    ubyte tmp_x
-    ubyte tmp_y
-    tmp_x = enemyRef[EN_X]
-    tmp_y = enemyRef[EN_Y]
+    ubyte tmp_x = enemyRef[EN_X]
+    ubyte tmp_y = enemyRef[EN_Y]
 
     txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
     txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
@@ -383,10 +381,8 @@ _move_down_else
        + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
        + (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
 
-    ubyte tmp_x
-    ubyte tmp_y
-    tmp_x = enemyRef[EN_X]
-    tmp_y = enemyRef[EN_Y]
+    ubyte tmp_x = enemyRef[EN_X]
+    ubyte tmp_y = enemyRef[EN_Y]
 
     ubyte col = enemy_color[ enemyRef[EN_DURAB] ]
 
