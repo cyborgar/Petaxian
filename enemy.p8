@@ -24,6 +24,7 @@
 
 %import convert
 %import move_patterns
+%import attack
 
 enemy {
   
@@ -108,11 +109,6 @@ enemy {
 
   ; How many enemies left in stage
   ubyte enemies_left
-
-  ; Variables for enemy attacks
-  ubyte attack = 0
-  ubyte save_pat
-  ubyte save_move
 
   ; Module variables used to avoid passing to subs as args
   byte delta_x
@@ -214,11 +210,7 @@ enemy {
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       if enemyRef[EN_PAT] > 1 and
         enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
-        ; Return from attack
-        enemyRef[EN_PAT] = save_pat
-	PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
-        enemyRef[EN_MOVE_CNT] = save_move
-        attack = 0
+	attack.recover(enemyRef)
       } else { ; Switch from deployment to baseline
         ubyte stable = enemyRef[EN_PAT] & 1
         enemyRef[EN_PAT] = stable
@@ -429,7 +421,7 @@ _move_down_else
 	        enemies_left--
 		; Check if it's in attack
 		if enemyRef[EN_PAT] > 1 and enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1
-		  attack = 0
+		  attack.clear()
 		
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
@@ -548,7 +540,7 @@ _move_down_else
   ; Add random attack of enemies. These only happen from the "line".
   ; Frequency increase by level. May want to "up" bombing as well.
   sub trigger_attack() {
-    if attack
+    if attack.active
       return
 
     ; Find random enemy
@@ -576,21 +568,7 @@ _move_down_else
     if chance > stage_factor * enemy_count_factor
       return
 
-    ; We need to save line pattern and current move counter so we can switch
-    ; back later
-    save_pat = eRef[EN_PAT]
-    save_move = eRef[EN_MOVE_CNT]
-
-    ; Set attack pattern based on position left or right of middle
-    ; Should have more than 1 (mirrored) pattern and also a different
-    ; pattern in the middle
-    ubyte div = ( base.RBORDER - base.LBORDER ) / 2
-    if eRef[EN_X] < div
-      eRef[EN_PAT] = 2     
-    else
-      eRef[EN_PAT] = 3
-    eRef[EN_MOVE_CNT] = 1 ;
-    attack = 1
+    attack.set(eRef)
   }
 
 }
