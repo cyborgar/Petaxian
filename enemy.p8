@@ -540,7 +540,7 @@ _move_down_else
   ; Add random attack of enemies. These only happen from the "line".
   ; Frequency increase by level. May want to "up" bombing as well.
   sub trigger_attack() {
-    if attack.active
+    if attack.full()
       return
 
     ; Find random enemy

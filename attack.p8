@@ -57,6 +57,12 @@ attack {
     active = false
   }
 
+  sub full() -> ubyte {
+    if active == true
+      return 1
+    return 0
+  }
+  
   sub clear() {
     active = false
   }
