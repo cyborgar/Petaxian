@@ -14,17 +14,19 @@
 ; including the "stable" patterns
 ;
 ; I expect that attacks will be similar. Move from stable and try to end
-; end up in the same position (that will require attacks to be 28 or 56 
-; moves)
+; end up in the same position (that will require attacks to have a factor
+; of 36 moves, probably 72)
 move_patterns {
-  const ubyte TOP_FROM_LEFT_1 =  4
-  const ubyte TOP_FROM_RIGHT_1 = 5
-  const ubyte MID_FROM_LEFT_1 =  6
-  const ubyte MID_FROM_RIGHT_1 = 7
-  const ubyte TOP_FROM_LEFT_2 =  8
-  const ubyte TOP_FROM_RIGHT_2 = 9
-  const ubyte MID_FROM_LEFT_2 =  10
-  const ubyte MID_FROM_RIGHT_2 = 11
+  const ubyte LAST_BASE = 1
+  const ubyte LAST_ATTACK = 5
+  const ubyte TOP_FROM_LEFT_1 =  LAST_ATTACK + 1
+  const ubyte TOP_FROM_RIGHT_1 = LAST_ATTACK + 2
+  const ubyte MID_FROM_LEFT_1 =  LAST_ATTACK + 3
+  const ubyte MID_FROM_RIGHT_1 = LAST_ATTACK + 4
+  const ubyte TOP_FROM_LEFT_2 =  LAST_ATTACK + 5
+  const ubyte TOP_FROM_RIGHT_2 = LAST_ATTACK + 6
+  const ubyte MID_FROM_LEFT_2 =  LAST_ATTACK + 7
+  const ubyte MID_FROM_RIGHT_2 = LAST_ATTACK + 8
   
   const ubyte MP_DIR = 0
   const ubyte MP_START_X = 1
@@ -156,23 +158,24 @@ move_patterns {
 
   ubyte[] attack_2l = [
     enemy.DIR_DOWN, 0, 0, 72,
-    $3, $3, $3, $3, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1, $1,
-    $7, $7, $7, $7, $1, $1, $1, $1, $3, $3, $3, $3, $3, $3, $3, $3,
-    $5, $5, $5, $5, $3, $3, $3, $3, $5, $5, $5, $5, $7, $7, $7, $7,
-    $5, $5, $5, $5, $7, $7, $7, $7, $1, $1, $1, $1, $7, $7, $7, $7,
-    $5, $5, $5, $5, $5, $5, $5, $5 ]
-
+    $2, $2, $1, $2, $1, $1, $0, $1, $0, $0, $1, $0, $0, $1, $0, $1,
+    $1, $2, $1, $2, $2, $3, $2, $3, $3, $4, $4, $3, $4, $4, $4, $3,
+    $4, $4, $4, $4, $4, $4, $5, $4, $4, $4, $5, $4, $5, $5, $6, $5,
+    $6, $5, $6, $6, $6, $7, $7, $0, $0, $1, $1, $1, $0, $7, $7, $6,
+    $6, $7, $6, $6, $6, $6, $6, $6 ]
+ 
   ubyte[] attack_2r = [
     enemy.DIR_DOWN, 0, 0, 72,
-    $1, $1, $1, $1, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3, $3,   
-    $5, $5, $5, $5, $3, $3, $3, $3, $1, $1, $1, $1, $1, $1, $1, $1,   
-    $7, $7, $7, $7, $1, $1, $1, $1, $7, $7, $7, $7, $5, $5, $5, $5,   
-    $7, $7, $7, $7, $5, $5, $5, $5, $3, $3, $3, $3, $5, $5, $5, $5,   
-    $7, $7, $7, $7, $7, $7, $7, $7 ]
+    $2, $2, $3, $2, $3, $3, $4, $3, $4, $4, $3, $4, $4, $3, $4, $3,
+    $3, $2, $3, $2, $2, $1, $2, $1, $1, $0, $0, $1, $0, $0, $0, $1,
+    $0, $0, $0, $0, $0, $0, $7, $0, $0, $0, $7, $0, $7, $7, $6, $7,
+    $6, $7, $6, $6, $6, $5, $5, $4, $4, $3, $3, $3, $4, $5, $5, $6,
+    $6, $5, $6, $6, $6, $6, $6, $6 ]
 
   ; Put patterns in array of address refs?
   uword[] list = [ &stable_left, &stable_right,
   	       	   &attack_1l, &attack_1r,
+		   &attack_2l, &attack_2r,
                    &deploy_left_1, &deploy_right_1,
                    &deploy_left_2, &deploy_right_2,
 		   &deploy_left_3, &deploy_right_3,
