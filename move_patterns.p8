@@ -18,6 +18,7 @@
 ; of 36 moves, probably 72)
 move_patterns {
   const ubyte LAST_BASE = 1
+  const ubyte FIRST_ATTACK = 2
   const ubyte LAST_ATTACK = 5
   const ubyte TOP_FROM_LEFT_1 =  LAST_ATTACK + 1
   const ubyte TOP_FROM_RIGHT_1 = LAST_ATTACK + 2
