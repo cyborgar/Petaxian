@@ -86,6 +86,7 @@ main {
     cur_stage = 1
     bullet_delay = 0
 
+    attack.set_data()
     enemy.set_data()
     gun.set_data()
     gun_bullets.set_data()

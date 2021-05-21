@@ -101,7 +101,8 @@ enemy {
   const ubyte EN_DIR    = 8 ; 
   const ubyte EN_DURAB  = 9 ; durability value (thoughness)
   const ubyte EN_TYPE   = 10; enemy type
-  const ubyte FIELD_COUNT = 11
+  const ubyte EN_ATTACK = 11; Attack recover index
+  const ubyte FIELD_COUNT = 12
   ; Max number of enemies in structure
   const ubyte ENEMY_COUNT = 16
   ; Actual array holding enemies
@@ -210,7 +211,7 @@ enemy {
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       if enemyRef[EN_PAT] > 1 and
         enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK {
-	attack.recover(enemyRef)
+	attack.end(enemyRef)
       } else { ; Switch from deployment to baseline
         ubyte stable = enemyRef[EN_PAT] & 1
         enemyRef[EN_PAT] = stable
@@ -423,7 +424,7 @@ _move_down_else
 		; Check if it's in attack
 		if enemyRef[EN_PAT] > move_patterns.LAST_BASE
 		     and enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK
-		  attack.clear()
+		  attack.remove(enemyRef[EN_ATTACK])
 		
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
 	      			enemyRef[EN_SUBPOS])
@@ -570,7 +571,7 @@ _move_down_else
     if chance > stage_factor * enemy_count_factor
       return
 
-    attack.set(eRef)
+    attack.begin(eRef)
   }
 
 }
