@@ -11,6 +11,13 @@ attack {
   ; Max 3 attacking enemies for now
   const ubyte MAX_ATTACKS = 3
 
+  ; Simple lookup table based on X position to determine which attack
+  ; pattern to use
+  ubyte[] attack_matrix = [
+    0,0,0,0,0,0,0,2,2,2,
+    2,2,3,2,3,2,3,2,3,3,
+    3,3,3,1,1,1,1,1,1,1 ]
+  
   const ubyte pattern_divisor = ( base.RBORDER - base.LBORDER ) / 2
 
   ; Data array
@@ -38,13 +45,13 @@ attack {
     save_pat = eRef[enemy.EN_PAT]
     save_move = eRef[enemy.EN_MOVE_CNT]
 
-    ; Set attack pattern based on position left or right of middle
-    ; Should have more than 1 (mirrored) pattern and also a different
-    ; pattern in the middle
-    if eRef[enemy.EN_X] < pattern_divisor
-      eRef[enemy.EN_PAT] = 2
-    else
-      eRef[enemy.EN_PAT] = 3
+    ; Determine attack type (using table)
+    eRef[enemy.EN_PAT] = attack_matrix[eRef[enemy.EN_X]]
+    		         + move_patterns.FIRST_ATTACK
+
+    main.printDebug(10, eRef[enemy.EN_X])
+    main.printDebug(11, attack_matrix[eRef[enemy.EN_X]])
+
     eRef[enemy.EN_MOVE_CNT] = 1 ;
     active = true
   }
@@ -52,7 +59,6 @@ attack {
   sub recover(uword eRef) {
     ; Return from attack
     eRef[enemy.EN_PAT] = save_pat
-    uword patternRef = move_patterns.list[ eRef[enemy.EN_PAT] ]
     eRef[enemy.EN_MOVE_CNT] = save_move
     active = false
   }

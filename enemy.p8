@@ -170,7 +170,7 @@ enemy {
     delta_y = TO_Y[mvdir]
 
     ; Lock downward after depolyment
-    if enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
+    if enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK {
       enemyRef[EN_DIR] = DIR_DOWN
       return
     }
@@ -205,20 +205,21 @@ enemy {
 
     ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
     ; (deployment or attacks) based on deployment direction. Also
-    ; reset all counters, movement is relative after deployment
+    ; reset all counters
     uword PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       if enemyRef[EN_PAT] > 1 and
-        enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1 {
+        enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK {
 	attack.recover(enemyRef)
       } else { ; Switch from deployment to baseline
         ubyte stable = enemyRef[EN_PAT] & 1
         enemyRef[EN_PAT] = stable
-	PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
         enemyRef[EN_DELAY] = 0
         enemyRef[EN_WAVE_DELAY] = 0
         enemyRef[EN_MOVE_CNT] = 1
       }
+      ; Since we have switch pattern we need to reset the reference
+      PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
     }
     
     ubyte offset = enemyRef[EN_MOVE_CNT] - enemyRef[EN_DELAY]
@@ -420,7 +421,8 @@ _move_down_else
 	        clear()
 	        enemies_left--
 		; Check if it's in attack
-		if enemyRef[EN_PAT] > 1 and enemyRef[EN_PAT] < move_patterns.TOP_FROM_LEFT_1
+		if enemyRef[EN_PAT] > move_patterns.LAST_BASE
+		     and enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK
 		  attack.clear()
 		
 	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
@@ -519,7 +521,7 @@ _move_down_else
       return
 
     ; May allow bombs at deployments later
-    if eRef[EN_PAT] >= move_patterns.TOP_FROM_LEFT_1 ; No bombs in deploy
+    if eRef[EN_PAT] > move_patterns.LAST_ATTACK ; No bombs in deploy
       return
   
     ; First check if we are spawning a bomb
