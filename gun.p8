@@ -141,9 +141,20 @@ gun {
     if BombRef[bombs.BMB_X] > gun.x + 2
       return 0
 
-    ; Save which X line hit (left or right)
-    ; need to check
-    ;ubyte dx = BombRef[bombs.BMB_] - gun.x
+    ; Check if bomb passes on the left or right side of gun
+    ubyte dx = BombRef[bombs.BMB_X] - gun.x
+    when dx {
+      0 -> { ; bomb to the left and gun in "righmost" pos?
+             if BombRef[bombs.BMB_LEFTMOST]
+	       if ~leftmost
+                 return 0
+            }
+      2 -> { ; bomb to the right and gun in "leftmost" pos?
+             if leftmost
+	       if ~BombRef[bombs.BMB_LEFTMOST]
+                 return 0
+           }
+    }
 
     ; We have a hit, explode and deduct a life
     sound.large_explosion()
