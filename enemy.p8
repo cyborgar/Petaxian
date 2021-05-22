@@ -129,13 +129,14 @@ enemy {
     enemyRef = &enemyData
 
     ; Each stage has 2 waves of 8 enemies
-    for wave in 1 to 2 {
+    for wave in 0 to 1 {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
-        while i < enemies_left { 
+        while i < enemies_left {
+	  ubyte type_idx = stage.STG_ENEMY_TYPE + i - 8*wave
           setup_enemy(StageRef[stage.STG_DEPL_DELAY] + i*4,
 	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
-		      StageRef[stage.STG_ENEMY_TYPE])
+		      StageRef[type_idx])
           i++
 	  enemyRef += FIELD_COUNT
         }
