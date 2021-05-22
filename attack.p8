@@ -29,13 +29,8 @@ attack {
   
   ; Make sure attack data is clear at game start
   sub set_data() {
-    attackRef = &attackData
-    ubyte i = 0
-    while i < MAX_ATTACKS {
-      attackRef[AT_ACTIVE] = false
-      attackRef += FIELD_COUNT
-      i++
-    }
+    active_attacks = 0
+    sys.memset(&attackData, MAX_ATTACKS * FIELD_COUNT, 0)
   }
 
   ; Check if we have used all attack slots.
@@ -54,9 +49,10 @@ attack {
       if attackRef[AT_ACTIVE] == false {
         ; We need to save line pattern and current move counter so we can
         ; switch back later
+        attackRef[AT_ACTIVE] = 1
         attackRef[AT_SAVE_PAT] = eRef[enemy.EN_PAT]
         attackRef[AT_SAVE_MVCNT] = eRef[enemy.EN_MOVE_CNT]
-	eRef[enemy.EN_ATTACK] = i
+        eRef[enemy.EN_ATTACK] = i
 
         ; Determine attack type (using table)
         eRef[enemy.EN_PAT] = attack_matrix[eRef[enemy.EN_X]]
@@ -64,7 +60,7 @@ attack {
 
         eRef[enemy.EN_MOVE_CNT] = 1 ;
         active_attacks++
-	return
+        return
       }
       attackRef += FIELD_COUNT
       i++
@@ -79,14 +75,14 @@ attack {
     eRef[enemy.EN_PAT] = attackRef[AT_SAVE_PAT]
     eRef[enemy.EN_MOVE_CNT] = attackRef[AT_SAVE_MVCNT]
     eRef[enemy.EN_ATTACK] = 0
-    
+
     remove(attack_num)
   }
 
   ; Clear attack if enemy has been killed or is finished
   sub remove(ubyte attack_num) {
-    attackRef = &attackData + FIELD_COUNT * attack_num
-    attackRef[enemy.EN_ACTIVE] = false
+    attackRef = &attackData + FIELD_COUNT * attack_num 
+    attackRef[AT_ACTIVE] = false
     active_attacks--
   }
 }
