@@ -36,6 +36,11 @@ main {
   ubyte cur_stage
   ubyte player_lives
 
+  ; This variable is used to allow bullets and explosions to complete at
+  ; the end of a stage before starting the next. And prevent new bullets
+  ; during this delay
+  ubyte stage_start_delay = 0
+
   ; Variable enemy speed
   ubyte enemy_speed = 3
   ubyte enemy_sub_counter
@@ -97,6 +102,8 @@ main {
     printLives()
     printStage()
 
+    stage_announce()
+
     repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
 
@@ -153,11 +160,17 @@ main {
         }
 
         if (enemy.enemies_left == 0) {
-          cur_stage++
-          if cur_stage > stage.MAX_STAGE
-            cur_stage = 1
-          enemy.setup_stage(cur_stage - 1)
-          printStage()
+	  if stage_start_delay < 70
+	    stage_start_delay++
+	  else {
+            cur_stage++
+            if cur_stage > stage.MAX_STAGE
+              cur_stage = 1
+            stage_announce()
+            enemy.setup_stage(cur_stage - 1)
+            printStage()
+	    stage_start_delay = 0
+	  }
         }
 
         ; explosions etc.
@@ -229,6 +242,19 @@ endloop:
     }
   }
 
+  sub stage_announce() {
+    ; print stage number
+    repeat 3 {
+      title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
+      txt.setcc(base.LBORDER + 19, base.UBORDER + 5, cur_stage / 10 + $30, 1)
+      txt.setcc(base.LBORDER + 20, base.UBORDER + 5, cur_stage % 10 + $30, 1) 
+      sys.wait(15)
+    
+      title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
+      sys.wait(10)
+    }
+  }
+
   sub printScore() {
     uword tmp = main.score
 
@@ -248,12 +274,12 @@ endloop:
   }
 
   sub printLives() {
-    txt.setcc(base.RBORDER + 8, base.UBORDER + 4, main.player_lives + 176, 1 )
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 4, player_lives + 176, 1 )
   }
 
   sub printStage() {
-    txt.setcc(base.RBORDER + 7, base.UBORDER + 6, main.cur_stage / 10 + 176, 1)
-    txt.setcc(base.RBORDER + 8, base.UBORDER + 6, main.cur_stage % 10 + 176, 1)
+    txt.setcc(base.RBORDER + 7, base.UBORDER + 6, cur_stage / 10 + 176, 1)
+    txt.setcc(base.RBORDER + 8, base.UBORDER + 6, cur_stage % 10 + 176, 1)
   }
 
   sub printDebug(ubyte line, ubyte val) {
