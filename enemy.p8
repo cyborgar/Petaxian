@@ -118,6 +118,7 @@ enemy {
 
   sub set_data() {
     enemies_left = 0
+    sys.memsetw(&enemyData, FIELD_COUNT * ENEMY_COUNT / 2, 0)
   }
 
   sub setup_stage(ubyte cur_stage) {
