@@ -88,7 +88,7 @@ main {
     player_lives = 3
     score = 0
     next_new_life = 1000
-    cur_stage = 1
+    cur_stage = 0
     bullet_delay = 0
 
     attack.set_data()
@@ -96,13 +96,7 @@ main {
     gun.set_data()
     gun_bullets.set_data()
     bombs.set_data()
-    enemy.setup_stage(cur_stage - 1)
-
-    printScore()
-    printLives()
-    printStage()
-
-    stage_announce()
+;    enemy.setup_stage(cur_stage - 1)
 
     repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
@@ -160,13 +154,14 @@ main {
         }
 
         if (enemy.enemies_left == 0) {
-	  if stage_start_delay < 70
+	  if stage_start_delay == 0  ; Increase stage at start of counter
+            cur_stage++    
+	  if stage_start_delay < 120 {
 	    stage_start_delay++
-	  else {
-            cur_stage++
-            if cur_stage > stage.MAX_STAGE
-              cur_stage = 1
             stage_announce()
+	  } else {
+            if cur_stage > stage.MAX_STAGE    ; Probably should just 
+              cur_stage = 1                   ; loop final stage
             enemy.setup_stage(cur_stage - 1)
             printStage()
 	    stage_start_delay = 0
@@ -243,15 +238,15 @@ endloop:
   }
 
   sub stage_announce() {
-    ; print stage number
-    repeat 3 {
-      title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
-      txt.setcc(base.LBORDER + 19, base.UBORDER + 5, cur_stage / 10 + $30, 1)
-      txt.setcc(base.LBORDER + 20, base.UBORDER + 5, cur_stage % 10 + $30, 1) 
-      sys.wait(15)
-    
-      title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
-      sys.wait(10)
+    when stage_start_delay {
+      40,70,100 -> {
+        title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
+        txt.setcc(base.LBORDER + 19, base.UBORDER + 5, cur_stage / 10 + $30, 1)
+        txt.setcc(base.LBORDER + 20, base.UBORDER + 5, cur_stage % 10 + $30, 1)
+      }
+      60,90,119 -> {
+        title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
+      }
     }
   }
 
