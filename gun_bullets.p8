@@ -25,14 +25,8 @@ gun_bullets {
   uword bulletRef ; Global to save on parameter passing
 
   sub set_data() {
-    ; make sure bullets are turned off at new game
-    bulletRef = &bulletData
-    ubyte i = 0
-    while i < MAX_BULLETS {
-      bulletRef[BD_ON] = false
-      bulletRef += FIELD_COUNT
-      i++
-    }
+    active_bullets = 0
+    sys.memset(&bulletData, FIELD_COUNT * MAX_BULLETS, 0)
   }
 
   sub trigger(ubyte x, ubyte y, ubyte lm) {

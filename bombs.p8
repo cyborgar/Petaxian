@@ -15,14 +15,8 @@ bombs {
   uword bombRef ; Global to avoid sending reference to subs
 
   sub set_data() {
-    ; make sure bombs are turned off at new game
-    bombRef = &bombData
-    ubyte i = 0
-    while i < MAX_BOMBS {
-      bombRef[BMB_ON] = false
-      bombRef += FIELD_COUNT
-      i++
-    }
+    active_bombs = 0
+    sys.memset(&bombData, FIELD_COUNT * MAX_BOMBS, 0 )
   }
 
   sub trigger(ubyte x, ubyte y, ubyte leftmost) {
