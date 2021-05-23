@@ -435,16 +435,10 @@ _move_down_else
                 ubyte add_scr
 		add_scr = enemy_score[ enemyRef[EN_TYPE] ]
 		; Bonus for flight
-		if enemyRef[EN_PAT] > 1
+		if enemyRef[EN_PAT] > 1 ; Double score when not at base line
 		   add_scr <<= 1		   
-	        main.score += add_scr
 
-                if main.score >= main.next_new_life {
-		  main.player_lives++
-		  main.next_new_life += 3000
-		  main.printLives()
-		}
-		main.printScore()
+                main.add_score(add_scr)
 
 	        return 1
 	      } else {
