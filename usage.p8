@@ -79,7 +79,7 @@ usage {
 
   sub setup() {
     page = 0
-    delay_counter = 6
+    delay_counter = 0
     draw()
   }
 
