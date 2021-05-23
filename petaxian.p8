@@ -35,6 +35,9 @@ main {
   uword next_new_life
   ubyte cur_stage
   ubyte player_lives
+  uword wave_ticks
+  ubyte bonus
+  ubyte wave_time
 
   ; This variable is used to allow bullets and explosions to complete at
   ; the end of a stage before starting the next. And prevent new bullets
@@ -96,7 +99,6 @@ main {
     gun.set_data()
     gun_bullets.set_data()
     bombs.set_data()
-;    enemy.setup_stage(cur_stage - 1)
 
     repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
@@ -104,6 +106,7 @@ main {
       ; May needed to find a better timer
       if time_lo >= 1 {
         c64.SETTIM(0,0,0)
+	wave_ticks++
 
         ; controll sound effects
         sound.check()
@@ -154,18 +157,33 @@ main {
         }
 
         if (enemy.enemies_left == 0) {
-	  if stage_start_delay == 0  ; Increase stage at start of counter
-            cur_stage++    
-	  if stage_start_delay < 120 {
-	    stage_start_delay++
+          if stage_start_delay == 0 {  ; Increase stage at start of counter
+	    if cur_stage == 0 
+	      stage_start_delay = 150 ; Skip stage bonus display at start
+	    else {
+              wave_time = wave_ticks / 60 as ubyte
+	      if wave_time >= stage.bonus_times[cur_stage-1]
+	        bonus = 0
+	      else
+                bonus = stage.bonus_times[cur_stage-1] - wave_time
+	      if bonus < 0 ; Set bonus to 0 if playtime is > bonus time
+	        bonus = 0
+            }
+            cur_stage++
+	  }
+          stage_start_delay++
+	  if stage_start_delay < 150 {
+            stage_bonus()
+	  } else if stage_start_delay < 250 {
             stage_announce()
-	  } else {
+          } else {
             if cur_stage > stage.MAX_STAGE    ; Probably should just 
               cur_stage = 1                   ; loop final stage
             enemy.setup_stage(cur_stage - 1)
             printStage()
-	    stage_start_delay = 0
-	  }
+            stage_start_delay = 0
+            wave_ticks = 0
+          }
         }
 
         ; explosions etc.
@@ -237,17 +255,49 @@ endloop:
     }
   }
 
+  sub stage_bonus() {
+    when stage_start_delay {
+      10,35 -> {
+        txt.setcc(base.LBORDER + 4, base.UBORDER + 5, bonus / 10 + $30, 1)
+        txt.setcc(base.LBORDER + 5, base.UBORDER + 5, bonus % 10 + $30, 1)
+        title.write( 3, base.LBORDER + 7, base.UBORDER + 5, "bonus sec" )
+      }
+      70 -> {
+        title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--0 points" )
+	ubyte score_bonus = 5 * bonus ; Doing on tenth as byte to cheat
+	add_score(score_bonus as uword * 10)
+        txt.setcc(base.LBORDER + 17, base.UBORDER + 5, score_bonus / 10 + $30, 1)
+        txt.setcc(base.LBORDER + 18, base.UBORDER + 5, score_bonus % 10 + $30, 1)	
+      }
+      140 -> {
+        title.write( 4, base.LBORDER + 2, base.UBORDER + 5,
+	             "                         " )
+      }
+    }
+  }
+
   sub stage_announce() {
     when stage_start_delay {
-      40,70,100 -> {
+      170,200,230 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
         txt.setcc(base.LBORDER + 19, base.UBORDER + 5, cur_stage / 10 + $30, 1)
         txt.setcc(base.LBORDER + 20, base.UBORDER + 5, cur_stage % 10 + $30, 1)
       }
-      60,90,119 -> {
+     190,220,249 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
       }
     }
+  }
+
+  sub add_score(uword points) {
+    score += points
+
+    if score >= next_new_life {
+      player_lives++
+      next_new_life += 3000
+      printLives()
+    }
+    printScore()
   }
 
   sub printScore() {
