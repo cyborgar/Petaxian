@@ -13,6 +13,8 @@ stage {
 
   const ubyte MAX_STAGE = 12
 
+  ubyte[] bonus_times = [ 20, 20, 23, 23, 26, 26, 29, 29, 32, 32, 35, 35 ]
+
   ubyte[] stage1 = [
     true, move_patterns.TOP_FROM_LEFT_1, 0, 0,
     enemy.RAIDER1, enemy.RAIDER1, enemy.RAIDER1, enemy.RAIDER1,
