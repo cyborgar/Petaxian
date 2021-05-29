@@ -32,6 +32,7 @@ main {
 
   ; Game "loop" variables
   uword score
+  uword bonus_score ; Track score from time bonuses for "stats"
   uword next_new_life
   ubyte cur_stage
   ubyte player_lives
@@ -90,6 +91,7 @@ main {
 
     player_lives = 3
     score = 0
+    bonus_score = 0
     next_new_life = 1000
     cur_stage = 0
     bullet_delay = 0
@@ -175,10 +177,12 @@ main {
 	  if stage_start_delay < 150 {
             stage_bonus()
 	  } else if stage_start_delay < 250 {
+            if cur_stage > stage.MAX_STAGE { ; Game won we return (after bonus)
+	      stage_start_delay = 0
+	      return
+	    }
             stage_announce()
           } else {
-            if cur_stage > stage.MAX_STAGE    ; Probably should just 
-              cur_stage = 1                   ; loop final stage
             enemy.setup_stage(cur_stage - 1)
             printStage()
             stage_start_delay = 0
@@ -207,6 +211,7 @@ endloop:
 
     if time_lo >= 1 {
       c64.SETTIM(0,0,0)
+      sound.check()
 
       ; explosions etc.
       animation_sub_counter++
@@ -220,9 +225,13 @@ endloop:
     if end_counter > 0
       goto endloop
 
-    sound.off()
     txt.clear_screen()
-    game_over.draw()
+    
+    if cur_stage > stage.MAX_STAGE
+      game_over.draw_victory()
+    else
+      game_over.draw_defeat()
+    sound.off()
 
     wait_key(32, "press start or space to continue",
              base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols, 0)
@@ -266,6 +275,7 @@ endloop:
         title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--0 points" )
 	ubyte score_bonus = 5 * bonus ; Doing on tenth as byte to cheat
 	add_score(score_bonus as uword * 10)
+	bonus_score += score_bonus as uword * 10
         txt.setcc(base.LBORDER + 17, base.UBORDER + 5, score_bonus / 10 + $30, 1)
         txt.setcc(base.LBORDER + 18, base.UBORDER + 5, score_bonus % 10 + $30, 1)	
       }
@@ -327,13 +337,25 @@ endloop:
     txt.setcc(base.RBORDER + 8, base.UBORDER + 6, cur_stage % 10 + 176, 1)
   }
 
-  sub printDebug(ubyte line, ubyte val) {
-    ubyte var = val % 10
-    txt.setcc(base.RBORDER + 8, base.UBORDER + line, var+176, 1)
+  sub write(ubyte col, ubyte x, ubyte y, uword messageptr) {
+    txt.color(col)
+    txt.plot( base.LBORDER + x, base.UBORDER + y )
+    txt.print( messageptr )
+  }
+
+  sub printNumber(ubyte x, ubyte y, uword val) {
+    ubyte tmp = val % 10 as ubyte
+    txt.setcc(base.LBORDER + x + 4, base.UBORDER + y, tmp+$30, 1)
     val /= 10
-    var = val % 10
-    txt.setcc(base.RBORDER + 7, base.UBORDER + line, var+176, 1)
+    tmp = val % 10 as ubyte
+    txt.setcc(base.LBORDER + x + 3, base.UBORDER + y, tmp+$30, 1)
     val /= 10
-    txt.setcc(base.RBORDER + 6, base.UBORDER + line, val+176, 1)
+    tmp = val % 10 as ubyte
+    txt.setcc(base.LBORDER + x + 2, base.UBORDER + y, tmp+$30, 1)
+    val /= 10
+    tmp = val % 10 as ubyte
+    txt.setcc(base.LBORDER + x + 1, base.UBORDER + y, tmp+$30, 1)   
+    tmp = val / 10 as ubyte
+    txt.setcc(base.LBORDER + x, base.UBORDER + y, tmp+$30, 1)
   }
 }
