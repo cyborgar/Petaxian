@@ -83,6 +83,12 @@ sound {
 
     sound_cutoff = 30
   }
+  
+  sub score_sound_and_delay() {
+    ; short "burst" sound and a delay
+    sound.small_explosion()
+    sys.wait(50)
+  }
 
   sub off() {
   }

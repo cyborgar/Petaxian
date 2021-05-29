@@ -88,4 +88,12 @@ sound {
     cx16.vpoke(1, $f9c2, 0)     ; shut off
   }
 
+  sub score_sound_and_delay() {
+    ; short "burst" sound and a delay
+    sound.small_explosion()
+    sys.wait(20)
+    sound.off()
+    sys.wait(30)
+  }
+
 }
