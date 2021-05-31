@@ -29,8 +29,11 @@ main {
   ; Used for coding two bool's in one byte
   const ubyte LEFTMOST = 1 
   const ubyte TOPMOST =  2
+  const ubyte NOT_LEFTMOST = ~1 ; For asm
+  const ubyte NOT_TOPMOST = ~2  ; For asm
 
   ; Game "loop" variables
+  uword hiscore
   uword score
   uword bonus_score ; Track score from time bonuses for "stats"
   uword next_new_life

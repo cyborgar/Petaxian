@@ -253,22 +253,22 @@ enemy {
     ;   enemyRef[EN_SUBPOS] |= main.LEFTMOST
     ; }
     %asm {{
-      lda #1            ; check LEFTMOST (=1) is set
-      ldy #7            ; EN_SUBPOS offset
-      and (enemyRef),y  ; AND with EN_SUBPOS
-      beq _move_left_else    ;   and branch
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      and #254          ; AND with ~main.LEFTMOST
+      lda #main.LEFTMOST  ; check LEFTMOST (=1) is set
+      ldy #enemy.EN_SUBPOS
+      and (enemyRef),y    ; AND with EN_SUBPOS
+      beq _move_left_else ;   and branch
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      and #main.NOT_LEFTMOST ; AND with ~main.LEFTMOST
       sta (enemyRef),y     
       sec
-      ldy #5            ; EN_X offset
+      ldy #enemy.EN_X
       lda (enemyRef),y
       sbc #1
       sta (enemyRef),y
       rts
 _move_left_else
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      ora #1            ; OR with main.LEFTMOST
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      ora #main.LEFTMOST  ; OR with main.LEFTMOST
       sta (enemyRef),y
       rts
     }}
@@ -282,20 +282,20 @@ _move_left_else
     ;   enemyRef[EN_X]++
     ; }
     %asm {{
-      lda #1            ; check LEFTMOST (=1) is set
-      ldy #7            ; EN_SUBPOS offset
-      and (enemyRef),y  ; AND with EN_SUBPOS
-      beq _move_right_else    ;   and branch
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      and #254          ; AND with ~main.LEFTMOST
+      lda #main.LEFTMOST  ; check LEFTMOST (=1) is set
+      ldy #enemy.EN_SUBPOS
+      and (enemyRef),y    ; AND with EN_SUBPOS
+      beq _move_right_else;   and branch
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      and #main.NOT_LEFTMOST ; AND with ~main.LEFTMOST
       sta (enemyRef),y     
       rts
 _move_right_else
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      ora #1            ; OR with main.LEFTMOST
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      ora #main.LEFTMOST  ; OR with main.LEFTMOST
       sta (enemyRef),y
       clc
-      ldy #5            ; EN_X offset
+      ldy #enemy.EN_X
       lda (enemyRef),y
       adc #1
       sta (enemyRef),y
@@ -311,22 +311,22 @@ _move_right_else
     ;   enemyRef[EN_SUBPOS] |= main.TOPMOST
     ; }
     %asm {{
-      lda #2            ; check TOPMOST (=2) is set
-      ldy #7            ; EN_SUBPOS offset
-      and (enemyRef),y  ; AND with EN_SUBPOS
-      beq _move_up_else    ;   and branch
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      and #253          ; AND with ~main.TOPMOST
+      lda #main.TOPMOST   ; check TOPMOST (=2) is set
+      ldy #enemy.EN_SUBPOS
+      and (enemyRef),y    ; AND with EN_SUBPOS
+      beq _move_up_else   ;   and branch
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      and #main.NOT_TOPMOST ; AND with ~main.TOPMOST
       sta (enemyRef),y     
       sec
-      ldy #6            ; EN_Y offset
+      ldy #enemy.EN_Y
       lda (enemyRef),y
       sbc #1
       sta (enemyRef),y
       rts
 _move_up_else
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      ora #2            ; OR with main.TOPMOST
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      ora #main.TOPMOST   ; OR with main.TOPMOST
       sta (enemyRef),y
       rts
     }}
@@ -340,20 +340,20 @@ _move_up_else
     ;   enemyRef[EN_Y]++
     ; }
     %asm {{
-      lda #2            ; check TOPMOST (=2) is set
-      ldy #7            ; EN_SUBPOS offset
-      and (enemyRef),y  ; AND with EN_SUBPOS
-      beq _move_down_else    ;   and branch
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      and #253          ; AND with ~main.TOPMOST
+      lda #main.TOPMOST   ; check TOPMOST (=2) is set
+      ldy #enemy.EN_SUBPOS
+      and (enemyRef),y    ; AND with EN_SUBPOS
+      beq _move_down_else ;   and branch
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      and #main.NOT_TOPMOST ; AND with ~main.TOPMOST
       sta (enemyRef),y     
       rts
 _move_down_else
-      lda (enemyRef),y  ; Get EN_SUBPOS
-      ora #2            ; OR with main.TOPMOST
+      lda (enemyRef),y    ; Get EN_SUBPOS
+      ora #main.TOPMOST   ; OR with main.TOPMOST
       sta (enemyRef),y
       clc
-      ldy #6            ; EN_X offset
+      ldy #enemy.EN_Y
       lda (enemyRef),y
       adc #1
       sta (enemyRef),y
