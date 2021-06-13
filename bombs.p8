@@ -1,3 +1,8 @@
+; Simple bombs dropped by enemy
+;
+; Bombs can be on either "half" of a character. Use single "bit"
+; figure
+;
 bombs {
   const ubyte COL = 7
 
