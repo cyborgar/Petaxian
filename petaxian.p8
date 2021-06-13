@@ -14,6 +14,7 @@
 %import gun
 %import enemy
 %import bombs
+%import seekers
 %import explosion
 
 main {
@@ -42,6 +43,7 @@ main {
   uword wave_ticks
   ubyte bonus
   ubyte wave_time
+  ubyte seeker_delay
 
   ; This variable is used to allow bullets and explosions to complete at
   ; the end of a stage before starting the next. And prevent new bullets
@@ -98,12 +100,14 @@ main {
     next_new_life = 1000
     cur_stage = 0
     bullet_delay = 0
+    seeker_delay = 0
 
     attack.set_data()
     enemy.set_data()
     gun.set_data()
     gun_bullets.set_data()
     bombs.set_data()
+    seekers.set_data()
 
     repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
@@ -158,6 +162,14 @@ main {
           enemy.move_all()
 	  enemy_sub_counter = 0
           bombs.move()
+	  ; Make seekers slow
+	  if seeker_delay {
+	    seekers.move()
+	    seeker_delay = 0
+	  } else {
+	    seeker_delay = 1
+	  }
+	  
           enemy.spawn_bomb()
         }
 

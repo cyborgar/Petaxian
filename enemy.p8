@@ -533,6 +533,12 @@ _move_down_else
     if chance > stage_factor * enemy_count_factor
       return
 
+    ; Advanced enemies may drop seekers instead of regular bombs
+    if eRef[EN_TYPE] and chance < (eRef[EN_TYPE] << 1) {
+      seekers.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      return
+    }
+    
     bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
   }
 
