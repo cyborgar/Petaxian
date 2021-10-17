@@ -31,7 +31,6 @@ joystick {
 skip_store:
       stx joy_info2
       sty joy_info3
-      stp
       rts
     }}
   }
