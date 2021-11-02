@@ -11,11 +11,11 @@
 ; The initial enemy require 2 x 2 nibbles which then require 2 ubyte.
 ; (first ubyte represent the 2 upper nibbles and second the 2 lower nibbles.
 ; Within the 4x4 grid pattern represented here the enemy can have
-; 4 different postion so we need 8 ubytes to represent each direction the
-; enemy ship can face.
+; 4 different postion so we need 8 ubytes to represent all positions the
+; enemy ship can have on the 4x4 grid.
 ;
-; We want enemy ship drawn in all directions, wich require 32 ubytes all
-; together
+; We also want enemy ship drawn facing all directions, so all together we
+; require 32 ubytes per "enemy" 
 ;
 ; Note that we use a seprate function to extract upper and lower nibbles,
 ; and then the nibble is used to look up actual PETSCII char for the 4 bit
@@ -28,7 +28,7 @@
 
 enemy {
   
-  const ubyte DIR_RIGHT = 0 ; Direction indexes into above "structure"
+  const ubyte DIR_RIGHT = 0 ; Direction indexes into enemy "structure"
   const ubyte DIR_DOWN  = 8
   const ubyte DIR_LEFT  = 16
   const ubyte DIR_UP    = 24
@@ -56,7 +56,6 @@ enemy {
 
   ; X
   ; XX
-
   ; X
   ubyte[] raider2 = [
     $D0, $10, $A4, $20, $40, $70, $80, $A1,
