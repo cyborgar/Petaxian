@@ -1,5 +1,7 @@
 # Petaxian
 
+![Start](screens/start.png)
+
 This is a small project started to scrach muliple itches
 
 - Doing something with the Commander X16 emulator (without having to work inside the emulator)
@@ -9,6 +11,8 @@ This is a small project started to scrach muliple itches
 I fairly recently saw some good demos using C64 emulator and just PETSCII graphics and then
 I remebered the old Galaga game on the C64. The one using just character graphics and thought
 it would be interesting to test how difficult it would be to make something similar.
+
+![Start](screens/in_game.png)
 
 This is written in Prog8, see
 
