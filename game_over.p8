@@ -133,5 +133,9 @@ game_over {
     main.write(14, 5, 19, "total              :")
     main.printNumber(27, 19, main.score)
     sound.score_sound_and_delay()
+
+    if main.score > main.hiscore {
+      main.hiscore = main.score
+    }
   }
 }
