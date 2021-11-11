@@ -21,16 +21,20 @@ This is written in Prog8, see
 
 and this is mostly a fun test project (it may never reach a finished state)
 
-Though I have been working with the X16 emulator so far, the code compiles fine for the C64,
-just replace line
-```
-%import base_cx16
-```
-with
-```
-%import base_c64
-```
+Though I have been working with the X16 emulator so far, the code compiles fine for the C64
+as well.
 
-in the main file (```petaxian.p8```)
+Compile/run for Commander X16 with something like this
+```
+%JAVA_PATH% -jar prog8compiler-7.2-all.jar -srcdirs cx16 -target cx16 petaxian.p8
+
+%X16EMU_PATH%\x16emu.exe -joy1 SNES -run -prg petaxian.prg
+```
+and for C64 with e.g.
+```
+%JAVA_PATH% -jar prog8compiler-7.2-all.jar -srcdirs c64 -target c64 petaxian.p8
+
+%VICE_PATH%\x64sc.exe petaxian.prg
+```
 
 Note that the game runs a bit too slow on the C64).
