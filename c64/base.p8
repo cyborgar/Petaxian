@@ -1,5 +1,5 @@
-%import sound_c64
-%import joystick_c64
+%import sound
+%import joystick
 
 base {
 

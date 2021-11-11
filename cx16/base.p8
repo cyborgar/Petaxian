@@ -2,8 +2,8 @@
 ; Contains functions/setup that differes by platform (C64/CX16)
 ;
 
-%import sound_cx16
-%import joystick_cx16
+%import sound_
+%import joystick
 
 base {
 
