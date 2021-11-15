@@ -8,9 +8,9 @@
 joystick {
 
   ; Joystick info
-  ubyte joy_info
-  ubyte joy_info2
-  ubyte joy_info3
+  ubyte @shared joy_info
+  ubyte @shared joy_info2
+  ubyte @shared joy_info3
 
   ; Need to set here to prevent removal as unused (only set in assmbly)
   sub init() {
