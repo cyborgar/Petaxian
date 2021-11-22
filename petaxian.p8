@@ -281,17 +281,15 @@ endloop:
   sub stage_bonus() {
     when stage_start_delay {
       10,35 -> {
-        txt.setcc(base.LBORDER + 4, base.UBORDER + 5, bonus / 10 + $30, 1)
-        txt.setcc(base.LBORDER + 5, base.UBORDER + 5, bonus % 10 + $30, 1)
+        printNumber(4, 5, bonus as uword, 2)
         title.write( 3, base.LBORDER + 7, base.UBORDER + 5, "bonus sec" )
       }
       70 -> {
-        title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--0 points" )
-	ubyte score_bonus = 5 * bonus ; Doing on tenth as byte to cheat
-	add_score(score_bonus as uword * 10)
-	bonus_score += score_bonus as uword * 10
-        txt.setcc(base.LBORDER + 17, base.UBORDER + 5, score_bonus / 10 + $30, 1)
-        txt.setcc(base.LBORDER + 18, base.UBORDER + 5, score_bonus % 10 + $30, 1)	
+        title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--- points" )
+	uword score_bonus = bonus as uword * 50
+	add_score(score_bonus)
+	bonus_score += score_bonus
+	printNumber(17, 5, score_bonus, 3)
       }
       140 -> {
         title.write( 4, base.LBORDER + 2, base.UBORDER + 5,
@@ -304,8 +302,7 @@ endloop:
     when stage_start_delay {
       170,200,230 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
-        txt.setcc(base.LBORDER + 19, base.UBORDER + 5, cur_stage / 10 + $30, 1)
-        txt.setcc(base.LBORDER + 20, base.UBORDER + 5, cur_stage % 10 + $30, 1)
+	printNumber(19, 5, cur_stage, 2)
       }
      190,220,249 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
@@ -324,28 +321,33 @@ endloop:
     printScore()
   }
 
-  sub printScore() {
-    uword tmp = main.score
+  ; Convert/display uword value as desimal on screen. Uses function
+  ; from Prog conv library to convert from uword to decimal string
+  sub printNumber(ubyte x, ubyte y, uword val, ubyte digits) {
+    ubyte pos_adj = 5 - digits
+    ubyte i
+    conv.str_uw0(val)
+    for i in pos_adj to 4 {
+      txt.setcc(base.LBORDER + x + i - pos_adj, base.UBORDER + y,
+        conv.string_out[i], 1)
+    }
+  }
 
-    ubyte var = tmp % 10 as ubyte
-    txt.setcc(base.RBORDER + 8, base.UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(base.RBORDER + 7, base.UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(base.RBORDER + 6, base.UBORDER + 2, var+176, 1)
-    tmp /= 10
-    var = tmp % 10 as ubyte
-    txt.setcc(base.RBORDER + 5, base.UBORDER + 2, var+176, 1)
-    var = tmp / 10 as ubyte
-    txt.setcc(base.RBORDER + 4, base.UBORDER + 2, var+176, 1)
+  ; Similar to printNumber but we want the "reversed" number chars
+  sub printScore() { 
+    conv.str_uw0(main.score)
+    ubyte i
+    for i in 0 to 4 {
+      txt.setcc(base.RBORDER + 4 + i, base.UBORDER + 2,
+        conv.string_out[i] + 128, 1)
+    }
   }
 
   sub printLives() {
     txt.setcc(base.RBORDER + 8, base.UBORDER + 4, player_lives + 176, 1 )
   }
 
+  ; Get "reversed" numbers
   sub printStage() {
     txt.setcc(base.RBORDER + 7, base.UBORDER + 6, cur_stage / 10 + 176, 1)
     txt.setcc(base.RBORDER + 8, base.UBORDER + 6, cur_stage % 10 + 176, 1)
@@ -357,19 +359,5 @@ endloop:
     txt.print( messageptr )
   }
 
-  sub printNumber(ubyte x, ubyte y, uword val) {
-    ubyte tmp = val % 10 as ubyte
-    txt.setcc(base.LBORDER + x + 4, base.UBORDER + y, tmp+$30, 1)
-    val /= 10
-    tmp = val % 10 as ubyte
-    txt.setcc(base.LBORDER + x + 3, base.UBORDER + y, tmp+$30, 1)
-    val /= 10
-    tmp = val % 10 as ubyte
-    txt.setcc(base.LBORDER + x + 2, base.UBORDER + y, tmp+$30, 1)
-    val /= 10
-    tmp = val % 10 as ubyte
-    txt.setcc(base.LBORDER + x + 1, base.UBORDER + y, tmp+$30, 1)   
-    tmp = val / 10 as ubyte
-    txt.setcc(base.LBORDER + x, base.UBORDER + y, tmp+$30, 1)
-  }
+
 }

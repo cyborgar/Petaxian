@@ -112,11 +112,11 @@ game_over {
     sys.wait(100)
 
     main.write(14, 5, 16, "enemy kill points  :")
-    main.printNumber(27, 16, main.score - main.bonus_score)
+    main.printNumber(27, 16, main.score - main.bonus_score, 5)
     sound.score_sound_and_delay()
     
     main.write(14, 5, 17, "stage bonus points :")
-    main.printNumber(27, 17, main.bonus_score)
+    main.printNumber(27, 17, main.bonus_score, 5)
     sound.score_sound_and_delay()
 
     if win {
@@ -125,13 +125,13 @@ game_over {
       lives_left[0] = $30 + main.player_lives
       main.write(1, 5, 18, lives_left)
       main.write(14, 7, 18, "lives left bonus :")
-      main.printNumber(27, 18, lives_score)
+      main.printNumber(27, 18, lives_score, 5)
       main.score += lives_score
       sound.score_sound_and_delay()
     }
     
     main.write(14, 5, 19, "total              :")
-    main.printNumber(27, 19, main.score)
+    main.printNumber(27, 19, main.score, 5)
     sound.score_sound_and_delay()
 
     if main.score > main.hiscore {
