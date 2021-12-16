@@ -24,27 +24,19 @@ joystick {
   }
 
   sub pushing_start() -> ubyte {
-    if joy_info & 1
-      return 1
-    return 0
+    return joy_info & 1
   }
 
   sub pushing_fire() -> ubyte {
-    if joy_info & 16
-      return 1
-    return 0
+    return joy_info & 16
   }
 
   sub pushing_left() -> ubyte {
-    if joy_info & 4
-      return 1
-    return 0
+    return joy_info & 4
   }
 
   sub pushing_right() -> ubyte{
-    if joy_info & 8
-      return 1
-    return 0
+    return joy_info & 8
   }
 
 }
