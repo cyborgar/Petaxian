@@ -3,6 +3,7 @@
 ; to correct PETSCII character based on nibble.
 ; 
 convert {
+  %option force_output
 
   ubyte[] tbl = [  $20, $7E, $7C, $E2, $7B, $61, $FF, $EC,
                    $6C, $7F, $E1, $FB, $62, $FC, $FE, $A0 ]
@@ -10,42 +11,49 @@ convert {
   ;    sub get_high_old(ubyte data) -> ubyte {
   ;      return tbl[ (data & 240) >> 4 ]
   ;    }
-  asmsub get_high(ubyte value @A) clobbers(Y) -> ubyte @A {
+  inline asmsub get_high(ubyte value @A) clobbers(Y) -> ubyte @A {
     %asm {{
-      sta P8ZP_SCRATCH_REG
-      lda #$F0
-      and P8ZP_SCRATCH_REG
+      and #$F0
       lsr a
       lsr a
       lsr a
       lsr a
       tay
-      lda tbl,y
-      rts
+      lda convert.tbl,y
     }}
   }
 
   ;    sub get_low_old(ubyte data) -> ubyte {
   ;      return tbl[ data & 15 ]
   ;    }
-  asmsub get_low(ubyte value @A) clobbers(Y) -> ubyte @A {
+  inline asmsub get_low(ubyte value @A) clobbers(Y) -> ubyte @A {
     %asm {{
-      sta P8ZP_SCRATCH_REG
-      lda #$0F
-      and P8ZP_SCRATCH_REG
+      and #$0F
       tay
-      lda tbl,y
-      rts
+      lda convert.tbl,y
     }}
   }
 
-  sub to_nibble(ubyte cnv) -> ubyte {
-    ubyte i = 0
-    while i < 7 {
-      if tbl[i] == cnv
-        return i
-      i++
-    }
-    return 7
+;  sub to_nibble_old(ubyte cnv) -> ubyte {
+;    ubyte i = 0
+;    while i < 7 {
+;      if tbl[i] == cnv
+;        return i
+;      i++
+;    }
+;    return 7
+;  }
+  asmsub to_nibble(ubyte cnv @A) -> ubyte @A {
+    %asm {{
+        ldy  #6
+-       cmp  tbl,y
+        beq  +
+        dey
+        bpl  -
+        lda  #7
+        rts
++       tya
+        rts
+    }}
   }
 }

@@ -36,28 +36,19 @@ skip_store:
   }
 
   sub pushing_start() -> ubyte {
-    if joy_info & 16
-      return 1
-    return 0
+    return joy_info & 16
   }
 
   sub pushing_fire() -> ubyte {
-    if joy_info & 192    ; A or B on NES, B or Y on SNES
-      return 1
-    return 0
+    return joy_info & 192    ; A or B on NES, B or Y on SNES
   }
 
   sub pushing_left() -> ubyte {
-    if joy_info & 2
-      return 1
-
-    return 0
+    return joy_info & 2
   }
 
   sub pushing_right() -> ubyte{
-    if joy_info & 1
-      return 1
-    return 0
+    return joy_info & 1
   }
 
 }
