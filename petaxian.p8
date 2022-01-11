@@ -20,10 +20,10 @@ main {
   const ubyte CLR = $20
 
   ubyte[] start_msg_cols = [6, 14, 14, 3, 3, 3, 1, 1, 1, 1,
-  	  		    3, 3, 3, 14, 14, 6, 6, 0, 0, 0]
+                            3, 3, 3, 14, 14, 6, 6, 0, 0, 0]
 
   ubyte[] end_msg_cols = [2, 8, 8, 7, 7, 7, 1, 1, 1, 1,
-  	                  7, 7, 7, 8, 8, 2, 2, 0, 0, 0]
+                          7, 7, 7, 8, 8, 2, 2, 0, 0, 0]
   
 
   ; Used for coding two bool's in one byte
@@ -56,7 +56,7 @@ main {
   ; Fixed player speed? Power ups? Split gun/bullet speed?
   ubyte player_speed = 2
   ubyte player_sub_counter
-  ubyte glide_movement = 1;  Keyboard "glide" mechanic for now
+  ubyte glide_movement = 0;  Keyboard "glide" mechanic for now
 
   ; Delay for animation 
   const ubyte ANIMATION_SPEED = 5
@@ -114,7 +114,7 @@ main {
       ; May needed to find a better timer
       if time_lo >= 1 {
         c64.SETTIM(0,0,0)
-	wave_ticks++
+        wave_ticks++
 
         ; controll sound effects
         sound.check()
@@ -149,7 +149,7 @@ main {
           gun_bullets.move()
           gun.move()
           if glide_movement == 0  ; If joystic "mode" is set avoid gliding
-	    gun.direction = 0
+            gun.direction = 0
 
           player_sub_counter = 0
         }
@@ -157,44 +157,44 @@ main {
         ; Enemy movement
         enemy_sub_counter++
         if enemy_sub_counter == enemy_speed {
-	  enemy.trigger_attack()
+          enemy.trigger_attack()
           enemy.move_all()
-	  enemy_sub_counter = 0
+          enemy_sub_counter = 0
           bombs.move()
-	  ; Make seekers slow
-	  if seeker_delay {
-	    seekers.move()
-	    seeker_delay = 0
-	  } else {
-	    seeker_delay = 1
-	  }
-	  
+          ; Make seekers slow
+          if seeker_delay {
+            seekers.move()
+            seeker_delay = 0
+          } else {
+            seeker_delay = 1
+          }
+    
           enemy.spawn_bomb()
         }
 
         if (enemy.enemies_left == 0) {
           if stage_start_delay == 0 {  ; Increase stage at start of counter
-	    if cur_stage == 0 
-	      stage_start_delay = 150 ; Skip stage bonus display at start
-	    else {
+            if cur_stage == 0 
+              stage_start_delay = 150 ; Skip stage bonus display at start
+            else {
               wave_time = wave_ticks / 60 as ubyte
-	      if wave_time >= stage.bonus_times[cur_stage-1]
-	        bonus = 0
-	      else
+              if wave_time >= stage.bonus_times[cur_stage-1]
+                bonus = 0
+              else
                 bonus = stage.bonus_times[cur_stage-1] - wave_time
-	      if bonus < 0 ; Set bonus to 0 if playtime is > bonus time
-	        bonus = 0
+              if bonus < 0 ; Set bonus to 0 if playtime is > bonus time
+                bonus = 0
             }
             cur_stage++
-	  }
+          }
           stage_start_delay++
-	  if stage_start_delay < 150 {
+          if stage_start_delay < 150 {
             stage_bonus()
-	  } else if stage_start_delay < 250 {
+          } else if stage_start_delay < 250 {
             if cur_stage > stage.MAX_STAGE { ; Game won we return (after bonus)
-	      stage_start_delay = 0
-	      return
-	    }
+              stage_start_delay = 0
+              return
+            }
             stage_announce()
           } else {
             enemy.setup_stage(cur_stage - 1)
@@ -260,14 +260,14 @@ endloop:
     while inp != key {
        inp = c64.GETIN()
        if time_lo >= 2 {
-	 c64.SETTIM(0,0,0)
+         c64.SETTIM(0,0,0)
          title.write( colRef[col], x, y, strRef )
-	 col++
-	 if col == 20 {
-	   col = 0
-	   if do_usage
+         col++
+         if col == 20 {
+           col = 0
+           if do_usage
              usage.draw()
-	 }
+         }
        }
        ; Let's also check joystick start
        joystick.pull_info()
@@ -286,14 +286,14 @@ endloop:
       }
       70 -> {
         title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--- points" )
-	uword score_bonus = bonus as uword * 50
-	add_score(score_bonus)
-	bonus_score += score_bonus
-	printNumber(17, 5, score_bonus, 3)
+        uword score_bonus = bonus as uword * 50
+        add_score(score_bonus)
+        bonus_score += score_bonus
+        printNumber(17, 5, score_bonus, 3)
       }
       140 -> {
         title.write( 4, base.LBORDER + 2, base.UBORDER + 5,
-	             "                         " )
+                     "                         " )
       }
     }
   }
@@ -302,7 +302,7 @@ endloop:
     when stage_start_delay {
       170,200,230 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
-	printNumber(19, 5, cur_stage, 2)
+        printNumber(19, 5, cur_stage, 2)
       }
      190,220,249 -> {
         title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )

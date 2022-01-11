@@ -146,12 +146,12 @@ gun {
     when dx {
       0 -> { ; bomb to the left and gun in "righmost" pos?
              if BombRef[bombs.BMB_LEFTMOST]
-	       if ~leftmost
+               if ~leftmost
                  return 0
             }
       2 -> { ; bomb to the right and gun in "leftmost" pos?
              if leftmost
-	       if ~BombRef[bombs.BMB_LEFTMOST]
+               if ~BombRef[bombs.BMB_LEFTMOST]
                  return 0
            }
     }

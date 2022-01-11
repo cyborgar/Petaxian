@@ -56,7 +56,7 @@ attack {
 
         ; Determine attack type (using table)
         eRef[enemy.EN_PAT] = attack_matrix[eRef[enemy.EN_X]]
-      		 + move_patterns.FIRST_ATTACK
+            + move_patterns.FIRST_ATTACK
 
         eRef[enemy.EN_MOVE_CNT] = 1 ;
         active_attacks++

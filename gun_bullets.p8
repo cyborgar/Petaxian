@@ -41,7 +41,7 @@ gun_bullets {
         bulletRef[BD_LEFTMOST] = lm
         bulletRef[BD_X] = x
         bulletRef[BD_Y] = y
-	draw()
+        draw()
         active_bullets++
         return ; No need to check any more
       }
@@ -75,12 +75,12 @@ gun_bullets {
           active_bullets--
         } else {
           bulletRef[BD_Y]--;
-	  if enemy.check_collision( bulletRef ) {
+          if enemy.check_collision( bulletRef ) {
             bulletRef[BD_ON] = false
-	    active_bullets--
-	  } else {
+            active_bullets--
+          } else {
             draw()
-	  }
+          }
         }
       }
       bulletRef += FIELD_COUNT

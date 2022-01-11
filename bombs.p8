@@ -33,17 +33,17 @@ bombs {
     while i < MAX_BOMBS {
       if bombRef[BMB_ON] == false { ; Find first "free" bomb
         bombRef[BMB_ON] = true
-	if leftmost == true {
+        if leftmost == true {
           bombRef[BMB_LEFTMOST] = true
           bombRef[BMB_X] = x + 1
         } else {
           bombRef[BMB_LEFTMOST] = false
           bombRef[BMB_X] = x
-	}
+        }
         bombRef[BMB_Y] = y + 1
-	draw()
+        draw()
         active_bombs++
-	sound.bomb()
+        sound.bomb()
         return ; No need to check any more
       }
       bombRef += FIELD_COUNT
@@ -76,12 +76,12 @@ bombs {
           bombRef[BMB_ON] = false
           active_bombs--
         } else {
-	  if gun.check_collision( bombRef ) {
+          if gun.check_collision( bombRef ) {
             bombRef[BMB_ON] = false
-	    active_bombs--
-	  } else {
+            active_bombs--
+          } else {
             draw()
-	  }
+          }
         }
       }
       bombRef += FIELD_COUNT

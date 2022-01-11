@@ -133,12 +133,12 @@ enemy {
       if StageRef[ stage.STG_LINE_ACTIVE ] == true {
         enemies_left += 8
         while i < enemies_left {
-	  ubyte type_idx = stage.STG_ENEMY_TYPE + i - 8*wave
+          ubyte type_idx = stage.STG_ENEMY_TYPE + i - 8*wave
           setup_enemy(StageRef[stage.STG_DEPL_DELAY] + i*4,
-	  	      StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
-		      StageRef[type_idx])
+            StageRef[stage.STG_PAT], StageRef[stage.STG_WAVE_DELAY],
+          StageRef[type_idx])
           i++
-	  enemyRef += FIELD_COUNT
+          enemyRef += FIELD_COUNT
         }
       }
       StageRef += stage.FIELD_COUNT
@@ -212,7 +212,7 @@ enemy {
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
       if enemyRef[EN_PAT] > 1 and
         enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK {
-	attack.end(enemyRef)
+        attack.end(enemyRef)
       } else { ; Switch from deployment to baseline
         ubyte stable = enemyRef[EN_PAT] & 1
         enemyRef[EN_PAT] = stable
@@ -404,47 +404,46 @@ _move_down_else
         ; First check if we have Y position hit
 
         if bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] or
-	    bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] + 1 {
+            bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] + 1 {
           ; Save which Y line hit (upper or lower)
-	  ubyte dy = bulletRef[gun_bullets.BD_Y] - enemyRef[EN_Y]
+          ubyte dy = bulletRef[gun_bullets.BD_Y] - enemyRef[EN_Y]
           if bulletRef[gun_bullets.BD_X] == enemyRef[EN_X] or
-              bulletRef[gun_bullets.BD_X] == enemyRef[EN_X] + 1 {
-	    ; Save which X line hit (left or right)
+            bulletRef[gun_bullets.BD_X] == enemyRef[EN_X] + 1 {
+            ; Save which X line hit (left or right)
             ubyte dx = bulletRef[gun_bullets.BD_X] - enemyRef[EN_X]
 
-	    ; We may still have a miss, we need to do some "nibble
-            ; matching" 
-	    if check_detailed_collision(dx, dy,
-                  bulletRef[gun_bullets.BD_LEFTMOST]) {
-              ; More "Hitpoints?"
-	      if enemyRef[EN_DURAB] == 1 {
-	        enemyRef[EN_ACTIVE] = 0 ; Turn off
-	        sound.small_explosion()
-	        clear()
-	        enemies_left--
-		; Check if it's in attack
-		if enemyRef[EN_PAT] > move_patterns.LAST_BASE
-		     and enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK
-		  attack.remove(enemyRef[EN_ATTACK])
-		
-	        explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
-	      			enemyRef[EN_SUBPOS])
+          ; We may still have a miss, we need to do some "nibble
+          ; matching" 
+          if check_detailed_collision(dx, dy,
+                bulletRef[gun_bullets.BD_LEFTMOST]) {
+            ; More "Hitpoints?"
+            if enemyRef[EN_DURAB] == 1 {
+              enemyRef[EN_ACTIVE] = 0 ; Turn off
+              sound.small_explosion()
+              clear()
+              enemies_left--
+              ; Check if it's in attack
+              if enemyRef[EN_PAT] > move_patterns.LAST_BASE
+                  and enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK
+                attack.remove(enemyRef[EN_ATTACK])
+  
+              explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
+              enemyRef[EN_SUBPOS])
 
-	        ; Score based on type and pattern
-                ubyte add_scr
-		add_scr = enemy_score[ enemyRef[EN_TYPE] ]
-		; Bonus for flight
-		if enemyRef[EN_PAT] > 1 ; Double score when not at base line
-		   add_scr <<= 1		   
+              ; Score based on type and pattern
+              ubyte add_scr
+              add_scr = enemy_score[ enemyRef[EN_TYPE] ]
+              ; Bonus for flight
+              if enemyRef[EN_PAT] > 1 ; Double score when not at base line
+                add_scr <<= 1       
 
                 main.add_score(add_scr)
-
-	        return 1
-	      } else {
-	        enemyRef[EN_DURAB]--
-		sound.hit()
-		return 1
-	      }
+                return 1
+              } else {
+                enemyRef[EN_DURAB]--
+                sound.hit()
+                return 1
+              }
             }
           }
         }
@@ -458,7 +457,6 @@ _move_down_else
 
   sub check_detailed_collision( ubyte dx, ubyte dy,
                                 ubyte leftmost ) -> ubyte {
-
     ubyte bullet_nib
     if leftmost ; Set nibble value for bullet
       bullet_nib = 5

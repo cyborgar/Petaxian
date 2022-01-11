@@ -4,12 +4,12 @@
 ;
 ; Reverse bit pattern set, so we use EOR 255 to reverse
 ;
-; Bit	  Function
-;  0	    Up
+; Bit     Function
+;  0        Up
 ;  1        Down
 ;  2        Left
 ;  3        Right
-;  4	    Fire
+;  4        Fire
 ;
 joystick {
 

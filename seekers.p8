@@ -33,17 +33,17 @@ seekers {
     while i < MAX_SEEKERS {
       if seekerRef[SKR_ON] == false { ; Find first "free" bomb
         seekerRef[SKR_ON] = true
-	if leftmost == true {
+        if leftmost == true {
           seekerRef[SKR_LEFTMOST] = true
           seekerRef[SKR_X] = x + 1
         } else {
           seekerRef[SKR_LEFTMOST] = false
           seekerRef[SKR_X] = x
-	}
+        }
         seekerRef[SKR_Y] = y + 1
-	draw()
+        draw()
         active_bombs++
-	sound.bomb()
+        sound.bomb()
         return ; No need to check any more
       }
       seekerRef += FIELD_COUNT
@@ -73,23 +73,23 @@ seekers {
         clear() ; Clear old position
         seekerRef[SKR_Y]++;
         ; Seek gun every other drop
-	if seekerRef[SKR_Y] % 2 == 0 {
+        if seekerRef[SKR_Y] % 2 == 0 {
           if seekerRef[SKR_X] <= gun.x {
              seekerRef[SKR_X]++
            } else {
              seekerRef[SKR_X]--
           }
-	}
+        }
         if seekerRef[SKR_Y] == base.DBORDER {
           seekerRef[SKR_ON] = false
           active_bombs--
         } else {
-	  if gun.check_collision( seekerRef ) {
+          if gun.check_collision( seekerRef ) {
             seekerRef[SKR_ON] = false
-	    active_bombs--
-	  } else {
+            active_bombs--
+          } else {
             draw()
-	  }
+          }
         }
       }
       seekerRef += FIELD_COUNT

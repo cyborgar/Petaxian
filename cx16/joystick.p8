@@ -25,7 +25,7 @@ joystick {
       lda #0                 ; Joystick 0
       jsr cx16.joystick_get
       eor #$ff               ; reverse bit pattern for easier testing
-      cmp #$ff		     ; Hack around NES keybord emulator issue
+      cmp #$ff               ; Hack around NES keybord emulator issue
       beq skip_store         ; if all bits set assume skip setting joy_info
       sta joy_info
 skip_store:
