@@ -84,8 +84,8 @@ main {
     ; immediately trigger start of game
     sys.wait(50)
 
-    wait_key(32, ">>> press start or space to begin <<<",
-             base.LBORDER + 1, base.DBORDER - 1, &start_msg_cols, 1);
+    wait_key(32, ">>> press fire or start to begin <<<",
+             base.LBORDER + 2, base.DBORDER - 1, &start_msg_cols, 1);
   }
 
   sub game_loop() {
@@ -247,8 +247,8 @@ endloop:
       game_over.draw_defeat()
     sound.off()
 
-    wait_key(32, "press start or space to continue",
-             base.LBORDER + 4, base.DBORDER - 1, &end_msg_cols, 0)
+    wait_key(32, ">> press fire or start to continue <<",
+             base.LBORDER + 1, base.DBORDER - 1, &end_msg_cols, 0)
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
@@ -269,9 +269,9 @@ endloop:
              usage.draw()
          }
        }
-       ; Let's also check joystick start
+       ; Let's also check joystick start (push up on c64) or fire
        joystick.pull_info()
-       if joystick.pushing_start()
+       if joystick.pushing_start() or joystick.pushing_fire()
          return
 
        time_lo = lsb(c64.RDTIM16())
