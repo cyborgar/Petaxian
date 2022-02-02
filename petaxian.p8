@@ -4,7 +4,7 @@
 %import base
 
 %import title
-%import usage
+%import roller
 %import decor
 %import game_over
 
@@ -78,7 +78,7 @@ main {
   sub game_title() {
     txt.clear_screen()
     title.draw()
-    usage.setup()
+    roller.setup()
 
     ; Add startup delay to prevent "start" button press from
     ; immediately trigger start of game
@@ -266,7 +266,7 @@ endloop:
          if col == 20 {
            col = 0
            if do_usage
-             usage.draw()
+             roller.draw()
          }
        }
        ; Let's also check joystick start (push up on c64) or fire
