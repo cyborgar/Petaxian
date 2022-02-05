@@ -113,7 +113,7 @@ enemy {
   ; Module variables used to avoid passing to subs as args
   byte delta_x
   byte delta_y
-  uword enemyRef; Point to data for current enemy
+  uword @requirezp enemyRef; Point to data for current enemy
 
   sub set_data() {
     enemies_left = 0
