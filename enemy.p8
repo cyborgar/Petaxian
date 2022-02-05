@@ -360,14 +360,33 @@ _move_down_else
     }}
   }
 
-  sub clear() {
-    ubyte tmp_x = enemyRef[EN_X]
-    ubyte tmp_y = enemyRef[EN_Y]
-
-    txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
-    txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
-    txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
-    txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
+  asmsub clear() clobbers (A, Y) {
+    ; ubyte tmp_x = enemyRef[EN_X]
+    ; ubyte tmp_y = enemyRef[EN_Y]
+    ;
+    ; txt.setcc(tmp_x,   tmp_y,   main.CLR, 1)
+    ; txt.setcc(tmp_x+1, tmp_y,   main.CLR, 1)
+    ; txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
+    ; txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
+   %asm {{
+      ldy #enemy.EN_X
+      lda (enemyRef),y
+      sta txt.setcc.column
+      ldy #enemy.EN_Y
+      lda (enemyRef),y
+      sta txt.setcc.row
+      lda #$20
+      sta txt.setcc.char
+      lda #$01
+      sta txt.setcc.charcolor
+      jsr txt.setcc
+      inc txt.setcc.column
+      jsr txt.setcc
+      inc txt.setcc.row
+      jsr txt.setcc
+      dec txt.setcc.column
+      jsr txt.setcc
+    }}
   }
 
   sub draw() {
