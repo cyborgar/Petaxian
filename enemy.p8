@@ -182,45 +182,49 @@ enemy {
   sub move_all() {
     enemyRef = &enemyData
     ubyte i = 0
-    while i < ENEMY_COUNT { 
-      move()
+    while i < ENEMY_COUNT {
+      if enemyRef[EN_ACTIVE] != 0
+        move()
       i++
       enemyRef += FIELD_COUNT
     }
   }
 
   sub move() {
-    if enemyRef[EN_ACTIVE] == 0
-      return
-
     ; wave delay
-    if enemyRef[EN_WAVE_DELAY] {
-      enemyRef[EN_WAVE_DELAY]--
+    ubyte tmp = enemyRef[EN_WAVE_DELAY]
+    if tmp {
+      tmp--
+      enemyRef[EN_WAVE_DELAY] = tmp
       return
     }
 
     ; pre-display position
-    if enemyRef[EN_MOVE_CNT] <= enemyRef[EN_DELAY] {
-      enemyRef[EN_MOVE_CNT]++
+    tmp = enemyRef[EN_MOVE_CNT]
+    if tmp <= enemyRef[EN_DELAY] {
+      tmp++
+      enemyRef[EN_MOVE_CNT] = tmp
       return
     }
 
     ; At end of all patterns we go to "baseline" move (pattern 0 or 1)
     ; (deployment or attacks) based on deployment direction. Also
     ; reset all counters
-    uword PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
+    tmp = enemyRef[EN_PAT]
+    uword PatternRef = move_patterns.list[ tmp ]
     if enemyRef[EN_MOVE_CNT] > PatternRef[ move_patterns.MP_MOVE_COUNT ] {
-      if enemyRef[EN_PAT] > 1 and
-        enemyRef[EN_PAT] <= move_patterns.LAST_ATTACK {
+      if tmp > 1 and tmp <= move_patterns.LAST_ATTACK {
         attack.end(enemyRef)
       } else { ; Switch from deployment to baseline
-        ubyte stable = enemyRef[EN_PAT] & 1
-        enemyRef[EN_PAT] = stable
+        tmp &= 1
+        enemyRef[EN_PAT] = tmp
         enemyRef[EN_DELAY] = 0
         enemyRef[EN_WAVE_DELAY] = 0
         enemyRef[EN_MOVE_CNT] = 1
       }
-      ; Since we have switch pattern we need to reset the reference
+      ; Since we have switch pattern we need to reset the reference 
+      ; NB!!! We can not use "tmp" for enemyRef[EN_PAT] here since attack.end
+      ; updates this position
       PatternRef = move_patterns.list[ enemyRef[EN_PAT] ]
     }
     
@@ -228,7 +232,7 @@ enemy {
     set_deltas( PatternRef[move_patterns.MP_MOVE_COUNT + offset] )
 
     clear()
-      
+
     if delta_x == -1
       move_left()
     else if delta_x == 1
