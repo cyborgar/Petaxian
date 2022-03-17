@@ -122,9 +122,12 @@ main {
         ; Player movements
         player_sub_counter++
         if player_sub_counter == player_speed {
+
           ; Check joystick
           joystick.pull_info()
-          if joystick.pushing_fire() { 
+	  keyboard.pull_info();
+
+          if joystick.pushing_fire() or keyboard.pushing_fire() { 
             if bullet_delay == 0 {
               gun.fire()
               bullet_delay = 3
@@ -132,23 +135,12 @@ main {
               bullet_delay--
           }
 
-          if joystick.pushing_left() {
+          if joystick.pushing_left() or keyboard.pushing_left() {
             gun.set_left()
-          } else if joystick.pushing_right() {
+          } else if joystick.pushing_right() or keyboard.pushing_right() {
             gun.set_right()
           }
-   
-	  keyboard.pull_info();
-
-          if ( keyboard.pushing_fire() ) {
-	    gun.fire()
-          }	  
-          if ( keyboard.pushing_left() ) {
-            gun.set_left()
-          } else if ( keyboard.pushing_right() ) {
-            gun.set_right()
-          }
-
+ 
           gun_bullets.move()
           gun.move()
           if glide_movement == 0  ; If joystic "mode" is set avoid gliding
