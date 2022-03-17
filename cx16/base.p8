@@ -4,6 +4,7 @@
 
 %import sound
 %import joystick
+%import keyboard
 
 base {
 

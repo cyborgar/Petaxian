@@ -138,12 +138,15 @@ main {
             gun.set_right()
           }
    
-          ubyte key = c64.GETIN()
+	  keyboard.pull_info();
 
-          when key {
-             157, ',' -> gun.set_left()
-              29, '/' -> gun.set_right()
-                  'z' -> gun.fire()
+          if ( keyboard.pushing_fire() ) {
+	    gun.fire()
+          }	  
+          if ( keyboard.pushing_left() ) {
+            gun.set_left()
+          } else if ( keyboard.pushing_right() ) {
+            gun.set_right()
           }
 
           gun_bullets.move()
