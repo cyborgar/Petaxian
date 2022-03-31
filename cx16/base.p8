@@ -16,7 +16,7 @@ base {
 
   sub platform_setup() {
     ; Set 40 column mode 
-    void cx16.screen_mode(3, false)
+    void cx16.screen_set_mode(0)
     ; Init sound
     sound.init()
     ; Init joystick 
