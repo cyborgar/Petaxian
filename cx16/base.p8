@@ -3,6 +3,7 @@
 ;
 
 %import sound
+%import textio
 %import joystick
 %import keyboard
 
@@ -17,6 +18,8 @@ base {
   sub platform_setup() {
     ; Set 40 column mode 
     void cx16.screen_mode(3, false)
+    txt.color2(1,0)
+    txt.clear_screen()
     ; Init sound
     sound.init()
     ; Init joystick 
