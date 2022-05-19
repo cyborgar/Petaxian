@@ -50,6 +50,11 @@ roller {
                  pageRef2[i], colRef2[i] )
     }
 
+    ; Temporary and ugly way to print hiscore
+    if page == 0 {
+      main.printHiscore()
+    }
+
     page++
     if page == PAGES
       page = 0

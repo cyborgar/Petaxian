@@ -316,6 +316,13 @@ endloop:
     printScore()
   }
 
+  ; To be replaced when a better solution is found
+  sub printHiscore() {
+     conv.str_uw0(hiscore)
+     write(1, base.LBORDER + 12, base.UBORDER+10, "hiscore:")
+     write(1, base.LBORDER + 21, base.UBORDER+10, conv.string_out)
+  }
+
   ; Convert/display uword value as desimal on screen. Uses function
   ; from Prog conv library to convert from uword to decimal string
   sub printNumber(ubyte x, ubyte y, uword val, ubyte digits) {
