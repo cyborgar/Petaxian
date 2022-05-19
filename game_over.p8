@@ -93,7 +93,7 @@ game_over {
     sound.score_sound_and_delay()
 
     if main.score > main.hiscore {
-      main.write(1, 5, 21, "congratulation! new higscore")
+      main.write(1, 5, 21, "congratulation! new hiscore")
       main.hiscore = main.score
     }
   }
