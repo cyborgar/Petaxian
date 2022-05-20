@@ -177,8 +177,6 @@ main {
                 bonus = 0
               else
                 bonus = stage.bonus_times[cur_stage-1] - wave_time
-              if bonus < 0 ; Set bonus to 0 if playtime is > bonus time
-                bonus = 0
             }
             cur_stage++
           }
