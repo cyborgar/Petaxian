@@ -72,14 +72,16 @@ bombs {
       if bombRef[BMB_ON] == true { 
         clear() ; Clear old position
         bombRef[BMB_Y]++;
-	ubyte tmp_y = bombRef[BMB_Y]
+        ubyte tmp_y = bombRef[BMB_Y]
         if tmp_y == base.DBORDER {
           bombRef[BMB_ON] = false
           active_bombs--
-        } else if tmp_y == base.DBORDER - 1 and
-            gun.check_collision( bombRef ) {
-          bombRef[BMB_ON] = false
-          active_bombs--
+        } else if tmp_y == base.DBORDER - 1 {
+          if gun.check_collision( bombRef ) {
+            bombRef[BMB_ON] = false
+            active_bombs--
+          } else
+            draw()
         } else {
           draw()
         }

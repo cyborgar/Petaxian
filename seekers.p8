@@ -84,10 +84,12 @@ seekers {
         if tmp_y == base.DBORDER {
           seekerRef[SKR_ON] = false
           active_bombs--
-        } else if tmp_y == base.DBORDER - 1 and
-            gun.check_collision( seekerRef ) {
-          seekerRef[SKR_ON] = false
-          active_bombs--
+        } else if tmp_y == base.DBORDER - 1 {
+          if gun.check_collision( seekerRef ) {
+            seekerRef[SKR_ON] = false
+            active_bombs--
+          } else 
+	    draw()
         } else {
           draw()
         }

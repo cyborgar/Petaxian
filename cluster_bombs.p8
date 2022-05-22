@@ -132,11 +132,13 @@ cluster_bombs {
           clusterRef[CLU_ON] = false
           if i < MAX_CLUSTERS
             active_clusters--
-        } else if tmp_y == (base.DBORDER - 1) and
-                  gun.check_collision( clusterRef ) {
-          clusterRef[CLU_ON] = false
-          if i < MAX_CLUSTERS
-            active_clusters--
+        } else if tmp_y == (base.DBORDER - 1) {
+          if gun.check_collision( clusterRef ) {
+            clusterRef[CLU_ON] = false
+            if i < MAX_CLUSTERS
+              active_clusters--
+	  } else
+            draw()
         } else {
           draw()
         }
