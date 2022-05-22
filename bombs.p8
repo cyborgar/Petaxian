@@ -72,16 +72,16 @@ bombs {
       if bombRef[BMB_ON] == true { 
         clear() ; Clear old position
         bombRef[BMB_Y]++;
-        if bombRef[BMB_Y] == base.DBORDER {
+	ubyte tmp_y = bombRef[BMB_Y]
+        if tmp_y == base.DBORDER {
           bombRef[BMB_ON] = false
           active_bombs--
-        } else {
-          if gun.check_collision( bombRef ) {
+        } else if tmp_y == base.DBORDER - 1 and
+	      gun.check_collision( bombRef ) {
             bombRef[BMB_ON] = false
             active_bombs--
-          } else {
+        } else {
             draw()
-          }
         }
       }
       bombRef += FIELD_COUNT
