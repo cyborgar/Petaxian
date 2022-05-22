@@ -72,24 +72,24 @@ seekers {
       if seekerRef[SKR_ON] == true { 
         clear() ; Clear old position
         seekerRef[SKR_Y]++;
+	ubyte tmp_y = seekerRef[SKR_Y]
         ; Seek gun every other drop
-        if seekerRef[SKR_Y] % 2 == 0 {
+        if tmp_y % 2 == 0 {
           if seekerRef[SKR_X] <= gun.x {
              seekerRef[SKR_X]++
            } else {
              seekerRef[SKR_X]--
           }
         }
-        if seekerRef[SKR_Y] == base.DBORDER {
+        if tmp_y == base.DBORDER {
+          seekerRef[SKR_ON] = false
+          active_bombs--
+        } else if tmp_y == base.DBORDER - 1 and
+            gun.check_collision( seekerRef ) {
           seekerRef[SKR_ON] = false
           active_bombs--
         } else {
-          if gun.check_collision( seekerRef ) {
-            seekerRef[SKR_ON] = false
-            active_bombs--
-          } else {
-            draw()
-          }
+          draw()
         }
       }
       seekerRef += FIELD_COUNT

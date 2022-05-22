@@ -77,11 +77,11 @@ bombs {
           bombRef[BMB_ON] = false
           active_bombs--
         } else if tmp_y == base.DBORDER - 1 and
-	      gun.check_collision( bombRef ) {
-            bombRef[BMB_ON] = false
-            active_bombs--
+            gun.check_collision( bombRef ) {
+          bombRef[BMB_ON] = false
+          active_bombs--
         } else {
-            draw()
+          draw()
         }
       }
       bombRef += FIELD_COUNT
