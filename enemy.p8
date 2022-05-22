@@ -572,7 +572,7 @@ _move_down_else
 
     ; Advanced enemies may drop seekers instead of regular bombs
     if eRef[EN_TYPE] and chance < (eRef[EN_TYPE] << 1) {
-      seekers.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      seeker_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
       return
     }
     

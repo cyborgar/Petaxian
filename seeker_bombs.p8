@@ -3,7 +3,7 @@
 ; Seekers can be on either "half" of a character. Use left/right half chars.
 ; Bombs move left/right towards player at every other move downwards
 ;
-seekers {
+seeker_bombs {
   const ubyte COL = 1
 
   const ubyte MAX_SEEKERS = 5

@@ -13,7 +13,7 @@
 %import gun
 %import enemy
 %import bombs
-%import seekers
+%import seeker_bombs
 %import cluster_bombs
 %import explosion
 
@@ -108,7 +108,7 @@ main {
     gun_bullets.set_data()
 
     bombs.set_data()
-    seekers.set_data()
+    seeker_bombs.set_data()
     cluster_bombs.set_data()
 
     repeat {
@@ -164,7 +164,7 @@ main {
 
           ; Make seekers slower than other bombs
           if seeker_delay {
-            seekers.move()
+            seeker_bombs.move()
             seeker_delay = 0
           } else {
             seeker_delay = 1
