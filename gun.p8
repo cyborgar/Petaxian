@@ -133,9 +133,6 @@ gun {
     if post_hit 
       return 0
 
-    if BombRef[bombs.BMB_Y] != gun.y
-      return 0
-
     if BombRef[bombs.BMB_X] < gun.x
       return 0
     if BombRef[bombs.BMB_X] > gun.x + 2
