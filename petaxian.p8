@@ -14,6 +14,7 @@
 %import enemy
 %import bombs
 %import seekers
+%import cluster_bombs
 %import explosion
 
 main {
@@ -105,8 +106,10 @@ main {
     enemy.set_data()
     gun.set_data()
     gun_bullets.set_data()
+
     bombs.set_data()
     seekers.set_data()
+    cluster_bombs.set_data()
 
     repeat {
       ubyte time_lo = lsb(c64.RDTIM16())
@@ -125,7 +128,7 @@ main {
 
           ; Check joystick
           joystick.pull_info()
-	  keyboard.pull_info();
+          keyboard.pull_info();
 
           if joystick.pushing_fire() or keyboard.pushing_fire() { 
             if bullet_delay == 0 {
@@ -155,15 +158,18 @@ main {
           enemy.trigger_attack()
           enemy.move_all()
           enemy_sub_counter = 0
+
           bombs.move()
-          ; Make seekers slow
+          cluster_bombs.move()
+
+          ; Make seekers slower than other bombs
           if seeker_delay {
             seekers.move()
             seeker_delay = 0
           } else {
             seeker_delay = 1
           }
-    
+
           enemy.spawn_bomb()
         }
 

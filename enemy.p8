@@ -72,18 +72,29 @@ enemy {
     $E1, $21, $87, $03, $84, $B4, $0C, $2D,
     $E4, $11, $8D, $22, $80, $75, $04, $AB ]
 
-  uword[] enemy_types = [ &raider, &raider2, &raider3 ]
+  ;  X    All "direction versions" are equal, but we need 
+  ; XXX   duplication since we use the same code as the 
+  ;  X    other raiders
+  ubyte[] raider4 = [
+    $E4, $20, $8D, $01, $80, $B1, $04, $27,
+    $E4, $20, $8D, $01, $80, $B1, $04, $27,
+    $E4, $20, $8D, $01, $80, $B1, $04, $27,
+    $E4, $20, $8D, $01, $80, $B1, $04, $27 ]
+
+
+  uword[] enemy_types = [ &raider, &raider2, &raider3, &raider4 ]
 
   const ubyte RAIDER1 = 0
   const ubyte RAIDER2 = 1
   const ubyte RAIDER3 = 2
+  const ubyte RAIDER4 = 3
 
   ; Durability array (based on positions above)
-  ubyte[] enemy_durability = [ 1, 2, 3 ]
+  ubyte[] enemy_durability = [ 1, 2, 3, 2]
   ; Score value
-  ubyte[] enemy_score = [ 5, 10, 15 ]
+  ubyte[] enemy_score = [ 5, 10, 15, 20 ]
   ; Color for enemies based on current durability (lookup start at 1)  
-  ubyte[] enemy_color = [ 0, 5, 13, 3 ]
+  ubyte[] enemy_color = [ 0, 5, 13, 3, 1 ]
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Enemy data strcture held in array
@@ -552,6 +563,12 @@ _move_down_else
     
     if chance > stage_factor * enemy_count_factor
       return
+
+    ; Raider 4 drop "special bombs"
+    if eRef[EN_TYPE] == RAIDER4 {
+      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      return
+    }
 
     ; Advanced enemies may drop seekers instead of regular bombs
     if eRef[EN_TYPE] and chance < (eRef[EN_TYPE] << 1) {
