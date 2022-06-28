@@ -48,7 +48,7 @@ enemy {
   ; X 
 
   ; TopLeft   TopRight  BottomL   BottomR
-  ubyte[] raider = [
+  ubyte[] raider1 = [
     $90, $10, $24, $20, $40, $60, $80, $81,  ; Enemy moving right
     $91, $00, $26, $00, $44, $20, $88, $01,  ; Enemy moving down
     $81, $01, $06, $02, $04, $24, $08, $09,  ; Enemy moving left
@@ -64,35 +64,55 @@ enemy {
     $80, $31, $04, $23, $00, $E4, $00, $8D ]
 
   ; XX
-  ;  XX
+  ;   X
   ; XX
   ubyte[] raider3 = [
+    $34, $30, $29, $21, $C0, $C1, $84, $86,
+    $55, $20, $AA, $01, $44, $91, $88, $26,
+    $61, $21, $83, $03, $84, $94, $0C, $2C,
+    $64, $11, $89, $22, $80, $55, $04, $AA ]
+
+  ; XX
+  ;  XX
+  ; XX
+  ubyte[] raider4 = [
     $B4, $30, $2D, $21, $C0, $E1, $84, $87,
     $D5, $20, $AE, $01, $44, $B1, $88, $27,
     $E1, $21, $87, $03, $84, $B4, $0C, $2D,
     $E4, $11, $8D, $22, $80, $75, $04, $AB ]
 
   ;  X    All "direction versions" are equal, but we need 
-  ; XXX   duplication since we use the same code as the 
+  ; X X   duplication since we use the same code as the 
   ;  X    other raiders
-  ubyte[] raider4 = [
+  ubyte[] raider5 = [
+    $64, $20, $89, $01, $80, $91, $04, $26,
+    $64, $20, $89, $01, $80, $91, $04, $26,
+    $64, $20, $89, $01, $80, $91, $04, $26,
+    $64, $20, $89, $01, $80, $91, $04, $26 ]
+ 
+  ;  X    All "direction versions" are equal (as above)
+  ; XXX
+  ;  X
+  ubyte[] raider6 = [
     $E4, $20, $8D, $01, $80, $B1, $04, $27,
     $E4, $20, $8D, $01, $80, $B1, $04, $27,
     $E4, $20, $8D, $01, $80, $B1, $04, $27,
     $E4, $20, $8D, $01, $80, $B1, $04, $27 ]
 
-
-  uword[] enemy_types = [ &raider, &raider2, &raider3, &raider4 ]
+  uword[] enemy_types = [ &raider1, &raider2, &raider3, &raider4,
+                          &raider5, &raider6 ]
 
   const ubyte RAIDER1 = 0
   const ubyte RAIDER2 = 1
   const ubyte RAIDER3 = 2
   const ubyte RAIDER4 = 3
+  const ubyte RAIDER5 = 4
+  const ubyte RAIDER6 = 5
 
   ; Durability array (based on positions above)
-  ubyte[] enemy_durability = [ 1, 2, 3, 2]
+  ubyte[] enemy_durability = [ 1, 2, 3, 4, 2, 4]
   ; Score value
-  ubyte[] enemy_score = [ 5, 10, 15, 20 ]
+  ubyte[] enemy_score = [ 5, 10, 15, 20, 20, 30 ]
   ; Color for enemies based on current durability (lookup start at 1)  
   ubyte[] enemy_color = [ 0, 5, 13, 3, 1 ]
 
@@ -556,7 +576,7 @@ _move_down_else
     ubyte chance = rnd() % 100
 
     ; Stage base freqency
-    ubyte stage_factor = 4 + main.cur_stage / 2
+    ubyte stage_factor = 6 + main.cur_stage / 3
 
     ; Increase bomb frequency with less enemies
     ubyte enemy_count_factor = 1 + (ENEMY_COUNT - enemies_left) / 4
@@ -565,7 +585,7 @@ _move_down_else
       return
 
     ; Raider 4 drop "special bombs"
-    if eRef[EN_TYPE] == RAIDER4 {
+    if eRef[EN_TYPE] >= RAIDER5 {
       cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
       return
     }
