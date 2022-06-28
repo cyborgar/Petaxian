@@ -323,8 +323,8 @@ endloop:
   ; To be replaced when a better solution is found
   sub printHiscore() {
      conv.str_uw0(hiscore)
-     write(1, base.LBORDER + 12, base.UBORDER+10, "hiscore:")
-     write(1, base.LBORDER + 21, base.UBORDER+10, conv.string_out)
+     write(1, 12, 10, "hiscore:")
+     write(1, 21, 10, conv.string_out)
   }
 
   ; Convert/display uword value as desimal on screen. Uses function
