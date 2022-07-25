@@ -51,10 +51,4 @@ title {
     }
   }
 
-  sub write(ubyte col, ubyte x, ubyte y, uword messageptr) {
-    txt.color(col)
-    txt.plot( x, y )
-    txt.print( messageptr )
-  }
-
 }

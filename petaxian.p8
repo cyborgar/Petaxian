@@ -85,8 +85,8 @@ main {
     ; immediately trigger start of game
     sys.wait(50)
 
-    wait_key(32, ">>> press fire or start to begin <<<",
-             base.LBORDER + 2, base.DBORDER - 1, &start_msg_cols, 1);
+    wait_key(32, ">>> press fire or start to begin <<<",  2, 23, 
+             &start_msg_cols, 1);
   }
 
   sub game_loop() {
@@ -246,8 +246,8 @@ endloop:
       game_over.draw_defeat()
     sound.off()
 
-    wait_key(32, ">> press fire or start to continue <<",
-             base.LBORDER + 1, base.DBORDER - 1, &end_msg_cols, 0)
+    wait_key(32, ">> press fire or start to continue <<", 1, 23,
+            &end_msg_cols, 0)
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
@@ -260,7 +260,7 @@ endloop:
        inp = c64.GETIN()
        if time_lo >= 2 {
          c64.SETTIM(0,0,0)
-         title.write( colRef[col], x, y, strRef )
+         write( colRef[col], x, y, strRef )
          col++
          if col == 20 {
            col = 0
@@ -281,18 +281,17 @@ endloop:
     when stage_start_delay {
       10,35 -> {
         printNumber(4, 5, bonus as uword, 2)
-        title.write( 3, base.LBORDER + 7, base.UBORDER + 5, "bonus sec" )
+        write( 3, 7, 5, "bonus sec" )
       }
       70 -> {
-        title.write( 1, base.LBORDER + 17, base.UBORDER + 5, "--- points" )
+        write( 1, 17, 5, "--- points" )
         uword score_bonus = bonus as uword * 50
         add_score(score_bonus)
         bonus_score += score_bonus
         printNumber(17, 5, score_bonus, 3)
       }
       140 -> {
-        title.write( 4, base.LBORDER + 2, base.UBORDER + 5,
-                     "                         " )
+        write( 4, 2, 5, "                         " )
       }
     }
   }
@@ -300,11 +299,11 @@ endloop:
   sub stage_announce() {
     when stage_start_delay {
       170,200,230 -> {
-        title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "stage:" )
+        write( 3, 12, 5, "stage:" )
         printNumber(19, 5, cur_stage, 2)
       }
      190,220,249 -> {
-        title.write( 3, base.LBORDER + 12, base.UBORDER + 5, "         " )
+        write( 3, 12, 5, "         " )
       }
     }
   }
