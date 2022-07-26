@@ -124,7 +124,6 @@ gun {
   sub fire() {
     if main.stage_start_delay ; No bullets in stage end/start
       return
-    sound.fire()
     gun_bullets.trigger(x+1, y-1, leftmost)
   }
 

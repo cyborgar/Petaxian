@@ -32,7 +32,7 @@ gun_bullets {
   sub trigger(ubyte x, ubyte y, ubyte lm) {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return
-
+    sound.fire()
     bulletRef = &bulletData
     ubyte i = 0
     while i < MAX_BULLETS {
