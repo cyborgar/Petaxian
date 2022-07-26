@@ -1,99 +1,53 @@
 ;
-; This "system" can only play one sound so I have given "loader" sounds
-; priority, I.e don't play gun fire if we already have an explosion under
-; way.
+; Use different voice for each sound. Still won't allow two explosions at
+; once (roate over multiple voices?)
 ; 
 
-sound {
-  ubyte sound_cutoff = 0
+%import psg
 
+sound {
   sub init() {
-      cx16.vpoke(1, $f9c2, %00111111)     ; volume max, no channels
+    psg.silent()
+    cx16.set_irq(psg.envelopes_irq, true)
   }
 
-  ; Check if we need to turn off sound
-  sub check() {
-    if sound_cutoff {
-      if sound_cutoff == 1
-        off()
-      sound_cutoff--
-    }
+  sub check() { ; Dummy function used on C64 only
   }
 
   sub fire() {
-    if sound_cutoff > 4 { ; Prioritize explosions
-      return
-    }
-
-    uword freq = 800
-    cx16.vpoke(1, $f9c0, lsb(freq))
-    cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11110000)     ; volume
-    cx16.vpoke(1, $f9c3, %01000000)     ; Sawtooth
-    sound_cutoff = 4
+    psg.freq(0, 800)
+    psg.voice(0, psg.LEFT| psg.RIGHT, 63, psg.SAWTOOTH, 0)
+    psg.envelope(0, 45, 240, 3, 50)
   }
 
   sub hit() {
-    if sound_cutoff > 2 { ; Prioritize explosions
-      return
-    }
-
-    uword freq = 5000
-    cx16.vpoke(1, $f9c0, lsb(freq))
-    cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11110000)     ; volume
-    cx16.vpoke(1, $f9c3, %01000000)     ; noise waveform
-    sound_cutoff = 2
+    psg.freq(1, 5000)
+    psg.voice(1, psg.LEFT| psg.RIGHT, 63, psg.SAWTOOTH, 0)
+    psg.envelope(1, 32, 100, 2, 10)
   }
 
   sub bomb() {
-    ; swish
-    if sound_cutoff > 6 { ; Prioritize explosions
-      return
-    }
-
-    uword freq = 2600
-    cx16.vpoke(1, $f9c0, lsb(freq))
-    cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11110000)     ; half volume
-    cx16.vpoke(1, $f9c3, %11000000)     ; noise waveform
-    sound_cutoff = 6
+    psg.freq(2, 2600)
+    psg.voice(2, psg.LEFT| psg.RIGHT, 63, psg.NOISE, 0)
+    psg.envelope(2, 63, 100, 6, 10)
   }
 
   sub small_explosion() {
-    ; explosion
-    if sound_cutoff > 8 { ; Prioritize large explosions
-      return
-    }
-
-    uword freq = 400
-    cx16.vpoke(1, $f9c0, lsb(freq))
-    cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11111111)     ; max volume
-    cx16.vpoke(1, $f9c3, %11000000)     ; noise waveform
-    sound_cutoff = 8
+    psg.freq(3, 400)
+    psg.voice(3, psg.LEFT| psg.RIGHT, 127, psg.NOISE, 0)
+    psg.envelope(3, 127, 128, 8, 100)
   }
 
   sub large_explosion() {
-    ; big explosion
-    uword freq = 800
-    cx16.vpoke(1, $f9c0, lsb(freq))
-    cx16.vpoke(1, $f9c1, msb(freq))
-    cx16.vpoke(1, $f9c2, %11111111)     ; max volume
-    cx16.vpoke(1, $f9c3, %11000000)     ; noise waveform
-    sound_cutoff = 30
-  }
-
-  sub off() {
-    cx16.vpoke(1, $f9c2, 0)     ; shut off
+    psg.freq(4, 450)
+    psg.voice(4, psg.LEFT| psg.RIGHT, 127, psg.NOISE, 0)
+    psg.envelope(4, 127, 100, 30, 50)
   }
 
   sub score_sound_and_delay() {
     ; short "burst" sound and a delay
     sound.small_explosion()
-    sys.wait(20)
-    sound.off()
-    sys.wait(30)
+    sys.wait(50)
   }
 
 }

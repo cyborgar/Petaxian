@@ -1,20 +1,26 @@
+;
+; C64 sound effects
+; 
+; Currently just using one voice and give different effects some priorites
+; for some limited control of effecst.
+;
+; Possibly consider a rewrite to use more vocies.
+;
 sound {
-  ubyte sound_cutoff = 0
+  ubyte sound_priority = 0
 
   sub init() {
     c64.MVOL = 15
   }
 
   sub check() {
-    if sound_cutoff {
-      if sound_cutoff == 1
-        off()
-      sound_cutoff--
+    if sound_priority > 0 {
+      sound_priority--
     }
   }
 
   sub fire() {
-   if sound_cutoff > 4 { ; Prioritize explosions
+   if sound_priority > 4 { ; Prioritize explosions
       return
     }
 
@@ -25,11 +31,11 @@ sound {
     c64.CR1 = %00010000
     c64.CR1 = %00010001
 
-    sound_cutoff = 4
+    sound_priority = 4
   }
 
   sub hit() {
-    if sound_cutoff > 2 { ; Prioritize explosions
+    if sound_priority > 2 { ; Prioritize explosions
       return
     }
 
@@ -40,11 +46,11 @@ sound {
     c64.CR1 = %00010000
     c64.CR1 = %00010001
 
-    sound_cutoff = 2
+    sound_priority = 2
   }
 
   sub bomb() {
-    if sound_cutoff > 6 { ; Prioritize explosions
+    if sound_priority > 6 { ; Prioritize explosions
       return
     }
 
@@ -55,11 +61,11 @@ sound {
     c64.CR1 = %10000000
     c64.CR1 = %10000001
     
-    sound_cutoff = 6
+    sound_priority = 6
   }
 
   sub small_explosion() {
-    if sound_cutoff > 8 { ; Prioritize large explosions
+    if sound_priority > 8 { ; Prioritize large explosions
       return
     }
 
@@ -70,7 +76,7 @@ sound {
     c64.CR1 = %10000000
     c64.CR1 = %10000001
     
-    sound_cutoff = 8
+    sound_priority = 8
   }
 
   sub large_explosion() {
@@ -81,15 +87,12 @@ sound {
     c64.CR1 = %10000000
     c64.CR1 = %10000001
 
-    sound_cutoff = 30
+    sound_priority = 30
   }
   
   sub score_sound_and_delay() {
     ; short "burst" sound and a delay
     sound.small_explosion()
     sys.wait(50)
-  }
-
-  sub off() {
   }
 }

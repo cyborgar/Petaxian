@@ -224,7 +224,6 @@ endloop:
 
     if time_lo >= 1 {
       c64.SETTIM(0,0,0)
-      sound.check()
 
       ; explosions etc.
       animation_sub_counter++
@@ -244,7 +243,6 @@ endloop:
       game_over.draw_victory()
     else
       game_over.draw_defeat()
-    sound.off()
 
     wait_key(32, ">> press fire or start to continue <<", 1, 23,
             &end_msg_cols, 0)
