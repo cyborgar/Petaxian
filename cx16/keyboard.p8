@@ -19,15 +19,15 @@ keyboard {
     key = c64.GETIN()
   }
 
-  sub pushing_fire() -> ubyte {
+  sub pushing_fire() -> bool {
     return key == 'z'
   }
 
-  sub pushing_left() -> ubyte {
+  sub pushing_left() -> bool {
     return key == 'k' or key == 157
   }
 
-  sub pushing_right() -> ubyte {
+  sub pushing_right() -> bool {
     return key == 'l' or key == 29
   }
 
