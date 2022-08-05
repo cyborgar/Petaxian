@@ -3,19 +3,22 @@
 %import page_credits
 %import page_usage
 %import page_scoring
+%import page_scoring_p2
 
 roller {
 
   const ubyte PAGE_WDT = 40 ; Full width
   const ubyte PAGE_HGT = 6  ; half height sinc page is too big
 
-  const ubyte PAGES = 3
+  const ubyte PAGES = 4
   uword[] pages = [ &page_credits.chars_1, &page_credits.chars_2,
                     &page_usage.chars_1, &page_usage.chars_2,
-  	  	    &page_scoring.chars_1, &page_scoring.chars_2 ]
+  	  	    &page_scoring.chars_1, &page_scoring.chars_2,
+  	  	    &page_scoring_p2.chars_1, &page_scoring_p2.chars_2 ]
   uword[] colors = [ &page_credits.colors_1, &page_credits.colors_2,
                      &page_usage.colors_1, &page_usage.colors_2,
-                     &page_scoring.colors_1, &page_scoring.colors_2 ]
+                     &page_scoring.colors_1, &page_scoring.colors_2,
+                     &page_scoring_p2.colors_1, &page_scoring_p2.colors_2 ]
 
   ubyte page
   ubyte delay_counter
