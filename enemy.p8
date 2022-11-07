@@ -22,6 +22,8 @@
 ; "block" chars
 ;
 
+%import math
+
 %import convert
 %import move_patterns
 %import attack
@@ -532,7 +534,7 @@ _move_down_else
 
   ; Random chance of dropping bomb per active enemy
   ;   Note that this seem to be spawn way to much even with 
-  ;   a low percentage. rnd() fucnction may not distribute
+  ;   a low percentage. math.rnd() fucnction may not distribute
   ;   well for this use.
   sub spawn_bomb_new() {
     ubyte enemy_num
@@ -541,7 +543,7 @@ _move_down_else
       if enemyRef[EN_ACTIVE] == 1 { 
         if enemyRef[EN_PAT] <= 1 { ; No bombs at deployment
           ; Check if we drop bomb
-          ubyte chance = rnd() % 100
+          ubyte chance = math.rnd() % 100
           if chance < 1 
             bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y],
                           enemyRef[EN_SUBPOS])
@@ -561,7 +563,7 @@ _move_down_else
   ;   miss
   sub spawn_bomb() {
     ; Find random enemy
-    ubyte enemy_num = rnd() % ENEMY_COUNT
+    ubyte enemy_num = math.rnd() % ENEMY_COUNT
 
     ; Check if it's active
     uword eRef = &enemyData + enemy_num * FIELD_COUNT
@@ -573,7 +575,7 @@ _move_down_else
       return
   
     ; First check if we are spawning a bomb
-    ubyte chance = rnd() % 100
+    ubyte chance = math.rnd() % 100
 
     ; Stage base freqency
     ubyte stage_factor = 6 + main.cur_stage / 3
@@ -606,7 +608,7 @@ _move_down_else
       return
 
     ; Find random enemy
-    ubyte enemy_num = rnd() % ENEMY_COUNT
+    ubyte enemy_num = math.rnd() % ENEMY_COUNT
 
     ; Check if it's active
     uword eRef = &enemyData + enemy_num * FIELD_COUNT
@@ -618,7 +620,7 @@ _move_down_else
       return
 
     ; First check if we are attacking
-    ubyte chance = rnd() % 100
+    ubyte chance = math.rnd() % 100
 
     ; Stage base freqency for attack
     ubyte stage_factor = 1 + main.cur_stage / 3
