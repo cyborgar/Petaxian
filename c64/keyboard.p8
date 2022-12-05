@@ -13,7 +13,7 @@
 
 keyboard {
 
-  ubyte key
+  ubyte keypress
 
   asmsub pull_info() clobbers(A, X) {
     %asm {{
@@ -30,14 +30,14 @@ keyboard {
       and #%10000000 ; Col 7 (PB7)
 
       bne no_shift
-      lda #$1         ; Set LEFT SHIFT in key
+      lda #$1         ; Set LEFT SHIFT in keypress
       jmp check_k
 
-no_shift              ; otherwise clear key
+no_shift              ; otherwise clear keypress
       lda #$0
 
 check_k
-      sta key
+      sta keypress
 
       ; Check for K
       lda #%11101111 ; Row 4 (PA4)
@@ -46,9 +46,9 @@ check_k
       and #%00100000 ; Col 5 (PB5)
 
       bne check_l
-      lda key
+      lda keypress
       ora #$02
-      sta key
+      sta keypress
 
       rts ; Return, we don't check for L
       
@@ -60,9 +60,9 @@ check_l
       and #%00000100 ; Col 2 (PB2)
 
       bne return
-      lda key
+      lda keypress
       ora #$04
-      sta key
+      sta keypress
 
 return
       rts
@@ -71,15 +71,15 @@ return
   }
 
   sub pushing_fire() -> ubyte {
-    return key & 1
+    return keypress & 1
   }
 
   sub pushing_left() -> ubyte {
-    return key & 2
+    return keypress & 2
   }
 
   sub pushing_right() -> ubyte {
-    return key & 4
+    return keypress & 4
   }
 
 }

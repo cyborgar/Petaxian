@@ -5,11 +5,11 @@
 convert {
   %option force_output
 
-  ubyte[] tbl = [  $20, $7E, $7C, $E2, $7B, $61, $FF, $EC,
+  ubyte[] table = [  $20, $7E, $7C, $E2, $7B, $61, $FF, $EC,
                    $6C, $7F, $E1, $FB, $62, $FC, $FE, $A0 ]
 
   ;    sub get_high_old(ubyte data) -> ubyte {
-  ;      return tbl[ (data & 240) >> 4 ]
+  ;      return table[ (data & 240) >> 4 ]
   ;    }
   inline asmsub get_high(ubyte value @A) clobbers(Y) -> ubyte @A {
     %asm {{
@@ -19,25 +19,25 @@ convert {
       lsr a
       lsr a
       tay
-      lda convert.tbl,y
+      lda convert.table,y
     }}
   }
 
   ;    sub get_low_old(ubyte data) -> ubyte {
-  ;      return tbl[ data & 15 ]
+  ;      return table[ data & 15 ]
   ;    }
   inline asmsub get_low(ubyte value @A) clobbers(Y) -> ubyte @A {
     %asm {{
       and #$0F
       tay
-      lda convert.tbl,y
+      lda convert.table,y
     }}
   }
 
 ;  sub to_nibble_old(ubyte cnv) -> ubyte {
 ;    ubyte i = 0
 ;    while i < 7 {
-;      if tbl[i] == cnv
+;      if table[i] == cnv
 ;        return i
 ;      i++
 ;    }
@@ -46,7 +46,7 @@ convert {
   asmsub to_nibble(ubyte cnv @A) -> ubyte @A {
     %asm {{
         ldy  #6
--       cmp  tbl,y
+-       cmp  table,y
         beq  +
         dey
         bpl  -
