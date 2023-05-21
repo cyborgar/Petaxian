@@ -11,18 +11,21 @@ joystick {
   ubyte @shared joy_info
   ubyte @shared joy_info2
   ubyte @shared joy_info3
+  ubyte selected_joystick
 
   ; Need to set here to prevent removal as unused (only set in assmbly)
   sub init() {
     joy_info = 0
     joy_info2 = 0
     joy_info3 = 0
+    selected_joystick = 128
   }
 
   ; Get joystick info from kernal to variables
   asmsub pull_info() clobbers(A, X, Y) {
     %asm {{
-      lda #0                 ; Joystick 0
+      lda selected_joystick
+      and #7
       jsr cx16.joystick_get
       eor #$ff               ; reverse bit pattern for easier testing
       cmp #$ff               ; Hack around NES keybord emulator issue
@@ -36,11 +39,35 @@ skip_store:
   }
 
   sub pushing_start() -> ubyte {
-    return joy_info & 16
+    if joy_info & 16
+      return 16
+    if selected_joystick==128 {
+      ; scan all joysticks to see if any presses start, then choose that one
+      for cx16.r0L in 4 downto 0 {
+        cx16.r1 = cx16.joystick_get2(cx16.r0L)
+        if cx16.r1 & 16 == 0 {
+           selected_joystick = cx16.r0L
+           return 16
+        }
+      }
+    }
+    return 0
   }
 
   sub pushing_fire() -> ubyte {
-    return joy_info & 192    ; A or B on NES, B or Y on SNES
+    if joy_info & 192    ; A or B on NES, B or Y on SNES
+      return joy_info & 192
+    if selected_joystick==128 {
+      ; scan all joysticks to see if any presses fire, then choose that one
+      for cx16.r0L in 4 downto 0 {
+        cx16.r1 = cx16.joystick_get2(cx16.r0L)
+        if cx16.r1 & 192 != 192 {
+           selected_joystick = cx16.r0L
+           return cx16.r1 & 192
+        }
+      }
+    }
+    return 0
   }
 
   sub pushing_left() -> ubyte {
