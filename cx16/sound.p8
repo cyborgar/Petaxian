@@ -35,13 +35,13 @@ sound {
   sub small_explosion() {
     psg.freq(3, 400)
     psg.voice(3, psg.LEFT| psg.RIGHT, 127, psg.NOISE, 0)
-    psg.envelope(3, 127, 128, 8, 100)
+    psg.envelope(3, 63, 128, 8, 100)
   }
 
   sub large_explosion() {
     psg.freq(4, 450)
     psg.voice(4, psg.LEFT| psg.RIGHT, 127, psg.NOISE, 0)
-    psg.envelope(4, 127, 100, 30, 50)
+    psg.envelope(4, 63, 100, 30, 50)
   }
 
   sub score_sound_and_delay() {
