@@ -112,11 +112,11 @@ main {
     cluster_bombs.set_data()
 
     repeat {
-      ubyte time_lo = lsb(c64.RDTIM16())
+      ubyte time_lo = lsb(cbm.RDTIM16())
 
       ; May needed to find a better timer
       if time_lo >= 1 {
-        c64.SETTIM(0,0,0)
+        cbm.SETTIM(0,0,0)
         wave_ticks++
 
         ; controll sound effects
@@ -220,10 +220,10 @@ main {
     ; Let explosion animation finish loop
     ubyte end_counter = 50
 endloop:
-    ubyte time_lo = lsb(c64.RDTIM16())
+    ubyte time_lo = lsb(cbm.RDTIM16())
 
     if time_lo >= 1 {
-      c64.SETTIM(0,0,0)
+      cbm.SETTIM(0,0,0)
 
       ; explosions etc.
       animation_sub_counter++
@@ -250,14 +250,14 @@ endloop:
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
                uword colRef, ubyte do_usage) {
-    ubyte time_lo = lsb(c64.RDTIM16())
+    ubyte time_lo = lsb(cbm.RDTIM16())
     ubyte col = 0 
 
     ubyte inp = 0
     while inp != key {
-       inp = c64.GETIN()
+       inp = cbm.GETIN()
        if time_lo >= 2 {
-         c64.SETTIM(0,0,0)
+         cbm.SETTIM(0,0,0)
          write( colRef[col], x, y, strRef )
          col++
          if col == 20 {
@@ -271,7 +271,7 @@ endloop:
        if joystick.pushing_start() or joystick.pushing_fire()
          return
 
-       time_lo = lsb(c64.RDTIM16())
+       time_lo = lsb(cbm.RDTIM16())
     }
   }
 

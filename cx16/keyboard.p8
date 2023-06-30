@@ -16,7 +16,7 @@ keyboard {
   ubyte key
 
   sub pull_info() {
-    key = c64.GETIN()
+    key = cbm.GETIN()
   }
 
   sub pushing_fire() -> bool {
