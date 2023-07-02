@@ -19,7 +19,7 @@ convert {
       lsr a
       lsr a
       tay
-      lda convert.table,y
+      lda p8_convert.p8_table,y
     }}
   }
 
@@ -30,7 +30,7 @@ convert {
     %asm {{
       and #$0F
       tay
-      lda convert.table,y
+      lda p8_convert.p8_table,y
     }}
   }
 
@@ -46,7 +46,7 @@ convert {
   asmsub to_nibble(ubyte cnv @A) -> ubyte @A {
     %asm {{
         ldy  #6
--       cmp  table,y
+-       cmp  p8_table,y
         beq  +
         dey
         bpl  -
