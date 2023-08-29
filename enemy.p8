@@ -408,20 +408,20 @@ _move_down_else
    %asm {{
       ldy #p8_enemy.p8_EN_X
       lda (p8_enemyRef),y
-      sta txt.setcc.column
+      sta txt.setcc.col
       ldy #p8_enemy.p8_EN_Y
       lda (p8_enemyRef),y
       sta txt.setcc.row
       lda #$20
-      sta txt.setcc.char
+      sta txt.setcc.character
       lda #$01
       sta txt.setcc.charcolor
       jsr txt.setcc
-      inc txt.setcc.column
+      inc txt.setcc.col
       jsr txt.setcc
       inc txt.setcc.row
       jsr txt.setcc
-      dec txt.setcc.column
+      dec txt.setcc.col
       jsr txt.setcc
     }}
   }
