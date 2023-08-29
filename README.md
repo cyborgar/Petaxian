@@ -30,13 +30,13 @@ now has the C64 running without noticable slowdowns.
 
 Compile/run for Commander X16 with something like this
 ```
-%JAVA_PATH% -jar prog8compiler-8.2-all.jar -srcdirs cx16 -target cx16 petaxian.p8
+%JAVA_PATH% -jar prog8compiler-9.4-all.jar -srcdirs cx16 -target cx16 petaxian.p8
 
 %X16EMU_PATH%\x16emu.exe -joy1 SNES -run -prg petaxian.prg
 ```
 and for C64 with e.g.
 ```
-%JAVA_PATH% -jar prog8compiler-8.2-all.jar -srcdirs c64 -target c64 petaxian.p8
+%JAVA_PATH% -jar prog8compiler-9.4-all.jar -srcdirs c64 -target c64 petaxian.p8
 
 %VICE_PATH%\x64sc.exe petaxian.prg
 ```
