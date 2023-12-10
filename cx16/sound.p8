@@ -8,7 +8,7 @@
 sound {
   sub init() {
     psg.silent()
-    sys.set_irq(psg.envelopes_irq, true)
+    sys.set_irq(&psg.envelopes_irq)
   }
 
   sub check() { ; Dummy function used on C64 only
