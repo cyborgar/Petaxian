@@ -289,23 +289,23 @@ enemy {
     ;   enemyRef[EN_SUBPOS] |= main.LEFTMOST
     ; }
     %asm {{
-      lda #p8_main.p8_LEFTMOST  ; check LEFTMOST (=1) is set
-      ldy #p8_enemy.p8_EN_SUBPOS
-      and (p8_enemyRef),y    ; AND with EN_SUBPOS
+      lda #p8b_main.p8c_LEFTMOST  ; check LEFTMOST (=1) is set
+      ldy #p8b_enemy.p8c_EN_SUBPOS
+      and (p8v_enemyRef),y    ; AND with EN_SUBPOS
       beq _move_left_else ;   and branch
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      and #p8_main.p8_NOT_LEFTMOST ; AND with ~main.LEFTMOST
-      sta (p8_enemyRef),y     
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      and #p8b_main.p8c_NOT_LEFTMOST ; AND with ~main.LEFTMOST
+      sta (p8v_enemyRef),y     
       sec
-      ldy #p8_enemy.p8_EN_X
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_X
+      lda (p8v_enemyRef),y
       sbc #1
-      sta (p8_enemyRef),y
+      sta (p8v_enemyRef),y
       rts
 _move_left_else
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      ora #p8_main.p8_LEFTMOST  ; OR with main.LEFTMOST
-      sta (p8_enemyRef),y
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      ora #p8b_main.p8c_LEFTMOST  ; OR with main.LEFTMOST
+      sta (p8v_enemyRef),y
       rts
     }}
   }
@@ -318,23 +318,23 @@ _move_left_else
     ;   enemyRef[EN_X]++
     ; }
     %asm {{
-      lda #p8_main.p8_LEFTMOST  ; check LEFTMOST (=1) is set
-      ldy #p8_enemy.p8_EN_SUBPOS
-      and (p8_enemyRef),y    ; AND with EN_SUBPOS
+      lda #p8b_main.p8c_LEFTMOST  ; check LEFTMOST (=1) is set
+      ldy #p8b_enemy.p8c_EN_SUBPOS
+      and (p8v_enemyRef),y    ; AND with EN_SUBPOS
       beq _move_right_else;   and branch
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      and #p8_main.p8_NOT_LEFTMOST ; AND with ~main.LEFTMOST
-      sta (p8_enemyRef),y     
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      and #p8b_main.p8c_NOT_LEFTMOST ; AND with ~main.LEFTMOST
+      sta (p8v_enemyRef),y     
       rts
 _move_right_else
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      ora #p8_main.p8_LEFTMOST  ; OR with main.LEFTMOST
-      sta (p8_enemyRef),y
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      ora #p8b_main.p8c_LEFTMOST  ; OR with main.LEFTMOST
+      sta (p8v_enemyRef),y
       clc
-      ldy #p8_enemy.p8_EN_X
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_X
+      lda (p8v_enemyRef),y
       adc #1
-      sta (p8_enemyRef),y
+      sta (p8v_enemyRef),y
       rts
     }}
   }
@@ -347,23 +347,23 @@ _move_right_else
     ;   enemyRef[EN_SUBPOS] |= main.TOPMOST
     ; }
     %asm {{
-      lda #p8_main.p8_TOPMOST   ; check TOPMOST (=2) is set
-      ldy #p8_enemy.p8_EN_SUBPOS
-      and (p8_enemyRef),y    ; AND with EN_SUBPOS
+      lda #p8b_main.p8c_TOPMOST   ; check TOPMOST (=2) is set
+      ldy #p8b_enemy.p8c_EN_SUBPOS
+      and (p8v_enemyRef),y    ; AND with EN_SUBPOS
       beq _move_up_else   ;   and branch
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      and #p8_main.p8_NOT_TOPMOST ; AND with ~main.TOPMOST
-      sta (p8_enemyRef),y     
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      and #p8b_main.p8c_NOT_TOPMOST ; AND with ~main.TOPMOST
+      sta (p8v_enemyRef),y     
       sec
-      ldy #p8_enemy.p8_EN_Y
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_Y
+      lda (p8v_enemyRef),y
       sbc #1
-      sta (p8_enemyRef),y
+      sta (p8v_enemyRef),y
       rts
 _move_up_else
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      ora #p8_main.p8_TOPMOST   ; OR with main.TOPMOST
-      sta (p8_enemyRef),y
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      ora #p8b_main.p8c_TOPMOST   ; OR with main.TOPMOST
+      sta (p8v_enemyRef),y
       rts
     }}
   }
@@ -376,23 +376,23 @@ _move_up_else
     ;   enemyRef[EN_Y]++
     ; }
     %asm {{
-      lda #p8_main.p8_TOPMOST   ; check TOPMOST (=2) is set
-      ldy #p8_enemy.p8_EN_SUBPOS
-      and (p8_enemyRef),y    ; AND with EN_SUBPOS
+      lda #p8b_main.p8c_TOPMOST   ; check TOPMOST (=2) is set
+      ldy #p8b_enemy.p8c_EN_SUBPOS
+      and (p8v_enemyRef),y    ; AND with EN_SUBPOS
       beq _move_down_else ;   and branch
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      and #p8_main.p8_NOT_TOPMOST ; AND with ~main.TOPMOST
-      sta (p8_enemyRef),y     
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      and #p8b_main.p8c_NOT_TOPMOST ; AND with ~main.TOPMOST
+      sta (p8v_enemyRef),y     
       rts
 _move_down_else
-      lda (p8_enemyRef),y    ; Get EN_SUBPOS
-      ora #p8_main.p8_TOPMOST   ; OR with main.TOPMOST
-      sta (p8_enemyRef),y
+      lda (p8v_enemyRef),y    ; Get EN_SUBPOS
+      ora #p8b_main.p8c_TOPMOST   ; OR with main.TOPMOST
+      sta (p8v_enemyRef),y
       clc
-      ldy #p8_enemy.p8_EN_Y
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_Y
+      lda (p8v_enemyRef),y
       adc #1
-      sta (p8_enemyRef),y
+      sta (p8v_enemyRef),y
       rts
     }}
   }
@@ -406,11 +406,11 @@ _move_down_else
     ; txt.setcc(tmp_x+1, tmp_y+1, main.CLR, 1)
     ; txt.setcc(tmp_x,   tmp_y+1, main.CLR, 1)
    %asm {{
-      ldy #p8_enemy.p8_EN_X
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_X
+      lda (p8v_enemyRef),y
       sta txt.setcc.col
-      ldy #p8_enemy.p8_EN_Y
-      lda (p8_enemyRef),y
+      ldy #p8b_enemy.p8c_EN_Y
+      lda (p8v_enemyRef),y
       sta txt.setcc.row
       lda #$20
       sta txt.setcc.character
