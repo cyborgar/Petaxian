@@ -24,16 +24,16 @@ joystick {
   ; Get joystick info from kernal to variables
   asmsub pull_info() clobbers(A, X, Y) {
     %asm {{
-      lda p8_selected_joystick
+      lda p8v_selected_joystick
       and #7
       jsr cx16.joystick_get
       eor #$ff               ; reverse bit pattern for easier testing
       cmp #$ff               ; Hack around NES keybord emulator issue
       beq skip_store         ; if all bits set assume skip setting joy_info
-      sta p8_joy_info
+      sta p8v_joy_info
 skip_store:
-      stx p8_joy_info2
-      sty p8_joy_info3
+      stx p8v_joy_info2
+      sty p8v_joy_info3
       rts
     }}
   }

@@ -37,7 +37,7 @@ no_shift              ; otherwise clear keypress
       lda #$0
 
 check_k
-      sta p8_keypress
+      sta p8v_keypress
 
       ; Check for K
       lda #%11101111 ; Row 4 (PA4)
@@ -46,9 +46,9 @@ check_k
       and #%00100000 ; Col 5 (PB5)
 
       bne check_l
-      lda p8_keypress
+      lda p8v_keypress
       ora #$02
-      sta p8_keypress
+      sta p8v_keypress
 
       rts ; Return, we don't check for L
       
@@ -60,9 +60,9 @@ check_l
       and #%00000100 ; Col 2 (PB2)
 
       bne return
-      lda p8_keypress
+      lda p8v_keypress
       ora #$04
-      sta p8_keypress
+      sta p8v_keypress
 
 return
       rts
