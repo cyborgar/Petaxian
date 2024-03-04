@@ -49,7 +49,7 @@ game_over {
     main.write(3, 3, 12, "you have defeated the petaxian")
     main.write(3, 3, 13, "invasion force.")
 
-    score(1)
+    score(true)
   }
 
   sub draw_defeat() {
@@ -63,10 +63,10 @@ game_over {
     main.write(3, 3, 11, "defence force and the invasion has")
     main.write(3, 3, 12, "left the planet in ruins.")
 
-    score(0)
+    score(false)
   }
 
-  sub score(ubyte win) {
+  sub score(bool win) {
     sys.wait(100)
 
     main.write(14, 5, 16, "enemy kill points  :")

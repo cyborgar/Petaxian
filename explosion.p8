@@ -72,8 +72,8 @@ explosion {
     ; Find korrekt animation, first correct "step"
     ubyte gfx_ind = (explosionRef[EX_STAGE] - 1 ) * 8
     ; Correct for nibble shift
-    gfx_ind += (not explosionRef[EX_SUBPOS] & main.TOPMOST) * 4
-    gfx_ind += (not explosionRef[EX_SUBPOS] & main.LEFTMOST) * 2
+    gfx_ind += ((explosionRef[EX_SUBPOS] & main.TOPMOST ==0) as ubyte) * 4
+    gfx_ind += ((explosionRef[EX_SUBPOS] & main.LEFTMOST ==0) as ubyte) * 2
 
     ; Convert first byte to two PETSCII chars and draw
     ubyte gfx_byte = gfx[gfx_ind]

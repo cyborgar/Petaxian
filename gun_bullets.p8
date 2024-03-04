@@ -29,16 +29,16 @@ gun_bullets {
     sys.memset(&bulletData, FIELD_COUNT * MAX_BULLETS, 0)
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte lm) {
+  sub trigger(ubyte x, ubyte y, bool lm) {
     if active_bullets == MAX_BULLETS ; All bullets in use
       return
     sound.fire()
     bulletRef = &bulletData
     ubyte i = 0
     while i < MAX_BULLETS {
-      if bulletRef[BD_ON] == false { ; Find first "free" bullet
-        bulletRef[BD_ON] = true
-        bulletRef[BD_LEFTMOST] = lm
+      if bulletRef[BD_ON] == 0 { ; Find first "free" bullet
+        bulletRef[BD_ON] = 1
+        bulletRef[BD_LEFTMOST] = lm as ubyte
         bulletRef[BD_X] = x
         bulletRef[BD_Y] = y
         draw()
@@ -58,7 +58,7 @@ gun_bullets {
   ; actually hitting enemy. Could add a merge "function" of sort
   ; to combine bullet+char. Not sure if it visually is necessary yet
   sub draw() {
-    if bulletRef[BD_LEFTMOST]
+    if bulletRef[BD_LEFTMOST]!=0
       txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], $61, COL)
     else
       txt.setcc(bulletRef[BD_X], bulletRef[BD_Y], $E1, COL)
@@ -68,15 +68,15 @@ gun_bullets {
     bulletRef = &bulletData
     ubyte i = 0
     while i < MAX_BULLETS {
-      if bulletRef[BD_ON] == true { 
+      if bulletRef[BD_ON] !=0 {
         clear() ; Clear old position
         if bulletRef[BD_Y] == base.UBORDER {
-          bulletRef[BD_ON] = false
+          bulletRef[BD_ON] = 0
           active_bullets--
         } else {
           bulletRef[BD_Y]--;
           if enemy.check_collision( bulletRef ) {
-            bulletRef[BD_ON] = false
+            bulletRef[BD_ON] = 0
             active_bullets--
           } else {
             draw()

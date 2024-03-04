@@ -39,7 +39,7 @@ skip_store:
   }
 
   sub pushing_start() -> ubyte {
-    if joy_info & 16
+    if joy_info & 16!=0
       return 16
     if selected_joystick==128 {
       ; scan all joysticks to see if any presses start, then choose that one
@@ -55,7 +55,7 @@ skip_store:
   }
 
   sub pushing_fire() -> ubyte {
-    if joy_info & 192    ; A or B on NES, B or Y on SNES
+    if joy_info & 192!=0    ; A or B on NES, B or Y on SNES
       return joy_info & 192
     if selected_joystick==128 {
       ; scan all joysticks to see if any presses fire, then choose that one

@@ -226,7 +226,7 @@ enemy {
   sub move() {
     ; wave delay
     ubyte tmp = enemyRef[EN_WAVE_DELAY]
-    if tmp {
+    if tmp!=0 {
       tmp--
       enemyRef[EN_WAVE_DELAY] = tmp
       return
@@ -429,8 +429,8 @@ _move_down_else
   sub draw() {
     ; Look up sub-byte position
     ubyte cur = enemyRef[EN_DIR]
-       + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
-       + (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
+       + ((enemyRef[EN_SUBPOS] & main.TOPMOST==0) as ubyte) * 4
+       + ((enemyRef[EN_SUBPOS] & main.LEFTMOST==0) as ubyte) * 2
 
     ubyte tmp_x = enemyRef[EN_X]
     ubyte tmp_y = enemyRef[EN_Y]
@@ -452,7 +452,7 @@ _move_down_else
 
   ; Check for enemy detection. Currently we only allow a single
   ; hit (so we can return on a full hit).
-  sub check_collision(uword bulletRef) -> ubyte {
+  sub check_collision(uword bulletRef) -> bool {
     ubyte i = 0
     enemyRef = &enemyData
     while i < ENEMY_COUNT {
@@ -471,7 +471,7 @@ _move_down_else
           ; We may still have a miss, we need to do some "nibble
           ; matching" 
           if check_detailed_collision(dx, dy,
-                bulletRef[gun_bullets.BD_LEFTMOST]) {
+                bulletRef[gun_bullets.BD_LEFTMOST]!=0) {
             ; More "Hitpoints?"
             if enemyRef[EN_DURAB] == 1 {
               enemyRef[EN_ACTIVE] = 0 ; Turn off
@@ -494,11 +494,11 @@ _move_down_else
                 add_scr <<= 1       
 
                 main.add_score(add_scr)
-                return 1
+                return true
               } else {
                 enemyRef[EN_DURAB]--
                 sound.hit()
-                return 1
+                return true
               }
             }
           }
@@ -508,11 +508,11 @@ _move_down_else
       i++
     }
 
-    return 0
+    return false
   }
 
   sub check_detailed_collision( ubyte dx, ubyte dy,
-                                ubyte leftmost ) -> ubyte {
+                                bool leftmost ) -> bool {
     ubyte bullet_nib
     if leftmost ; Set nibble value for bullet
       bullet_nib = 5
@@ -526,10 +526,7 @@ _move_down_else
     ; Get and map to Map from char to nibble ?
     ubyte nibble = convert.to_nibble( txt.getchr(tmp_x, tmp_y))
 
-    if ( nibble & bullet_nib)
-      return 1
-
-    return 0
+    return nibble & bullet_nib !=0
   }
 
   ; Random chance of dropping bomb per active enemy
@@ -546,7 +543,7 @@ _move_down_else
           ubyte chance = math.rnd() % 100
           if chance < 1 
             bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y],
-                          enemyRef[EN_SUBPOS])
+                        enemyRef[EN_SUBPOS]!=0)
         }
       }
       enemyRef += FIELD_COUNT
@@ -588,17 +585,17 @@ _move_down_else
 
     ; Raider 4 drop "special bombs"
     if eRef[EN_TYPE] >= RAIDER5 {
-      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS]!=0)
       return
     }
 
     ; Advanced enemies may drop seekers instead of regular bombs
-    if eRef[EN_TYPE] and chance < (eRef[EN_TYPE] << 1) {
-      seeker_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+    if eRef[EN_TYPE]!=0 and chance < (eRef[EN_TYPE] << 1) {
+      seeker_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS]!=0)
       return
     }
     
-    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS]!=0)
   }
 
   ; Add random attack of enemies. These only happen from the "line".

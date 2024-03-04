@@ -86,7 +86,7 @@ main {
     sys.wait(50)
 
     wait_key(32, ">>> press fire or start to begin <<<",  2, 23, 
-             &start_msg_cols, 1);
+             &start_msg_cols, true);
   }
 
   sub game_loop() {
@@ -130,7 +130,7 @@ main {
           joystick.pull_info()
           keyboard.pull_info();
 
-          if joystick.pushing_fire() or keyboard.pushing_fire() { 
+          if joystick.pushing_fire()!=0 or keyboard.pushing_fire() {
             if bullet_delay == 0 {
               gun.fire()
               bullet_delay = 3
@@ -138,9 +138,9 @@ main {
               bullet_delay--
           }
 
-          if joystick.pushing_left() or keyboard.pushing_left() {
+          if joystick.pushing_left()!=0 or keyboard.pushing_left() {
             gun.set_left()
-          } else if joystick.pushing_right() or keyboard.pushing_right() {
+          } else if joystick.pushing_right()!=0 or keyboard.pushing_right() {
             gun.set_right()
           }
  
@@ -163,7 +163,7 @@ main {
           cluster_bombs.move()
 
           ; Make seekers slower than other bombs
-          if seeker_delay {
+          if seeker_delay!=0 {
             seeker_bombs.move()
             seeker_delay = 0
           } else {
@@ -245,11 +245,11 @@ endloop:
       game_over.draw_defeat()
 
     wait_key(32, ">> press fire or start to continue <<", 1, 23,
-            &end_msg_cols, 0)
+            &end_msg_cols, false)
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
-               uword colRef, ubyte do_usage) {
+               uword colRef, bool do_usage) {
     ubyte time_lo = lsb(cbm.RDTIM16())
     ubyte col = 0 
 
@@ -268,7 +268,7 @@ endloop:
        }
        ; Let's also check joystick start (push up on c64) or fire
        joystick.pull_info()
-       if joystick.pushing_start() or joystick.pushing_fire()
+       if joystick.pushing_start()!=0 or joystick.pushing_fire()!=0
          return
 
        time_lo = lsb(cbm.RDTIM16())

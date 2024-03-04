@@ -40,22 +40,22 @@ cluster_bombs {
     sys.memset(&clusterData, FIELD_COUNT * MAX_CLUSTERS * 3, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte leftmost) {
+  sub trigger(ubyte x, ubyte y, bool leftmost) {
     if active_clusters == MAX_CLUSTERS 
       return
 
     clusterRef = &clusterData
     ubyte i = 0
     while i < MAX_CLUSTERS {
-      if clusterRef[CLU_ON] == false { ; Find first "free" data field
-        clusterRef[CLU_ON] = true
+      if clusterRef[CLU_ON] == 0 { ; Find first "free" data field
+        clusterRef[CLU_ON] = 1
         clusterRef[CLU_SPLITSIDE] = SPLIT_MID
 
-        if leftmost == true { 
-          clusterRef[CLU_LEFTMOST] = true
+        if leftmost {
+          clusterRef[CLU_LEFTMOST] = 1
           clusterRef[CLU_X] = x + 1
         } else {
-          clusterRef[CLU_LEFTMOST] = false
+          clusterRef[CLU_LEFTMOST] = 0
           clusterRef[CLU_X] = x
         }
         clusterRef[CLU_Y] = y + 1
@@ -82,7 +82,7 @@ cluster_bombs {
       tmp_x++
     }
 
-    splitRef[CLU_ON] = true
+    splitRef[CLU_ON] = 1
     splitRef[CLU_LEFTMOST] = clusterRef[CLU_LEFTMOST]
     splitRef[CLU_X] = tmp_x
     splitRef[CLU_Y] = clusterRef[CLU_Y]
@@ -96,7 +96,7 @@ cluster_bombs {
   ; Can bomb and bullet meet?
   ;
   sub draw() {
-    if clusterRef[CLU_LEFTMOST]
+    if clusterRef[CLU_LEFTMOST]!=0
       txt.setcc(clusterRef[CLU_X], clusterRef[CLU_Y], 123, COL)
     else
       txt.setcc(clusterRef[CLU_X], clusterRef[CLU_Y], 108, COL)
@@ -129,12 +129,12 @@ cluster_bombs {
         }
 
         if tmp_y == base.DBORDER {
-          clusterRef[CLU_ON] = false
+          clusterRef[CLU_ON] = 0
           if i < MAX_CLUSTERS
             active_clusters--
         } else if tmp_y == (base.DBORDER - 1) {
           if gun.check_collision( clusterRef ) {
-            clusterRef[CLU_ON] = false
+            clusterRef[CLU_ON] = 0
             if i < MAX_CLUSTERS
               active_clusters--
 	  } else
