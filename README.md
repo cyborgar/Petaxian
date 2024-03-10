@@ -41,6 +41,13 @@ and for C64 with e.g.
 %VICE_PATH%\x64sc.exe petaxian.prg
 ```
 
+**Compiling with Prog8 version 10.2 or newer**: 
+Later prog8 versions have more strict type checking of boolean and byte variables.
+Petaxian was written when the older less strict rules were still used. So if you are using
+a Prog8 version 10.2 or newer you have to add the ``-nostrictbool`` command line option
+to compile the game successfully (without having to modify the source code).
+
+
 **Some recent addition include**
 
 1. Added a few more enemy types, another bomb type and expanded/remixed to 20 stages
@@ -50,5 +57,5 @@ and for C64 with e.g.
 **Even more recent news (2023-08-15)**
 
 There is now a port of Petaxian for PET done by Milasoft (you can find this here https://milasoft64.itch.io/petaxian). This
-was done based on the C64 assembly output and not in Prog8 which doesn't support PET yet (though possibly some support may
-be coming in the near future).
+was done based on the C64 assembly output and not in Prog8 which doesn't support all of the PET features yet
+(though possibly more support may be coming in the near future).
