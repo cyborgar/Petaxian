@@ -428,9 +428,12 @@ _move_down_else
 
   sub draw() {
     ; Look up sub-byte position
+
     ubyte cur = enemyRef[EN_DIR]
-       + (not enemyRef[EN_SUBPOS] & main.TOPMOST) * 4
-       + (not enemyRef[EN_SUBPOS] & main.LEFTMOST) * 2
+    if (enemyRef[EN_SUBPOS] & main.TOPMOST) == 0
+      cur += 4
+    if (enemyRef[EN_SUBPOS] & main.LEFTMOST) == 0
+      cur += 2
 
     ubyte tmp_x = enemyRef[EN_X]
     ubyte tmp_y = enemyRef[EN_Y]
