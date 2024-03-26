@@ -24,20 +24,20 @@ bombs {
     sys.memset(&bombData, FIELD_COUNT * MAX_BOMBS, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte leftmost) {
+  sub trigger(ubyte x, ubyte y, bool leftmost) {
     if active_bombs == MAX_BOMBS ; No more (is this required?)
       return
 
     bombRef = &bombData
     ubyte i = 0
     while i < MAX_BOMBS {
-      if bombRef[BMB_ON] == false { ; Find first "free" bomb
-        bombRef[BMB_ON] = true
+      if bombRef[BMB_ON] == 0 { ; Find first "free" bomb
+        bombRef[BMB_ON] = 1
         if leftmost == true {
-          bombRef[BMB_LEFTMOST] = true
+          bombRef[BMB_LEFTMOST] = 1
           bombRef[BMB_X] = x + 1
         } else {
-          bombRef[BMB_LEFTMOST] = false
+          bombRef[BMB_LEFTMOST] = 0
           bombRef[BMB_X] = x
         }
         bombRef[BMB_Y] = y + 1
@@ -59,7 +59,7 @@ bombs {
   ; Can bomb and bullet meet?
   ;
   sub draw() {
-    if bombRef[BMB_LEFTMOST]
+    if bombRef[BMB_LEFTMOST] == 1
       txt.setcc(bombRef[BMB_X], bombRef[BMB_Y], 123, COL)
     else
       txt.setcc(bombRef[BMB_X], bombRef[BMB_Y], 108, COL)
@@ -69,16 +69,16 @@ bombs {
     bombRef = &bombData
     ubyte i = 0
     while i < MAX_BOMBS {
-      if bombRef[BMB_ON] == true { 
+      if bombRef[BMB_ON] == 1 { 
         clear() ; Clear old position
         bombRef[BMB_Y]++;
         ubyte tmp_y = bombRef[BMB_Y]
         if tmp_y == base.DBORDER {
-          bombRef[BMB_ON] = false
+          bombRef[BMB_ON] = 0
           active_bombs--
         } else if tmp_y == base.DBORDER - 1 {
           if gun.check_collision( bombRef ) {
-            bombRef[BMB_ON] = false
+            bombRef[BMB_ON] = 0
             active_bombs--
           } else
             draw()

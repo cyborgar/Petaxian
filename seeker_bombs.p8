@@ -24,20 +24,20 @@ seeker_bombs {
     sys.memset(&seekerData, FIELD_COUNT * MAX_SEEKERS, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte leftmost) {
+  sub trigger(ubyte x, ubyte y, bool leftmost) {
     if active_bombs == MAX_SEEKERS ; No more (is this required?)
       return
 
     seekerRef = &seekerData
     ubyte i = 0
     while i < MAX_SEEKERS {
-      if seekerRef[SKR_ON] == false { ; Find first "free" bomb
-        seekerRef[SKR_ON] = true
+      if seekerRef[SKR_ON] == 0 { ; Find first "free" bomb
+        seekerRef[SKR_ON] = 1
         if leftmost == true {
-          seekerRef[SKR_LEFTMOST] = true
+          seekerRef[SKR_LEFTMOST] = 1
           seekerRef[SKR_X] = x + 1
         } else {
-          seekerRef[SKR_LEFTMOST] = false
+          seekerRef[SKR_LEFTMOST] = 0
           seekerRef[SKR_X] = x
         }
         seekerRef[SKR_Y] = y + 1
@@ -59,7 +59,7 @@ seeker_bombs {
   ; Can bomb and bullet meet?
   ;
   sub draw() {
-    if seekerRef[SKR_LEFTMOST]
+    if seekerRef[SKR_LEFTMOST] == 1
       txt.setcc(seekerRef[SKR_X], seekerRef[SKR_Y], 123, COL)
     else
       txt.setcc(seekerRef[SKR_X], seekerRef[SKR_Y], 108, COL)
@@ -69,7 +69,7 @@ seeker_bombs {
     seekerRef = &seekerData
     ubyte i = 0
     while i < MAX_SEEKERS {
-      if seekerRef[SKR_ON] == true { 
+      if seekerRef[SKR_ON] == 1 { 
         clear() ; Clear old position
         seekerRef[SKR_Y]++;
 	ubyte tmp_y = seekerRef[SKR_Y]
@@ -82,11 +82,11 @@ seeker_bombs {
           }
         }
         if tmp_y == base.DBORDER {
-          seekerRef[SKR_ON] = false
+          seekerRef[SKR_ON] = 0
           active_bombs--
         } else if tmp_y == base.DBORDER - 1 {
           if gun.check_collision( seekerRef ) {
-            seekerRef[SKR_ON] = false
+            seekerRef[SKR_ON] = 0
             active_bombs--
           } else 
 	    draw()
