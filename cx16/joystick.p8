@@ -38,44 +38,44 @@ skip_store:
     }}
   }
 
-  sub pushing_start() -> ubyte {
-    if joy_info & 16
-      return 16
-    if selected_joystick==128 {
+  sub pushing_start() -> bool {
+    if joy_info & 16 > 0
+      return true
+    if selected_joystick == 128 {
       ; scan all joysticks to see if any presses start, then choose that one
       for cx16.r0L in 4 downto 0 {
         cx16.r1 = cx16.joystick_get2(cx16.r0L)
         if cx16.r1 & 16 == 0 {
            selected_joystick = cx16.r0L
-           return 16
+           return true
         }
       }
     }
-    return 0
+    return false
   }
 
-  sub pushing_fire() -> ubyte {
-    if joy_info & 192    ; A or B on NES, B or Y on SNES
-      return joy_info & 192
+  sub pushing_fire() -> bool {
+    if joy_info & 192 > 0    ; A or B on NES, B or Y on SNES
+      return true
     if selected_joystick==128 {
       ; scan all joysticks to see if any presses fire, then choose that one
       for cx16.r0L in 4 downto 0 {
         cx16.r1 = cx16.joystick_get2(cx16.r0L)
         if cx16.r1L & 192 != 192 {
            selected_joystick = cx16.r0L
-           return cx16.r1L & 192
+           return true
         }
       }
     }
-    return 0
+    return false
   }
 
-  sub pushing_left() -> ubyte {
-    return joy_info & 2
+  sub pushing_left() -> bool {
+    return joy_info & 2 > 0
   }
 
-  sub pushing_right() -> ubyte{
-    return joy_info & 1
+  sub pushing_right() -> bool {
+    return joy_info & 1 > 0
   }
 
 }

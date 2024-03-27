@@ -70,16 +70,16 @@ return
     }}
   }
 
-  sub pushing_fire() -> ubyte {
-    return keypress & 1
+  sub pushing_fire() -> bool {
+    return keypress & 1 > 0
   }
 
-  sub pushing_left() -> ubyte {
-    return keypress & 2
+  sub pushing_left() -> bool {
+    return keypress & 2 > 0
   }
 
-  sub pushing_right() -> ubyte {
-    return keypress & 4
+  sub pushing_right() -> bool {
+    return keypress & 4 > 0
   }
 
 }

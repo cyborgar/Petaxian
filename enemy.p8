@@ -487,7 +487,7 @@ _move_down_else
                 attack.remove(enemyRef[EN_ATTACK])
   
               explosion.trigger(enemyRef[EN_X], enemyRef[EN_Y],
-              enemyRef[EN_SUBPOS])
+                                enemyRef[EN_SUBPOS])
 
               ; Score based on type and pattern
               ubyte add_scr
@@ -549,7 +549,7 @@ _move_down_else
           ubyte chance = math.rnd() % 100
           if chance < 1 
             bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y],
-                          enemyRef[EN_SUBPOS] > 0)
+                          enemyRef[EN_SUBPOS])
         }
       }
       enemyRef += FIELD_COUNT
@@ -591,7 +591,7 @@ _move_down_else
 
     ; Raider 4 drop "special bombs"
     if eRef[EN_TYPE] >= RAIDER5 {
-      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS] > 0)
+      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
       return
     }
 
@@ -601,7 +601,7 @@ _move_down_else
       return
     }
     
-    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS] > 0)
+    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
   }
 
   ; Add random attack of enemies. These only happen from the "line".

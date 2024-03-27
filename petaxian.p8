@@ -51,13 +51,13 @@ main {
   ubyte stage_start_delay = 0
 
   ; Variable enemy speed
-  ubyte enemy_speed = 3
+  const ubyte ENEMY_SPEED = 3
   ubyte enemy_sub_counter
 
   ; Fixed player speed? Power ups? Split gun/bullet speed?
-  ubyte player_speed = 2
+  const ubyte PLAYER_SPEED = 2
   ubyte player_sub_counter
-  ubyte glide_movement = 0;  Keyboard "glide" mechanic for now
+  const ubyte GLIDE_MOVEMENT = 0;  Keyboard "glide" mechanic for now off
 
   ; Delay for animation 
   const ubyte ANIMATION_SPEED = 5
@@ -86,7 +86,7 @@ main {
     sys.wait(50)
 
     wait_key(32, ">>> press fire or start to begin <<<",  2, 23, 
-             &start_msg_cols, 1);
+             &start_msg_cols, true);
   }
 
   sub game_loop() {
@@ -124,7 +124,7 @@ main {
 
         ; Player movements
         player_sub_counter++
-        if player_sub_counter == player_speed {
+        if player_sub_counter == PLAYER_SPEED {
 
           ; Check joystick
           joystick.pull_info()
@@ -146,7 +146,7 @@ main {
  
           gun_bullets.move()
           gun.move()
-          if glide_movement == 0  ; If joystic "mode" is set avoid gliding
+          if GLIDE_MOVEMENT == 0  ; If joystic "mode" is set avoid gliding
             gun.direction = 0
 
           player_sub_counter = 0
@@ -154,7 +154,7 @@ main {
 
         ; Enemy movement
         enemy_sub_counter++
-        if enemy_sub_counter == enemy_speed {
+        if enemy_sub_counter == ENEMY_SPEED {
           enemy.trigger_attack()
           enemy.move_all()
           enemy_sub_counter = 0
@@ -163,7 +163,7 @@ main {
           cluster_bombs.move()
 
           ; Make seekers slower than other bombs
-          if seeker_delay {
+          if seeker_delay > 0 {
             seeker_bombs.move()
             seeker_delay = 0
           } else {
@@ -245,11 +245,11 @@ endloop:
       game_over.draw_defeat()
 
     wait_key(32, ">> press fire or start to continue <<", 1, 23,
-            &end_msg_cols, 0)
+            &end_msg_cols, false)
   }
 
   sub wait_key(ubyte key, uword strRef, ubyte x, ubyte y,
-               uword colRef, ubyte do_usage) {
+               uword colRef, bool do_usage) {
     ubyte time_lo = lsb(cbm.RDTIM16())
     ubyte col = 0 
 
@@ -319,7 +319,7 @@ endloop:
 
   ; To be replaced when a better solution is found
   sub printHiscore() {
-     conv.str_uw0(hiscore)
+     void conv.str_uw0(hiscore)
      write(1, 12, 10, "hiscore:")
      write(1, 21, 10, conv.string_out)
   }
@@ -329,7 +329,7 @@ endloop:
   sub printNumber(ubyte x, ubyte y, uword val, ubyte digits) {
     ubyte pos_adj = 5 - digits
     ubyte i
-    conv.str_uw0(val)
+    void conv.str_uw0(val)
     for i in pos_adj to 4 {
       txt.setcc(base.LBORDER + x + i - pos_adj, base.UBORDER + y,
         conv.string_out[i], 1)
@@ -338,7 +338,7 @@ endloop:
 
   ; Similar to printNumber but we want the "reversed" number chars
   sub printScore() { 
-    conv.str_uw0(main.score)
+    void conv.str_uw0(main.score)
     ubyte i
     for i in 0 to 4 {
       txt.setcc(base.RBORDER + 4 + i, base.UBORDER + 2,

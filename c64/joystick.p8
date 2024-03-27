@@ -23,20 +23,20 @@ joystick {
     joy_info = c64.CIA1PRA ^ 255  
   }
 
-  sub pushing_start() -> ubyte {
-    return joy_info & 1
+  sub pushing_start() -> bool {
+    return joy_info & 1 > 0
   }
 
-  sub pushing_fire() -> ubyte {
-    return joy_info & 16
+  sub pushing_fire() -> bool {
+    return joy_info & 16 > 0
   }
 
-  sub pushing_left() -> ubyte {
-    return joy_info & 4
+  sub pushing_left() -> bool {
+    return joy_info & 4 > 0
   }
 
-  sub pushing_right() -> ubyte{
-    return joy_info & 8
+  sub pushing_right() -> bool {
+    return joy_info & 8 > 0
   }
 
 }

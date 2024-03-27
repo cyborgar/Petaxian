@@ -26,7 +26,7 @@ gun {
   ubyte[] gun_l = [ 254, 251, 123 ]
   ubyte[] gun_r = [ 108, 236, 252 ]
 
-  ubyte leftmost = true;
+  bool leftmost = true;
 
   ubyte i ; shared loop variable
 
@@ -66,13 +66,13 @@ gun {
   }
 
   sub move() {
-    if post_hit { 
+    if post_hit > 0 { 
       post_hit--
 
       if post_hit > 25
         return
 
-      if post_hit % 2
+      if post_hit % 2 > 0
         gun_color = 0
       else 
         gun_color = 14
@@ -116,39 +116,39 @@ gun {
     } else {
       clear()
       x++
-      leftmost=true
+      leftmost = true
       draw()
     }
   }
 
   sub fire() {
-    if main.stage_start_delay ; No bullets in stage end/start
+    if main.stage_start_delay > 0; No bullets in stage end/start
       return
     gun_bullets.trigger(x+1, y-1, leftmost)
   }
 
-  sub check_collision(uword BombRef) -> ubyte {
+  sub check_collision(uword BombRef) -> bool {
     ; Check that we are not in "quaranteen" from last hit
-    if post_hit 
-      return 0
+    if post_hit > 0
+      return false
 
     if BombRef[bombs.BMB_X] < gun.x
-      return 0
+      return false
     if BombRef[bombs.BMB_X] > gun.x + 2
-      return 0
+      return false
 
     ; Check if bomb passes on the left or right side of gun
     ubyte dx = BombRef[bombs.BMB_X] - gun.x
     when dx {
       0 -> { ; bomb to the left and gun in "righmost" pos?
-             if BombRef[bombs.BMB_LEFTMOST]
-               if ~leftmost
-                 return 0
+             if BombRef[bombs.BMB_LEFTMOST] == 1
+               if not leftmost
+                 return false
             }
       2 -> { ; bomb to the right and gun in "leftmost" pos?
              if leftmost
-               if ~BombRef[bombs.BMB_LEFTMOST]
-                 return 0
+               if BombRef[bombs.BMB_LEFTMOST] == 0
+                 return false
            }
     }
 
@@ -156,12 +156,12 @@ gun {
     sound.large_explosion()
     main.player_lives--
     main.printLives()
-    direction=0 
+    direction = 0 
     post_hit = 40
     explosion.trigger(gun.x, gun.y-1, main.LEFTMOST);
     explosion.trigger(gun.x+1, gun.y-1, main.LEFTMOST);
 
-    return 1
+    return true
   }
 
 }

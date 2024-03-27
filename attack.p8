@@ -34,10 +34,10 @@ attack {
   }
 
   ; Check if we have used all attack slots.
-  sub full() -> ubyte {
+  sub full() -> bool {
     if active_attacks == MAX_ATTACKS
-      return 1
-    return 0
+      return true
+    return false
   }
 
   ; Find free attack slot and start attack run
@@ -46,7 +46,7 @@ attack {
     attackRef = &attackData
     ubyte i = 0
     while i < MAX_ATTACKS {
-      if attackRef[AT_ACTIVE] == false {
+      if attackRef[AT_ACTIVE] == 0 {
         ; We need to save line pattern and current move counter so we can
         ; switch back later
         attackRef[AT_ACTIVE] = 1
@@ -82,7 +82,7 @@ attack {
   ; Clear attack if enemy has been killed or is finished
   sub remove(ubyte attack_num) {
     attackRef = &attackData + FIELD_COUNT * attack_num 
-    attackRef[AT_ACTIVE] = false
+    attackRef[AT_ACTIVE] = 0
     active_attacks--
   }
 }

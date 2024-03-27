@@ -24,9 +24,13 @@ seeker_bombs {
     sys.memset(&seekerData, FIELD_COUNT * MAX_SEEKERS, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, bool leftmost) {
+  sub trigger(ubyte x, ubyte y, ubyte subpos) {
     if active_bombs == MAX_SEEKERS ; No more (is this required?)
       return
+
+    bool leftmost = false
+    if subpos & main.LEFTMOST > 0
+       leftmost = true
 
     seekerRef = &seekerData
     ubyte i = 0
