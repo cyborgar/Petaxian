@@ -492,10 +492,10 @@ _move_down_else
               ; Score based on type and pattern
               ubyte add_scr
               add_scr = enemy_score[ enemyRef[EN_TYPE] ]
+
               ; Bonus for flight
               if enemyRef[EN_PAT] > 1 ; Double score when not at base line
                 add_scr <<= 1       
-
                 main.add_score(add_scr)
                 return true
               } else {
@@ -529,10 +529,7 @@ _move_down_else
     ; Get and map to Map from char to nibble ?
     ubyte nibble = convert.to_nibble( txt.getchr(tmp_x, tmp_y))
 
-    if nibble & bullet_nib > 0
-      return true
-
-    return false
+    return nibble & bullet_nib > 0
   }
 
   ; Random chance of dropping bomb per active enemy

@@ -35,9 +35,7 @@ attack {
 
   ; Check if we have used all attack slots.
   sub full() -> bool {
-    if active_attacks == MAX_ATTACKS
-      return true
-    return false
+    return active_attacks == MAX_ATTACKS
   }
 
   ; Find free attack slot and start attack run
