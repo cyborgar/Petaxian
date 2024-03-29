@@ -216,7 +216,7 @@ enemy {
     enemyRef = &enemyData
     ubyte i = 0
     while i < ENEMY_COUNT {
-      if enemyRef[EN_ACTIVE] != 0
+      if enemyRef[EN_ACTIVE] == 1
         move()
       i++
       enemyRef += FIELD_COUNT
@@ -428,7 +428,6 @@ _move_down_else
 
   sub draw() {
     ; Look up sub-byte position
-
     ubyte cur = enemyRef[EN_DIR]
     if (enemyRef[EN_SUBPOS] & main.TOPMOST) == 0
       cur += 4
@@ -459,7 +458,7 @@ _move_down_else
     ubyte i = 0
     enemyRef = &enemyData
     while i < ENEMY_COUNT {
-      if enemyRef[EN_ACTIVE] > 0 {
+      if enemyRef[EN_ACTIVE] == 1 {
         ; First check if we have Y position hit
 
         if bulletRef[gun_bullets.BD_Y] == enemyRef[EN_Y] or
@@ -474,7 +473,7 @@ _move_down_else
           ; We may still have a miss, we need to do some "nibble
           ; matching" 
           if check_detailed_collision(dx, dy,
-                bulletRef[gun_bullets.BD_LEFTMOST] == 1) {
+                bulletRef[gun_bullets.BD_LEFTMOST] > 0) {
             ; More "Hitpoints?"
             if enemyRef[EN_DURAB] == 1 {
               enemyRef[EN_ACTIVE] = 0 ; Turn off
@@ -492,7 +491,7 @@ _move_down_else
               ; Score based on type and pattern
               ubyte add_scr
               add_scr = enemy_score[ enemyRef[EN_TYPE] ]
-
+	      
               ; Bonus for flight
               if enemyRef[EN_PAT] > 1 ; Double score when not at base line
                 add_scr <<= 1       
@@ -532,28 +531,6 @@ _move_down_else
     return nibble & bullet_nib > 0
   }
 
-  ; Random chance of dropping bomb per active enemy
-  ;   Note that this seem to be spawn way to much even with 
-  ;   a low percentage. math.rnd() fucnction may not distribute
-  ;   well for this use.
-  sub spawn_bomb_new() {
-    ubyte enemy_num
-    uword enemyRef = &enemyData
-    while enemy_num < ENEMY_COUNT {
-      if enemyRef[EN_ACTIVE] == 1 { 
-        if enemyRef[EN_PAT] <= 1 { ; No bombs at deployment
-          ; Check if we drop bomb
-          ubyte chance = math.rnd() % 100
-          if chance < 1 
-            bombs.trigger(enemyRef[EN_X], enemyRef[EN_Y],
-                          enemyRef[EN_SUBPOS])
-        }
-      }
-      enemyRef += FIELD_COUNT
-      enemy_num++
-    }
-  }
-
   ; Random chance of one enemy dropping a bomb
   ;   Bomb frequency increas when the count of enemies
   ;   drop so there are bombs even when there just a few
@@ -567,7 +544,7 @@ _move_down_else
 
     ; Check if it's active
     uword eRef = &enemyData + enemy_num * FIELD_COUNT
-    if eRef[EN_ACTIVE] != 1
+    if eRef[EN_ACTIVE] == 0
       return
 
     ; May allow bombs at deployments later
@@ -588,17 +565,20 @@ _move_down_else
 
     ; Raider 4 drop "special bombs"
     if eRef[EN_TYPE] >= RAIDER5 {
-      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      cluster_bombs.trigger(eRef[EN_X], eRef[EN_Y],
+                            eRef[EN_SUBPOS] & main.LEFTMOST > 0)
       return
     }
 
     ; Advanced enemies may drop seekers instead of regular bombs
     if eRef[EN_TYPE] > 0 and chance < (eRef[EN_TYPE] << 1) {
-      seeker_bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+      seeker_bombs.trigger(eRef[EN_X], eRef[EN_Y],
+                           eRef[EN_SUBPOS] & main.LEFTMOST > 0)
       return
     }
     
-    bombs.trigger(eRef[EN_X], eRef[EN_Y], eRef[EN_SUBPOS])
+    bombs.trigger(eRef[EN_X], eRef[EN_Y],
+                  eRef[EN_SUBPOS] & main.LEFTMOST > 0)
   }
 
   ; Add random attack of enemies. These only happen from the "line".
@@ -612,7 +592,7 @@ _move_down_else
 
     ; Check if it's active
     uword eRef = &enemyData + enemy_num * FIELD_COUNT
-    if eRef[EN_ACTIVE] != 1
+    if eRef[EN_ACTIVE] == 0
       return
 
     ; No attack during deployment or existing attack

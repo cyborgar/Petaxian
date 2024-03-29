@@ -44,12 +44,12 @@ roller {
     uword colRef  = colors[page_ind]
     uword colRef2 = colors[page_ind+1]
     
-    ubyte hgt_offset = base.UBORDER + 11
+    const ubyte HGT_OFFSET = base.UBORDER + 11
     ubyte i
     for i in 0 to (PAGE_WDT * PAGE_HGT - 1) {
-      txt.setcc( (i % PAGE_WDT), hgt_offset + (i/PAGE_WDT),
+      txt.setcc( (i % PAGE_WDT), HGT_OFFSET + (i/PAGE_WDT),
                   pageRef[i], colRef[i] )
-      txt.setcc( (i % PAGE_WDT), hgt_offset + PAGE_HGT + (i/PAGE_WDT),
+      txt.setcc( (i % PAGE_WDT), HGT_OFFSET + PAGE_HGT + (i/PAGE_WDT),
                  pageRef2[i], colRef2[i] )
     }
 

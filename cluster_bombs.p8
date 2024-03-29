@@ -40,13 +40,9 @@ cluster_bombs {
     sys.memset(&clusterData, FIELD_COUNT * MAX_CLUSTERS * 3, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte subpos) {
+  sub trigger(ubyte x, ubyte y, bool leftmost) {
     if active_clusters == MAX_CLUSTERS 
       return
-
-    bool leftmost = false
-    if subpos & main.LEFTMOST > 0
-       leftmost = true
 
     clusterRef = &clusterData
     ubyte i = 0
@@ -55,7 +51,7 @@ cluster_bombs {
         clusterRef[CLU_ON] = 1
         clusterRef[CLU_SPLITSIDE] = SPLIT_MID
 
-        if leftmost == true { 
+        if leftmost {
           clusterRef[CLU_LEFTMOST] = 1
           clusterRef[CLU_X] = x + 1
         } else {

@@ -24,20 +24,16 @@ bombs {
     sys.memset(&bombData, FIELD_COUNT * MAX_BOMBS, 0 )
   }
 
-  sub trigger(ubyte x, ubyte y, ubyte subpos) {
+  sub trigger(ubyte x, ubyte y, bool leftmost) {
     if active_bombs == MAX_BOMBS ; No more (is this required?)
       return
-
-    bool leftmost = false
-    if subpos & main.LEFTMOST > 0
-       leftmost = true
 
     bombRef = &bombData
     ubyte i = 0
     while i < MAX_BOMBS {
       if bombRef[BMB_ON] == 0 { ; Find first "free" bomb
         bombRef[BMB_ON] = 1
-        if leftmost == true {
+        if leftmost {
           bombRef[BMB_LEFTMOST] = 1
           bombRef[BMB_X] = x + 1
         } else {
