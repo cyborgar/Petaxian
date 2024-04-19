@@ -41,6 +41,9 @@ and for C64 with e.g.
 %VICE_PATH%\x64sc.exe petaxian.prg
 ```
 
+NB! The code is mostly in sync with the latest release version of the Prog8, so if you run into
+problems make sure you download and test with the latest version of the compiler.
+
 **Some recent addition include**
 
 1. Added a few more enemy types, another bomb type and expanded/remixed to 20 stages
