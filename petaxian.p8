@@ -255,7 +255,7 @@ endloop:
 
     ubyte inp = 0
     while inp != key {
-       inp = cbm.GETIN()
+       inp = cbm.GETIN2()
        if time_lo >= 2 {
          cbm.SETTIM(0,0,0)
          write( colRef[col], x, y, strRef )

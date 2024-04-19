@@ -44,7 +44,7 @@ skip_store:
     if selected_joystick == 128 {
       ; scan all joysticks to see if any presses start, then choose that one
       for cx16.r0L in 4 downto 0 {
-        cx16.r1 = cx16.joystick_get2(cx16.r0L)
+        cx16.r1, void = cx16.joystick_get(cx16.r0L)
         if cx16.r1 & 16 == 0 {
            selected_joystick = cx16.r0L
            return true
@@ -60,7 +60,7 @@ skip_store:
     if selected_joystick==128 {
       ; scan all joysticks to see if any presses fire, then choose that one
       for cx16.r0L in 4 downto 0 {
-        cx16.r1 = cx16.joystick_get2(cx16.r0L)
+        cx16.r1, void = cx16.joystick_get(cx16.r0L)
         if cx16.r1L & 192 != 192 {
            selected_joystick = cx16.r0L
            return true
