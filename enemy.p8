@@ -422,7 +422,7 @@ _move_down_else
       inc txt.setcc.row
       jsr txt.setcc
       dec txt.setcc.col
-      jsr txt.setcc
+      jmp txt.setcc
     }}
   }
 
