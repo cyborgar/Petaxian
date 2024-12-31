@@ -176,10 +176,10 @@ stage {
     enemy.RAIDER4, enemy.RAIDER4, enemy.RAIDER6, enemy.RAIDER6,
     enemy.RAIDER6, enemy.RAIDER6, enemy.RAIDER4, enemy.RAIDER4 ]
 
-  uword[] list = [ &stage1, &stage2, &stage3, &stage4,
-                   &stage5, &stage6, &stage7, &stage8,
-                   &stage9, &stage10, &stage11, &stage12,
-                   &stage13, &stage14, &stage15, &stage16,
-                   &stage17, &stage18, &stage19, &stage20 ]
+  uword[] @nosplit list = [ &stage1, &stage2, &stage3, &stage4,
+                            &stage5, &stage6, &stage7, &stage8,
+                            &stage9, &stage10, &stage11, &stage12,
+                            &stage13, &stage14, &stage15, &stage16,
+                            &stage17, &stage18, &stage19, &stage20 ]
 
 }

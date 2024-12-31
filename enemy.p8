@@ -101,8 +101,8 @@ enemy {
     $E4, $20, $8D, $01, $80, $B1, $04, $27,
     $E4, $20, $8D, $01, $80, $B1, $04, $27 ]
 
-  uword[] enemy_types = [ &raider1, &raider2, &raider3, &raider4,
-                          &raider5, &raider6 ]
+  uword[] @nosplit enemy_types = [ &raider1, &raider2, &raider3, &raider4,
+                                   &raider5, &raider6 ]
 
   const ubyte RAIDER1 = 0
   const ubyte RAIDER2 = 1
@@ -163,7 +163,7 @@ enemy {
 
     ; Each stage has 2 waves of 8 enemies
     for wave in 0 to 1 {
-      if StageRef[ stage.STG_LINE_ACTIVE ] == true {
+      if StageRef[ stage.STG_LINE_ACTIVE ] == 1 {
         enemies_left += 8
         while i < enemies_left {
           ubyte type_idx = stage.STG_ENEMY_TYPE + i - 8*wave

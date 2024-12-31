@@ -176,12 +176,12 @@ move_patterns {
     $6, $5, $6, $6, $6, $6, $6, $6 ]
 
   ; Put patterns in array of address refs?
-  uword[] list = [ &stable_left, &stable_right,
-                   &attack_1l, &attack_1r,
-                   &attack_2l, &attack_2r,
-                   &deploy_left_1, &deploy_right_1,
-                   &deploy_left_2, &deploy_right_2,
-                   &deploy_left_3, &deploy_right_3,
-                   &deploy_left_4, &deploy_right_4 ]
+  uword[] @nosplit list = [ &stable_left, &stable_right,
+                            &attack_1l, &attack_1r,
+                            &attack_2l, &attack_2r,
+                            &deploy_left_1, &deploy_right_1,
+                            &deploy_left_2, &deploy_right_2,
+                            &deploy_left_3, &deploy_right_3,
+                            &deploy_left_4, &deploy_right_4 ]
 
 }
