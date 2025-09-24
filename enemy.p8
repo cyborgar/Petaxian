@@ -184,7 +184,7 @@ enemy {
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyRef[EN_PAT] = pattern ;
-    uword PatternRef = move_patterns.list[pattern]
+    uword @zp PatternRef = move_patterns.list[pattern]
     enemyRef[EN_DELAY] = move_delay - stage_delay ; Delayed deployment counter
     enemyRef[EN_WAVE_DELAY] = stage_delay         ;   relative from wave start
     enemyRef[EN_MOVE_CNT] = 0
