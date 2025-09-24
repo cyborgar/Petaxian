@@ -163,7 +163,7 @@ enemy {
 
     ; Each stage has 2 waves of 8 enemies
     for wave in 0 to 1 {
-      if StageRef[ stage.STG_LINE_ACTIVE ] == true {
+      if StageRef[ stage.STG_LINE_ACTIVE ] == 1 {
         enemies_left += 8
         while i < enemies_left {
           ubyte type_idx = stage.STG_ENEMY_TYPE + i - 8*wave
@@ -184,7 +184,7 @@ enemy {
 
     enemyRef[EN_ACTIVE] = 1 ; All enemies active at deployment
     enemyRef[EN_PAT] = pattern ;
-    uword PatternRef = move_patterns.list[pattern]
+    uword @zp PatternRef = move_patterns.list[pattern]
     enemyRef[EN_DELAY] = move_delay - stage_delay ; Delayed deployment counter
     enemyRef[EN_WAVE_DELAY] = stage_delay         ;   relative from wave start
     enemyRef[EN_MOVE_CNT] = 0
