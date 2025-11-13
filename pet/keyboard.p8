@@ -16,7 +16,7 @@ keyboard {
   ubyte key
 
   sub pull_info() {
-    key = cbm.GETIN()
+    key = cbm.GETIN2()
   }
 
   sub pushing_fire() -> bool {
